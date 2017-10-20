@@ -1,23 +1,32 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
+    <packaging>pom</packaging>
+
+    <parent>
+        <groupId>com.hotels</groupId>
+        <artifactId>hotels-oss-parent</artifactId>
+        <version>2.0.3</version>
+    </parent>
+
     <groupId>hcom.funcTest</groupId>
     <artifactId>Heat-Core</artifactId>
     <version>1.0</version>
-    <packaging>pom</packaging>
 
     <scm>
         <connection>scm:git:git@github.com:HotelsDotCom/heat.git</connection>
         <developerConnection>scm:git:git@github.com:HotelsDotCom/heat.git</developerConnection>
         <url>https://github.com/HotelsDotCom/heat</url>
         <tag>HEAD</tag>
-    </scm>  
+    </scm>
+
+    <inceptionYear>2015</inceptionYear>
 
     <modules>
         <module>Heat-ModuleSupport</module>
         <module>Heat-CoreUtils</module>
         <module>Heat-Internal-Modules</module>
-        <module>Heat-Bundle</module>        
+        <module>Heat-Bundle</module>
     </modules>
 
     <dependencies>
@@ -52,7 +61,7 @@
     <properties>
         <maven.compiler.target>1.8</maven.compiler.target>
         <maven.compiler.source>1.8</maven.compiler.source>
-        
+
         <!-- Maven PMD Plugin -->
         <maven-pmd-plugin.version>3.1</maven-pmd-plugin.version>
         <pmd.config.location>rules/pmd_rules.xml</pmd.config.location>
@@ -100,7 +109,7 @@
                     <encoding>UTF-8</encoding>
                     <aggregate>true</aggregate>
                 </configuration>
-            </plugin>            
+            </plugin>
             <!-- jacoco coverage plugin -->
             <plugin>
                 <groupId>org.jacoco</groupId>
@@ -176,8 +185,17 @@
                     </execution>
                 </executions>
             </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.7.0</version>
+                <configuration>
+                    <source>1.8</source>
+                    <target>1.8</target>
+                </configuration>
+            </plugin>
         </plugins>
-    </build> 
+    </build>
     <distributionManagement>
         <repository>
             <id>central</id>
@@ -194,6 +212,6 @@
             <id>dev-docs.aws-hotels.com</id>
             <url>scp://devdocs.hcom/var/www/html/</url>
         </site>
-    </distributionManagement>   
+    </distributionManagement>
 
 </project>
