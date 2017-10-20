@@ -14,7 +14,7 @@ Let's start assuming that each test module is "dedicated" to test a specific ser
 First of all, you have to clone the following "Heat example test module" so that we can customize and use it :
 
 ```
->> git clone http://<username>@stash.hcom/scm/mob/heat-testmodule.git testModule
+>> git clone http://<testModuleRepo> testModule
 >> cd testModule/
 >> ll
 total 16
