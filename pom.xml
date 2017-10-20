@@ -5,6 +5,14 @@
     <artifactId>Heat-Core</artifactId>
     <version>1.0</version>
     <packaging>pom</packaging>
+
+    <scm>
+        <connection>scm:git:git@github.com:HotelsDotCom/heat.git</connection>
+        <developerConnection>scm:git:git@github.com:HotelsDotCom/heat.git</developerConnection>
+        <url>https://github.com/HotelsDotCom/heat</url>
+        <tag>HEAD</tag>
+    </scm>  
+
     <modules>
         <module>Heat-ModuleSupport</module>
         <module>Heat-CoreUtils</module>
@@ -187,8 +195,5 @@
             <url>scp://devdocs.hcom/var/www/html/</url>
         </site>
     </distributionManagement>   
-    <scm>
-        <connection>scm:git:http://stash.hcom/scm/mob/heat-testframeworkcore.git</connection>
-        <developerConnection>scm:git:http://stash.hcom/scm/mob/heat-testframeworkcore.git</developerConnection>
-    </scm>    
+
 </project>

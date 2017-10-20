@@ -88,3 +88,8 @@ Heat Test Framework makes everything very simple because you will be able to wri
 
 
 [upArrow]: doc/img/UpArrow.png
+
+# Legal
+This project is available under the [Apache 2.0 License](http://www.apache.org/licenses/LICENSE-2.0.html).
+
+Copyright 2017-2018 Expedia Inc.
