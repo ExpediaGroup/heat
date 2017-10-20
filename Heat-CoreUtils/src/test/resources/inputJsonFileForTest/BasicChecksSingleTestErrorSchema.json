@@ -1,0 +1,33 @@
+{
+    "testSuite":
+            {
+                "generalSettings": {
+                    "httpMethod": "GET"
+                },
+                "jsonSchemas": {
+                    "correctResponse": "correct_schema_path",
+                    "errorResponse": "error_schema_path"
+                },
+                "testCases": [
+                    {
+                        "testName": "TEST NAME",
+                        "url":"url test",
+                        "queryParameters": {
+                            "queryParam1": "queryParam1_value"
+                        },
+                        "expects": {
+                            "responseCode": "101",
+                            "cache": "cache_test_value",
+                            "jsonSchemaToCheck": "errorResponse",
+                            "fieldCheck": [
+                                {
+                                    "description":"description_check_for_test",
+                                    "jsonPath":"field_json_path",
+                                    "expectedValue":"field_json_value"
+                                }
+                            ]
+                        }
+                    }
+                ]
+            }
+}

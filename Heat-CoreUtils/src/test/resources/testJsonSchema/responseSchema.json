@@ -1,0 +1,26 @@
+{
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "title": "ErrorResponse",
+    "description": "An Error Response object following the convention of http://microformats.org/wiki/hcard",
+    "type": "object",
+    "properties": {
+        "result": {
+            "type": "string",
+            "description": "describes response status"
+        },
+        "error_message": {
+            "type": "string",
+            "description": "contains error message"
+        },
+        "error_keys": {
+            "type": "array",
+            "description": "contains error keys",
+            "items": {
+                "type": "string",
+                "description": "error key"
+            }
+        }
+    },
+    "required": ["result"],
+    "additionalProperties": false
+}

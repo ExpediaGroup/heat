@@ -1,0 +1,194 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>hcom.funcTest</groupId>
+    <artifactId>Heat-Core</artifactId>
+    <version>1.0</version>
+    <packaging>pom</packaging>
+    <modules>
+        <module>Heat-ModuleSupport</module>
+        <module>Heat-CoreUtils</module>
+        <module>Heat-Internal-Modules</module>
+        <module>Heat-Bundle</module>        
+    </modules>
+
+    <dependencies>
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
+            <version>1.1.2</version>
+        </dependency>
+        <dependency>
+            <groupId>com.jayway.restassured</groupId>
+            <artifactId>rest-assured</artifactId>
+            <version>2.9.0</version>
+        </dependency>
+        <!-- Unit Testing -->
+        <dependency>
+            <groupId>org.powermock</groupId>
+            <artifactId>powermock-api-mockito</artifactId>
+            <version>1.6.3</version>
+        </dependency>
+        <dependency>
+            <groupId>org.powermock</groupId>
+            <artifactId>powermock-module-testng</artifactId>
+            <version>1.6.3</version>
+        </dependency>
+        <dependency>
+            <groupId>org.powermock</groupId>
+            <artifactId>powermock-module-junit4</artifactId>
+            <version>1.5.6</version>
+        </dependency>
+
+    </dependencies>
+    <properties>
+        <maven.compiler.target>1.8</maven.compiler.target>
+        <maven.compiler.source>1.8</maven.compiler.source>
+        
+        <!-- Maven PMD Plugin -->
+        <maven-pmd-plugin.version>3.1</maven-pmd-plugin.version>
+        <pmd.config.location>rules/pmd_rules.xml</pmd.config.location>
+        <pmd.failOnViolation>false</pmd.failOnViolation>
+        <pmd.skip>false</pmd.skip>
+        <pmd.skipEmptyReport>true</pmd.skipEmptyReport>
+
+        <!--site markdown-->
+        <plugin.maven.site.version>3.4</plugin.maven.site.version>
+
+        <!--jacoco configuration-->
+        <jacoco.classRatio>0</jacoco.classRatio>
+        <jacoco.instructionRatio>0</jacoco.instructionRatio>
+        <jacoco.methodRatio>0</jacoco.methodRatio>
+        <jacoco.branchRatio>0</jacoco.branchRatio>
+        <jacoco.complexityRatio>0</jacoco.complexityRatio>
+        <jacoco.lineRatio>0</jacoco.lineRatio>
+
+    </properties>
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-site-plugin</artifactId>
+                <version>${plugin.maven.site.version}</version>
+                <dependencies>
+                    <dependency>
+                        <groupId>org.apache.maven.doxia</groupId>
+                        <artifactId>doxia-module-markdown</artifactId>
+                        <version>1.6</version>
+                    </dependency>
+                    <dependency>
+                        <groupId>org.apache.maven.wagon</groupId>
+                        <artifactId>wagon-ssh</artifactId>
+                        <version>1.0</version>
+                    </dependency>
+                </dependencies>
+            </plugin>
+            <!-- Generate javadoc -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>2.9.1</version>
+                <configuration>
+                    <encoding>UTF-8</encoding>
+                    <aggregate>true</aggregate>
+                </configuration>
+            </plugin>            
+            <!-- jacoco coverage plugin -->
+            <plugin>
+                <groupId>org.jacoco</groupId>
+                <artifactId>jacoco-maven-plugin</artifactId>
+                <version>0.7.5.201505241946</version>
+                <configuration>
+                    <excludes>
+                        <exclude>com/hotels/restassuredframework/core/listeners/**</exclude>
+                        <exclude>com/hotels/restassuredframework/core/singleServices/TestRunner.class</exclude>
+                        <exclude>com/hotels/restassuredframework/core/compareServices/TestCompareRunner.class</exclude>
+                    </excludes>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>jacoco-initialize</id>
+                        <phase>process-resources</phase>
+                        <goals>
+                            <goal>prepare-agent</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>check</id>
+                        <goals>
+                            <goal>check</goal>
+                        </goals>
+                        <phase>post-integration-test</phase>
+                        <configuration>
+                            <rules>
+                                <rule>
+                                    <element>BUNDLE</element>
+                                    <limits>
+                                        <limit>
+                                            <counter>COMPLEXITY</counter>
+                                            <value>COVEREDRATIO</value>
+                                            <minimum>${jacoco.complexityRatio}</minimum>
+                                        </limit>
+                                        <limit>
+                                            <counter>CLASS</counter>
+                                            <value>COVEREDRATIO</value>
+                                            <minimum>${jacoco.classRatio}</minimum>
+                                        </limit>
+                                        <limit>
+                                            <counter>METHOD</counter>
+                                            <value>COVEREDRATIO</value>
+                                            <minimum>${jacoco.methodRatio}</minimum>
+                                        </limit>
+                                        <limit>
+                                            <counter>BRANCH</counter>
+                                            <value>COVEREDRATIO</value>
+                                            <minimum>${jacoco.branchRatio}</minimum>
+                                        </limit>
+                                        <limit>
+                                            <counter>LINE</counter>
+                                            <value>COVEREDRATIO</value>
+                                            <minimum>${jacoco.lineRatio}</minimum>
+                                        </limit>
+                                        <limit>
+                                            <counter>INSTRUCTION</counter>
+                                            <value>COVEREDRATIO</value>
+                                            <minimum>${jacoco.instructionRatio}</minimum>
+                                        </limit>
+                                    </limits>
+                                </rule>
+                            </rules>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>jacoco-site</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>report</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build> 
+    <distributionManagement>
+        <repository>
+            <id>central</id>
+            <name>Artifactory master libs-release publisher (USA)</name>
+            <url>http://bin.hotels.com/artifactory/libs-release-local</url>
+        </repository>
+        <snapshotRepository>
+            <id>snapshots</id>
+            <name>Artifactory master libs-snapshot publisher (USA)</name>
+            <url>http://bin.hotels.com/artifactory/libs-snapshot-local</url>
+        </snapshotRepository>
+        <!-- default setting for project site uploads -->
+        <site>
+            <id>dev-docs.aws-hotels.com</id>
+            <url>scp://devdocs.hcom/var/www/html/</url>
+        </site>
+    </distributionManagement>   
+    <scm>
+        <connection>scm:git:http://stash.hcom/scm/mob/heat-testframeworkcore.git</connection>
+        <developerConnection>scm:git:http://stash.hcom/scm/mob/heat-testframeworkcore.git</developerConnection>
+    </scm>    
+</project>

@@ -1,0 +1,26 @@
+{
+    "testSuite": {
+        "generalSettings": {
+            "suiteName": "E2E flow test",
+            "flowMode": "true"
+        },
+        "testCases": [{
+            "testName": "E2EFlow test",
+            "e2eFlowSteps": [{
+                "objectName": "1st step",
+                "webappName": "MAS",
+                "httpMethod": "GET",
+                "url": "asdfg",
+                "outputParams": {
+                    "guid": "cookie"
+                }
+            },
+            {
+                "objectName": "2nd step",
+                "webappName": "MAS",
+                "httpMethod": "GET",
+                "url": "asdfh"
+            }]
+        }]
+    }
+}

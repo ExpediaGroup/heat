@@ -1,0 +1,22 @@
+Expedia Inc.
+Copyright (C) 2015-2017 Expedia Inc.
+
+This product includes software developed by Expedia Inc. licensed under the Apache License, Version 2.0.
+
+This product includes logback-classic (https://logback.qos.ch) dual-licensed under the EPL v1.0 and the LGPL 2.1
+
+This product includes rest-assured (http://rest-assured.io/) licensed under the Apache License, Version 2.0
+
+This product includes powermock-api-mockito (http://powermock.github.io/) licensed under the Apache License, Version 2.0
+
+This product includes powermock-module-testng (http://powermock.github.io/) licensed under the Apache License, Version 2.0
+
+This product includes powermock-module-junit4 (http://powermock.github.io/) licensed under the Apache License, Version 2.0
+
+This product includes json-schema-validator (https://github.com/java-json-tools/json-schema-validator) 1.	dual-licensed under: - the Lesser General Public License (LGPL) version 3.0 or, at your option, any later version; The Apache Software License (ASL) version 2.0
+
+This product includes commons-io (https://commons.apache.org/proper/commons-io/) licensed under the Apache License, Version 2.0
+
+This product includes testng (http://testng.org) licensed under the Apache License, Version 2.0
+
+This product includes joda-time (http://www.joda.org/joda-time/) licensed under the Apache License, Version 2.0
