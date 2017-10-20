@@ -59,8 +59,6 @@
 
     </dependencies>
     <properties>
-        <maven.compiler.target>1.8</maven.compiler.target>
-        <maven.compiler.source>1.8</maven.compiler.source>
 
         <!-- Maven PMD Plugin -->
         <maven-pmd-plugin.version>3.1</maven-pmd-plugin.version>
@@ -79,6 +77,8 @@
         <jacoco.branchRatio>0</jacoco.branchRatio>
         <jacoco.complexityRatio>0</jacoco.complexityRatio>
         <jacoco.lineRatio>0</jacoco.lineRatio>
+
+        <jdk.version>1.8</jdk.version>
 
     </properties>
     <build>
@@ -184,15 +184,6 @@
                         </goals>
                     </execution>
                 </executions>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.7.0</version>
-                <configuration>
-                    <source>1.8</source>
-                    <target>1.8</target>
-                </configuration>
             </plugin>
         </plugins>
     </build>
