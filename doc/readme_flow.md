@@ -64,7 +64,7 @@ For this reason the structure of **"testCases"** attribute changes, as shown in 
             "webappName": "GMAPS_GEOCODE",
             "httpMethod": "GET",
             "url": "/json",
-            "testName": "SRLE call channel ANDROID number 2",
+            "testName": "SVC call channel ANDROID number 2",
             "queryParameters": {
               "address": "${getStep(1).getOutputParam(origin_addresses)}", 
               "key": "${preload[GEOCODE_API_KEY]}"
