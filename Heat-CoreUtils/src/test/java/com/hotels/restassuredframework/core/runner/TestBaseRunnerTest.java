@@ -34,10 +34,10 @@ public class TestBaseRunnerTest {
     public void setUp() {
         underTest = new TestBaseRunner();
         underTest.beforeTestSuite("envPropFilePath", "webappName", null);
-        underTest.beforeTestCase("/testCases/listingEndpoint/ListingHcom_Compare.json", "staging1,MILAN,PROD", null);
+        underTest.beforeTestCase("/testCases/path/filename.json", "env1,env2,env3", null);
     }
 
-    @Test (enabled = false)
+    @Test (enabled = true)
     public void isTestSkippableTest() {
         /*
          *  Correct usage of system parameters
@@ -45,26 +45,28 @@ public class TestBaseRunnerTest {
 
         //  No parameters
         System.clearProperty(EnvironmentHandler.SYS_PROP_HEAT_TEST);
+        System.setProperty("environment", "env1");
         TestSuiteHandler.getInstance().getEnvironmentHandler().reloadSysTestIds();
+        TestSuiteHandler.getInstance().getEnvironmentHandler().reloadSysEnv();
 
-        Assert.assertFalse(underTest.isTestCaseSkippable("suiteName0", "001", "SRLE", "http://searchresultlistingedge.staging.hcom/srle"));
+        Assert.assertFalse(underTest.isTestCaseSkippable("suiteName0", "001", "SVC_NAME", "http://my.service.com/svc"));
 
         //  Only TestSuite
         System.setProperty(EnvironmentHandler.SYS_PROP_HEAT_TEST, "suiteName1");
         TestSuiteHandler.getInstance().getEnvironmentHandler().reloadSysTestIds();
 
-        Assert.assertFalse(underTest.isTestCaseSkippable("suiteName1", "001", "SRLE", "http://searchresultlistingedge.staging.hcom/srle"));
-        Assert.assertTrue(underTest.isTestCaseSkippable("suiteNameXXX", "001", "SRLE", "http://searchresultlistingedge.staging.hcom/srle"));
+        Assert.assertFalse(underTest.isTestCaseSkippable("suiteName1", "001", "SVC_NAME", "http://my.service.com/svc"));
+        Assert.assertTrue(underTest.isTestCaseSkippable("suiteNameXXX", "001", "SVC_NAME", "http://my.service.com/svc"));
 
 
         //  TestId and Suite combinations
         System.setProperty(EnvironmentHandler.SYS_PROP_HEAT_TEST, "test_suite_name5" + TestBaseRunner.TESTCASE_ID_SEPARATOR + "001");
         TestSuiteHandler.getInstance().getEnvironmentHandler().reloadSysTestIds();
 
-        Assert.assertTrue(underTest.isTestCaseSkippable("test_suite_nameXXX", "001", "SRLE", "http://searchresultlistingedge.staging.hcom/srle"));
-        Assert.assertTrue(underTest.isTestCaseSkippable("test_suite_nameXXX", "002", "SRLE", "http://searchresultlistingedge.staging.hcom/srle"));
-        Assert.assertFalse(underTest.isTestCaseSkippable("test_suite_name5", "001", "SRLE", "http://searchresultlistingedge.staging.hcom/srle"));
-        Assert.assertTrue(underTest.isTestCaseSkippable("test_suite_name5", "002", "SRLE", "http://searchresultlistingedge.staging.hcom/srle"));
+        Assert.assertTrue(underTest.isTestCaseSkippable("test_suite_nameXXX", "001", "SVC_NAME", "http://my.service.com/svc"));
+        Assert.assertTrue(underTest.isTestCaseSkippable("test_suite_nameXXX", "002", "SVC_NAME", "http://my.service.com/svc"));
+        Assert.assertFalse(underTest.isTestCaseSkippable("test_suite_name5", "001", "SVC_NAME", "http://my.service.com/svc"));
+        Assert.assertTrue(underTest.isTestCaseSkippable("test_suite_name5", "002", "SVC_NAME", "http://my.service.com/svc"));
 
 
         /*
@@ -75,9 +77,9 @@ public class TestBaseRunnerTest {
         System.setProperty(EnvironmentHandler.SYS_PROP_HEAT_TEST, "suiteName1,suiteName2,suiteName3");
         TestSuiteHandler.getInstance().getEnvironmentHandler().reloadSysTestIds();
 
-        Assert.assertFalse(underTest.isTestCaseSkippable("suiteName1", "001", "SRLE", "http://searchresultlistingedge.staging.hcom/srle"));
-        Assert.assertFalse(underTest.isTestCaseSkippable("suiteName2", "002", "SRLE", "http://searchresultlistingedge.staging.hcom/srle"));
-        Assert.assertTrue(underTest.isTestCaseSkippable("suiteNameXXX", "003", "SRLE", "http://searchresultlistingedge.staging.hcom/srle"));
+        Assert.assertFalse(underTest.isTestCaseSkippable("suiteName1", "001", "SVC_NAME", "http://my.service.com/svc"));
+        Assert.assertFalse(underTest.isTestCaseSkippable("suiteName2", "002", "SVC_NAME", "http://my.service.com/svc"));
+        Assert.assertTrue(underTest.isTestCaseSkippable("suiteNameXXX", "003", "SVC_NAME", "http://my.service.com/svc"));
 
         //  TestId and Suite combinations
         System.setProperty(EnvironmentHandler.SYS_PROP_HEAT_TEST,
@@ -87,14 +89,14 @@ public class TestBaseRunnerTest {
                 + "test_suite_name7");
         TestSuiteHandler.getInstance().getEnvironmentHandler().reloadSysTestIds();
 
-        Assert.assertTrue(underTest.isTestCaseSkippable("test_suite_nameXXX", "001", "SRLE", "http://searchresultlistingedge.staging.hcom/srle"));
-        Assert.assertTrue(underTest.isTestCaseSkippable("test_suite_nameXXX", "002", "SRLE", "http://searchresultlistingedge.staging.hcom/srle"));
-        Assert.assertTrue(underTest.isTestCaseSkippable("test_suite_name5", "003", "SRLE", "http://searchresultlistingedge.staging.hcom/srle"));
-        Assert.assertTrue(underTest.isTestCaseSkippable("test_suite_name6", "002", "SRLE", "http://searchresultlistingedge.staging.hcom/srle"));
-        Assert.assertFalse(underTest.isTestCaseSkippable("test_suite_name5", "001", "SRLE", "http://searchresultlistingedge.staging.hcom/srle"));
-        Assert.assertFalse(underTest.isTestCaseSkippable("test_suite_name5", "002", "SRLE", "http://searchresultlistingedge.staging.hcom/srle"));
-        Assert.assertFalse(underTest.isTestCaseSkippable("test_suite_name6", "001", "SRLE", "http://searchresultlistingedge.staging.hcom/srle"));
-        Assert.assertFalse(underTest.isTestCaseSkippable("test_suite_name7", "003", "SRLE", "http://searchresultlistingedge.staging.hcom/srle"));
+        Assert.assertTrue(underTest.isTestCaseSkippable("test_suite_nameXXX", "001", "SVC_NAME", "http://my.service.com/svc"));
+        Assert.assertTrue(underTest.isTestCaseSkippable("test_suite_nameXXX", "002", "SVC_NAME", "http://my.service.com/svc"));
+        Assert.assertTrue(underTest.isTestCaseSkippable("test_suite_name5", "003", "SVC_NAME", "http://my.service.com/svc"));
+        Assert.assertTrue(underTest.isTestCaseSkippable("test_suite_name6", "002", "SVC_NAME", "http://my.service.com/svc"));
+        Assert.assertFalse(underTest.isTestCaseSkippable("test_suite_name5", "001", "SVC_NAME", "http://my.service.com/svc"));
+        Assert.assertFalse(underTest.isTestCaseSkippable("test_suite_name5", "002", "SVC_NAME", "http://my.service.com/svc"));
+        Assert.assertFalse(underTest.isTestCaseSkippable("test_suite_name6", "001", "SVC_NAME", "http://my.service.com/svc"));
+        Assert.assertFalse(underTest.isTestCaseSkippable("test_suite_name7", "003", "SVC_NAME", "http://my.service.com/svc"));
 
 
         //  TestId and Suite combinations WITH spaces and upper/lower cases
@@ -105,23 +107,23 @@ public class TestBaseRunnerTest {
                 + "   TEST_suite_name7 ");
         TestSuiteHandler.getInstance().getEnvironmentHandler().reloadSysTestIds();
 
-        Assert.assertTrue(underTest.isTestCaseSkippable("test_suite_nameXXX", "001", "SRLE", "http://searchresultlistingedge.staging.hcom/srle"));
-        Assert.assertTrue(underTest.isTestCaseSkippable("test_suite_nameXXX", "002", "SRLE", "http://searchresultlistingedge.staging.hcom/srle"));
-        Assert.assertTrue(underTest.isTestCaseSkippable("test_suite_name5", "003", "SRLE", "http://searchresultlistingedge.staging.hcom/srle"));
-        Assert.assertTrue(underTest.isTestCaseSkippable("test_suite_name6", "002", "SRLE", "http://searchresultlistingedge.staging.hcom/srle"));
-        Assert.assertFalse(underTest.isTestCaseSkippable("test_suite_name5", "001", "SRLE", "http://searchresultlistingedge.staging.hcom/srle"));
-        Assert.assertFalse(underTest.isTestCaseSkippable("test_suite_name5", "002", "SRLE", "http://searchresultlistingedge.staging.hcom/srle"));
-        Assert.assertFalse(underTest.isTestCaseSkippable("test_suite_name6", "001", "SRLE", "http://searchresultlistingedge.staging.hcom/srle"));
-        Assert.assertFalse(underTest.isTestCaseSkippable("test_suite_name7", "003", "SRLE", "http://searchresultlistingedge.staging.hcom/srle"));
+        Assert.assertTrue(underTest.isTestCaseSkippable("test_suite_nameXXX", "001", "SVC_NAME", "http://my.service.com/svc"));
+        Assert.assertTrue(underTest.isTestCaseSkippable("test_suite_nameXXX", "002", "SVC_NAME", "http://my.service.com/svc"));
+        Assert.assertTrue(underTest.isTestCaseSkippable("test_suite_name5", "003", "SVC_NAME", "http://my.service.com/svc"));
+        Assert.assertTrue(underTest.isTestCaseSkippable("test_suite_name6", "002", "SVC_NAME", "http://my.service.com/svc"));
+        Assert.assertFalse(underTest.isTestCaseSkippable("test_suite_name5", "001", "SVC_NAME", "http://my.service.com/svc"));
+        Assert.assertFalse(underTest.isTestCaseSkippable("test_suite_name5", "002", "SVC_NAME", "http://my.service.com/svc"));
+        Assert.assertFalse(underTest.isTestCaseSkippable("test_suite_name6", "001", "SVC_NAME", "http://my.service.com/svc"));
+        Assert.assertFalse(underTest.isTestCaseSkippable("test_suite_name7", "003", "SVC_NAME", "http://my.service.com/svc"));
 
         /*
          *   Missing Common params
          */
-        Assert.assertTrue(underTest.isTestCaseSkippable("test_suite_nameXXX", "001", null, "http://searchresultlistingedge.staging.hcom/srle"));
-        Assert.assertTrue(underTest.isTestCaseSkippable("test_suite_nameXXX", "001", "SRLE", null));
+        Assert.assertTrue(underTest.isTestCaseSkippable("test_suite_nameXXX", "001", null, "http://my.service.com/svc"));
+        Assert.assertTrue(underTest.isTestCaseSkippable("test_suite_nameXXX", "001", "SVC_NAME", null));
         Assert.assertTrue(underTest.isTestCaseSkippable("test_suite_nameXXX", "001", null, null));
         underTest.setInputJsonPath(null);
-        Assert.assertTrue(underTest.isTestCaseSkippable("test_suite_nameXXX", "001", "SRLE", "http://searchresultlistingedge.staging.hcom/srle"));
+        Assert.assertTrue(underTest.isTestCaseSkippable("test_suite_nameXXX", "001", "SVC_NAME", "http://my.service.com/svc"));
     }
 
 

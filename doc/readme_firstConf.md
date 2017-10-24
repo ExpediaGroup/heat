@@ -64,7 +64,7 @@ The other part to modify is in the 'properties' section:
 where we have to modify:
 
 *  **webappUnderTest** that is a custom name to identify the service under test. It is not important the nature of this name, it is only an ID, but it is used all over the project.
-*  **defaultEnvironment** that is the ID of the environment the test will consider as default (you will have the chance to change it by [command line](commandline.md), but if you don't this will be the default one)
+*  **defaultEnvironment** that is the ID of the environment the test will consider as default (you will have the chance to change it by [command line](readme_commandLine.md), but if you don't this will be the default one)
 
 So, let's assume that we want to identify the service under test with the name 'GMAPS_DISTANCE' and that our default environment is 'environment1'
 

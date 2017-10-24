@@ -146,6 +146,10 @@ public final class EnvironmentHandler {
         this.heatTestPropertyList = testIds2List(System.getProperty(SYS_PROP_HEAT_TEST));
     }
 
+    public void reloadSysEnv() {
+        this.environmentUnderTest = System.getProperty("environment", DEFAULT_ENVIRONMENT);
+    }
+
     public void setPh(PropertyHandler ph) {
         this.ph = ph;
     }

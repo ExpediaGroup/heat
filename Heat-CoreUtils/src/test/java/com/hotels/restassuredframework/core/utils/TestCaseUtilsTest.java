@@ -36,9 +36,9 @@ public class TestCaseUtilsTest {
     public void setUp() {
         this.underTest = new TestCaseUtils();
 
-        System.setProperty("environment", "staging1");
+        System.setProperty("environment", "env1");
         EnvironmentHandler eh = new EnvironmentHandler("envPropFilePath");
-        eh.setEnabledEnvironments("staging1,MILAN,PROD");
+        eh.setEnabledEnvironments("env1,env2,env3");
 
         TestSuiteHandler.getInstance().setEnvironmentHandler(eh);
     }
