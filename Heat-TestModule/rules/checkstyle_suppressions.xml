@@ -1,0 +1,19 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suppressions PUBLIC "-//Puppy Crawl//DTD Suppressions 1.1//EN" "http://www.puppycrawl.com/dtds/suppressions_1_1.dtd">
+<suppressions>
+  <!-- relax rules in unit tests, we need less docs and magic numbers are commonplace in tests -->
+  <suppress checks="JavadocMethod|IllegalInstantiation|IllegalThrows|MagicNumber|MethodLength|ParameterNumber" files=".*Mock.*java|.*Test\.java|.*IT\.java" />
+  <!-- relax rules in package info files, they are not real classes -->
+  <suppress checks="RegexpHeader" files=".*package-info.java"/>
+  <!-- relax rules for project specific classes -->
+  <!-- relax rules for aop advices -->
+  <suppress checks="IllegalThrows" files=".*Aspect.java" />
+  <!-- relax rules for aop advice test -->
+  <suppress checks="EmptyBlock" files=".*AspectTest.java"/>
+  <!-- relax rules for .class, .properties, .xml, .htm -->
+  <suppress checks="." files=".*\.class|.*\.properties|.*\.xml|.*\.feature|.*\.json|.*\.yml|.*\.conf|.*\.htm"/>
+  <suppress checks="." files="[\\/]target[\\/]java-gen[\\/]"/>
+  <suppress checks="." files="AbstractForm.java"/>
+  <!-- relax rules for spring java configuration classes  -->
+  <suppress checks="HideUtilityClassConstructor" files="PropertySourceConfiguration.java"/>
+</suppressions>

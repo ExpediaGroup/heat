@@ -1,0 +1,84 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "type": "object",
+  "properties": {
+    "destination_addresses": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "origin_addresses": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "rows": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "elements": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "distance": {
+                  "type": "object",
+                  "properties": {
+                    "text": {
+                      "type": "string"
+                    },
+                    "value": {
+                      "type": "integer"
+                    }
+                  },
+                  "required": [
+                    "text",
+                    "value"
+                  ]
+                },
+                "duration": {
+                  "type": "object",
+                  "properties": {
+                    "text": {
+                      "type": "string"
+                    },
+                    "value": {
+                      "type": "integer"
+                    }
+                  },
+                  "required": [
+                    "text",
+                    "value"
+                  ]
+                },
+                "status": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "distance",
+                "duration",
+                "status"
+              ]
+            }
+          }
+        },
+        "required": [
+          "elements"
+        ]
+      }
+    },
+    "status": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "destination_addresses",
+    "origin_addresses",
+    "rows",
+    "status"
+  ]
+}

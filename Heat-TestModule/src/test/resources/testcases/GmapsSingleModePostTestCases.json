@@ -1,0 +1,207 @@
+{
+    "testSuite": {
+        "generalSettings": {
+            "httpMethod": "POST",
+            "suiteDesc":"Example Single Mode Tests with POST"
+        },
+        "preloadVariables": {
+          "PRELOAD_COMMENT":"PIPPO",
+          "PRELOAD_DELIVERY":"${TODAY+101_YYYY-MM-dd}"
+        },
+        "testCases": [
+            {
+                "testId": "001",
+                "testName": "single mode test for new heat #1 - no placeholders in post body",
+                "url": "/post",
+                "queryParameters": {
+                  "postBody": "{\"custname\":\"pippo\",\"custemail\":\"pippo@test.test\",\"delivery\":\"12:45\",\"size\":\"large\",\"topping\": [\"bacon\",\"cheese\"],\"comment\":\"pizza delivery\"}"
+                },
+                "headers": {
+                    "content-type": "application/json"
+                },
+                "expects": {
+                    "responseCode": "200",
+                    "fieldCheck": [
+                        {
+                            "description": "data has to be the same as the input",
+                            "actualValue": "${path[data]}",
+                            "expectedValue": "{\"custname\":\"pippo\",\"custemail\":\"pippo@test.test\",\"delivery\":\"12:45\",\"size\":\"large\",\"topping\": [\"bacon\",\"cheese\"],\"comment\":\"pizza delivery\"}"
+                        },
+                      {
+                            "description":"json fields in output: comment",
+                            "actualValue":"${path[json.comment]}",
+                            "expectedValue":"pizza delivery"
+                      },
+                      {
+                            "description":"json fields in output: delivery",
+                            "actualValue":"${path[json.delivery]}",
+                            "expectedValue":"12:45"
+                      },
+                      {
+                        "description":"json fields in output: topping size",
+                        "actualValue":"${path[json.topping.size()]}",
+                        "expectedValue":"2"
+                      }
+                    ],
+                    "headerCheck": {
+                        "Content-Type": "application/json"
+                    }
+                }
+            },
+            {
+            "testId": "002",
+            "testName": "single mode test for new heat #2 - only one placeholder in post body",
+            "url": "/post",
+            "queryParameters": {
+              "postBody": "{\"custname\":\"pippo\",\"custemail\":\"pippo@test.test\",\"delivery\":\"12:45\",\"size\":\"large\",\"topping\": [\"bacon\",\"cheese\"],\"comment\":\"${preload[PRELOAD_COMMENT]}\"}"
+            },
+            "headers": {
+              "content-type": "application/json"
+            },
+            "expects": {
+              "responseCode": "200",
+              "fieldCheck": [
+                {
+                  "description": "data has to be the same as the input",
+                  "actualValue": "${path[data]}",
+                  "expectedValue": "{\"custname\":\"pippo\",\"custemail\":\"pippo@test.test\",\"delivery\":\"12:45\",\"size\":\"large\",\"topping\": [\"bacon\",\"cheese\"],\"comment\":\"PIPPO\"}"
+                },
+                {
+                  "description":"json fields in output: comment",
+                  "actualValue":"${path[json.comment]}",
+                  "expectedValue":"PIPPO"
+                },
+                {
+                  "description":"json fields in output: delivery",
+                  "actualValue":"${path[json.delivery]}",
+                  "expectedValue":"12:45"
+                },
+                {
+                  "description":"json fields in output: topping size",
+                  "actualValue":"${path[json.topping.size()]}",
+                  "expectedValue":"2"
+                }
+              ],
+              "headerCheck": {
+                "Content-Type": "application/json"
+              }
+            }
+          },
+            {
+            "testId": "003",
+            "testName": "single mode test for new heat #3 - only one placeholder in post body",
+            "url": "/post",
+            "queryParameters": {
+              "postBody": "{\"custname\":\"pippo\",\"custemail\":\"pippo@test.test\",\"delivery\":\"12:45\",\"size\":\"large\",\"topping\": [\"bacon\",\"cheese\"],\"comment\":\"${preload[PRELOAD_COMMENT]}\"}"
+            },
+            "headers": {
+              "content-type": "application/json"
+            },
+            "expects": {
+              "responseCode": "200",
+              "fieldCheck": [
+                {
+                  "description": "data has to be the same as the input",
+                  "actualValue": "${path[data]}",
+                  "expectedValue": "{\"custname\":\"pippo\",\"custemail\":\"pippo@test.test\",\"delivery\":\"12:45\",\"size\":\"large\",\"topping\": [\"bacon\",\"cheese\"],\"comment\":\"${preload[PRELOAD_COMMENT]}\"}"
+                },
+                {
+                  "description":"json fields in output: comment",
+                  "actualValue":"${path[json.comment]}",
+                  "expectedValue":"${preload[PRELOAD_COMMENT]}"
+                },
+                {
+                  "description":"json fields in output: delivery",
+                  "actualValue":"${path[json.delivery]}",
+                  "expectedValue":"12:45"
+                },
+                {
+                  "description":"json fields in output: topping size",
+                  "actualValue":"${path[json.topping.size()]}",
+                  "expectedValue":"2"
+                }
+              ],
+              "headerCheck": {
+                "Content-Type": "application/json"
+              }
+            }
+          },
+            {
+            "testId": "004",
+            "testName": "single mode test for new heat #4 - two placeholders in post body",
+            "url": "/post",
+            "queryParameters": {
+              "postBody": "{\"custname\":\"pippo\",\"custemail\":\"pippo@test.test\",\"delivery\":\"${preload[PRELOAD_DELIVERY]}\",\"size\":\"large\",\"topping\": [\"bacon\",\"cheese\"],\"comment\":\"${preload[PRELOAD_COMMENT]}\"}"
+            },
+            "headers": {
+              "content-type": "application/json"
+            },
+            "expects": {
+              "responseCode": "200",
+              "fieldCheck": [
+                {
+                  "description": "data has to be the same as the input",
+                  "actualValue": "${path[data]}",
+                  "expectedValue": "{\"custname\":\"pippo\",\"custemail\":\"pippo@test.test\",\"delivery\":\"${preload[PRELOAD_DELIVERY]}\",\"size\":\"large\",\"topping\": [\"bacon\",\"cheese\"],\"comment\":\"${preload[PRELOAD_COMMENT]}\"}"
+                },
+                {
+                  "description":"json fields in output: comment",
+                  "actualValue":"${path[json.comment]}",
+                  "expectedValue":"${preload[PRELOAD_COMMENT]}"
+                },
+                {
+                  "description":"json fields in output: delivery",
+                  "actualValue":"${path[json.delivery]}",
+                  "expectedValue":"${preload[PRELOAD_DELIVERY]}"
+                },
+                {
+                  "description":"json fields in output: topping size",
+                  "actualValue":"${path[json.topping.size()]}",
+                  "expectedValue":"2"
+                }
+              ],
+              "headerCheck": {
+                "Content-Type": "application/json"
+              }
+            }
+          },
+            {
+            "testId": "005",
+            "testName": "single mode test for new heat #5 - multipart body",
+            "url": "/post",
+            "queryParameters": {
+              "parts": [
+                {
+                  "name": "simpleField",
+                  "value": "simpleValue"
+                },
+                {
+                  "name": "fileToUpload",
+                  "file": "/afile.txt"
+                }
+              ]
+            },
+            "headers": {
+              "Content-Type": "multipart/form-data"
+            },
+            "expects": {
+              "responseCode": "200",
+              "fieldCheck": [
+                {
+                  "description":"json fields in output: file content",
+                  "actualValue":"${path[files.fileToUpload]}",
+                  "expectedValue":"test file\nin two lines\n@#\u00b6"
+                },
+                {
+                  "description":"json fields in output: form field value",
+                  "actualValue":"${path[form.simpleField]}",
+                  "expectedValue":"simpleValue"
+                }
+              ],
+              "headerCheck": {
+              }
+            }
+          }
+        ]
+    }
+}

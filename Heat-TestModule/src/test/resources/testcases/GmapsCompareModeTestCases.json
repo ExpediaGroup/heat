@@ -1,0 +1,62 @@
+{
+    "testSuite": {
+        "generalSettings": {
+            "httpMethod": "GET",
+            "suiteDesc":"Generic Compare Test Suite"
+        },
+        "preloadVariables": {
+            "CHECK_IN":"${TODAY+100_YYYY-MM-dd}",
+            "CHECK_OUT":"${TODAY+101_YYYY-MM-dd}",
+            "outputRspFormat":"json",
+            "DISTANCE_API_KEY":"AIzaSyDuJvGUBixcL3uzS4dDVtDE-jex24F0BFk",
+            "GEOCODE_API_KEY":"AIzaSyBHOMI_1PF4ag943jCgIavFtGYN5lJn61I"
+        },
+        "testCases": [
+            {
+                "testId": "001",
+		"testName": "Generic Compare for gmaps",
+                "objectsToCompare": [
+                    {
+                        "objectName": "gmaps distance response",
+                        "webappName": "GMAPS_DISTANCE",
+                        "httpMethod": "GET",
+                        "url": "/${preload[outputRspFormat]}",
+                        "queryParameters": {
+                            "units": "meters",
+                            "origins":"via Atenisio Carducci 8, Taranto Italia",
+                            "destinations":"via dei Giuochi Istmici 40, Roma Italia",
+                            "key":"${preload[DISTANCE_API_KEY]}"
+                        },
+                        "headers": {
+                            "Cache-Control": "no-cache"
+                        }
+                    },
+                    {
+                        "objectName": "geo code response",
+                        "webappName": "GMAPS_GEOCODE",
+                        "httpMethod": "GET",
+                        "url": "/${preload[outputRspFormat]}",
+                        "queryParameters": {
+                            "address": "via Atenisio Carducci 8, Taranto Italia",
+                            "key": "${preload[GEOCODE_API_KEY]}"
+                        }
+                    }
+                ],
+                "expects": [
+                    {
+                        "description": "check on addresses",
+                        "operation": "=",
+                        "actualValue": {
+                            "referringObjectName": "gmaps distance response",
+                            "actualValue": "${path[origin_addresses[0]]}"
+                        },
+                        "expectedValue": {
+                            "referringObjectName": "geo code response",
+                            "actualValue": "${path[results[0].formatted_address]}"
+                        }
+                    }
+                ]
+            }
+        ]
+    }
+}

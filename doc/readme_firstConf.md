@@ -11,10 +11,12 @@ In this section, we will show you how to configure your HEAT Framework for the f
 Let's start assuming that each test module is "dedicated" to test a specific service, obviously it can involve other services for integration purposes, but the real target of the module has to be only one service. So please, avoid to create monolithic test modules with more than one target, but take care treating your tests with a 'microservice' approach.
 
 
-First of all, you have to clone the following "Heat example test module" so that we can customize and use it :
+First of all, you have to copy the "Heat example test module" so that you can customize and use it.
+
+The example module is "Heat-TestModule" (under this project).
 
 ```
->> git clone http://<testModuleRepo> testModule
+>> cp -rf Heat-TestModule testModule
 >> cd testModule/
 >> ll
 total 16
@@ -39,7 +41,7 @@ We have to customise the dependency section and the properties one.
         <dependency>
             <groupId>hcom.funcTest</groupId>
             <artifactId>Heat-Bundle</artifactId>
-            <version>1.0.14</version>
+            <version>1.0</version>
         </dependency>
         <!--<dependency>
             <groupId>hcom.funcTest</groupId>
