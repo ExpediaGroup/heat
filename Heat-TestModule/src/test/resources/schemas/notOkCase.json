@@ -1,0 +1,31 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "type": "object",
+  "properties": {
+    "destination_addresses": {
+      "type": "array",
+      "items": {}
+    },
+    "error_message": {
+      "type": "string"
+    },
+    "origin_addresses": {
+      "type": "array",
+      "items": {}
+    },
+    "rows": {
+      "type": "array",
+      "items": {}
+    },
+    "status": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "destination_addresses",
+    "error_message",
+    "origin_addresses",
+    "rows",
+    "status"
+  ]
+}

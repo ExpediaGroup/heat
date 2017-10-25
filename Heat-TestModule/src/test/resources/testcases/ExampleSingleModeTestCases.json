@@ -1,0 +1,57 @@
+{
+    "testSuite":
+            {
+                "generalSettings": {
+                    "httpMethod": "GET"
+                },
+                "preloadVariables": {
+                    "APPID": "81729a81d49d2ec5d46ae43b602f462c"
+                },
+                "jsonSchemas": {
+                    "correctResponse": "schemas/okCase.json",
+                    "errorResponse": "schemas/notOkCase.json"
+                },
+                "testCases": [
+                    {
+                        "testId":"001",
+                        "testName": "TC1 - happy path",
+                        "url": "/weather",
+                        "queryParameters": {
+                            "q":"London",
+                            "APPID":"${preload[APPID]}"
+                        },
+                        "headers": {},
+                        "expects": {
+                            "responseCode": "200",
+                            "jsonSchemaToCheck": "correctResponse",
+                            "fieldCheck": [
+                                {
+                                    "description": "the city in output is London",
+                                    "actualValue": "${path[name]}",
+                                    "expectedValue": "London"
+                                },
+                                {
+                                    "description": "weather array size",
+                                    "actualValue": "${path[weather.size()]}",
+                                    "operation":">",
+                                    "expectedValue": "0"
+                                },
+                                {
+                                    "description": "London longitude",
+                                    "actualValue": "${path[coord.lon]}",
+                                    "expectedValue": "-0.13"
+                                },
+                                {
+                                    "description": "London latitude",
+                                    "actualValue": "${path[coord.lat]}",
+                                    "expectedValue": "51.51"
+                                }
+                            ],
+                            "headerCheck": {
+                                "Content-Type": "application/json; charset=utf-8"
+                            }
+                        }
+                    }
+                ]
+            }
+}
