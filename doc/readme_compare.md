@@ -13,14 +13,14 @@ In this way, you'll be able to perform two different requests and to make compar
 <a name="testngXml"></a>
 ### testng.xml
 If you want to execute your tests in "Compare Mode", you have to specify it in the **testng.xml** file (documentation [here](readme_singleMode.md)).
-The class that, in the core module, is dedicated to handle this running mode is **com.hotels.restassuredframework.core.runner.CompareMode**.
+The class that, in the core module, is dedicated to handle this running mode is **com.hotels.heat.core.runner.CompareMode**.
 
 ```
     <test name="GOOGLE_COMPARE_ENV1" enabled="true">
         <parameter name="inputJsonPath" value="/testCases/GmapsCompareModeTestCases.json"/>
         <parameter name="enabledEnvironments" value="environment1"/>
         <classes>
-            <class name="com.hotels.restassuredframework.core.runner.CompareMode"/>
+            <class name="com.hotels.heat.core.runner.CompareMode"/>
         </classes>
     </test>
 ```

@@ -69,8 +69,8 @@ The 'listeners' block is **untouchable** and it contains some core classes usefu
 ```
     <!-- Please do not touch this section: START -->
     <listeners>
-        <listener class-name="com.hotels.restassuredframework.core.listeners.CustomTestNgListener"/>
-        <listener class-name="com.hotels.restassuredframework.core.listeners.CustomJUnitReportListener" />
+        <listener class-name="com.hotels.heat.core.listeners.CustomTestNgListener"/>
+        <listener class-name="com.hotels.heat.core.listeners.CustomJUnitReportListener" />
     </listeners>
 ```
 There is also a section in which we define the path of the `environment.properties` file (if we like, we could change the name of the property file, but please take care to use consistent paths all over the project configuration):
@@ -85,7 +85,7 @@ After this general part, we can start writing the configuration for our first te
         <parameter name="inputJsonPath" value="/testCases/GmapsSingleModeTestCases.json"/>
         <parameter name="enabledEnvironments" value="environment1"/>
         <classes>
-            <class name="com.hotels.restassuredframework.core.runner.SingleMode"/>
+            <class name="com.hotels.heat.core.runner.SingleMode"/>
         </classes>
     </test>
 ```
@@ -95,7 +95,7 @@ We have to define the following fields:
 *  is test suite enabled? (`enabled="true"`) as we could write down some suites that we don't want to execute for some reasons
 *  the environment IDs for which the test suite is enabled to run (for example, when we test a booking form, it is reasonable not to enable the test in production environment but only in test ones). It is a list of IDs separated by commas.
 *  the path of the json input file with all the test cases of the suite (`inputJsonPath`). The root folder for these json files is `src/test/resources` so, in this example, the json input file complete path is `src/test/resources/testCases/GmapsSingleModeTestCases.json`
-*  The execution modality [SingleMode](readme_singleMode.md), [CompareMode](readme_compare.md) or [FlowMode](readme_flow.md) that in this case is `com.hotels.restassuredframework.core.runner.SingleMode` (it is the path of a class in the Heat Core Module)
+*  The execution modality [SingleMode](readme_singleMode.md), [CompareMode](readme_compare.md) or [FlowMode](readme_flow.md) that in this case is `com.hotels.heat.core.runner.SingleMode` (it is the path of a class in the Heat Core Module)
 
 Now that we have created the driver for our test suite, let's write down the json input file with all the specific test cases!
 
@@ -292,8 +292,8 @@ So, going back to the [example](#single-mode.example), and let's put all the inf
 
     <!-- Please do not touch this section: START -->
     <listeners>
-        <listener class-name="com.hotels.restassuredframework.core.listeners.CustomTestNgListener"/>
-        <listener class-name="com.hotels.restassuredframework.core.listeners.CustomJUnitReportListener" />
+        <listener class-name="com.hotels.heat.core.listeners.CustomTestNgListener"/>
+        <listener class-name="com.hotels.heat.core.listeners.CustomJUnitReportListener" />
     </listeners>
     <parameter name="envPropFilePath" value="environment.properties"/>
     <!-- Please do not touch this section: END -->
@@ -302,7 +302,7 @@ So, going back to the [example](#single-mode.example), and let's put all the inf
         <parameter name="inputJsonPath" value="/testCases/GmapsSingleModeTestCases.json"/>
         <parameter name="enabledEnvironments" value="environment1"/>
         <classes>
-            <class name="com.hotels.restassuredframework.core.runner.SingleMode"/>
+            <class name="com.hotels.heat.core.runner.SingleMode"/>
         </classes>
     </test>
     

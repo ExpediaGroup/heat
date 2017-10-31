@@ -1,5 +1,7 @@
 # HEAT - User Documentation
 
+Please, have a look here [code of conduct](code-of-conduct.md)
+
 <a name="table-of-contents"></a>
 ## Table of Contents
 * [WHY do we need a test framework](#why)
