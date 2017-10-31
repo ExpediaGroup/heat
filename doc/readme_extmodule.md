@@ -26,8 +26,8 @@ Therefore, besides the core placeholders (explained in the [placeholder section]
 <a name="initialConf"></a>
 ## Initial configuration
 
-Usually, the only suggested dependency to use HEAT is "Heat-Bundle", that includes all the useful dependencies for use or extend the framework. 
-Anyway, if you want use the minimal set of dependencies to define your own Placeholder, you could use the following subset of dependencies as an alternative to "Heat-Bundle":
+Usually, the only suggested dependency to use HEAT is "heat-bundle", that includes all the useful dependencies for use or extend the framework. 
+Anyway, if you want use the minimal set of dependencies to define your own Placeholder, you could use the following subset of dependencies as an alternative to "heat-bundle":
 
 ```xml
 <!-- my pom.xml --> 
@@ -35,12 +35,12 @@ Anyway, if you want use the minimal set of dependencies to define your own Place
     <dependencies>
         <dependency>
             <groupId>hcom.funcTest</groupId>
-            <artifactId>Heat-ModuleSupport</artifactId>
+            <artifactId>heat-module-support</artifactId>
             <version>1.0.X</version>
         </dependency>
         <dependency>
             <groupId>hcom.funcTest</groupId>
-            <artifactId>Heat-CoreUtils</artifactId>
+            <artifactId>heat-core-utils</artifactId>
             <version>1.0.X</version>
         </dependency>
     ...

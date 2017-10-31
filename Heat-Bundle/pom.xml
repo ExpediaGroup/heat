@@ -3,25 +3,25 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>com.hotels</groupId>
-        <artifactId>Heat-Core</artifactId>
-        <version>1.0.0</version>
+        <artifactId>heat-core</artifactId>
+        <version>1.0.0-SNAPSHOT</version>
     </parent>
-    <artifactId>Heat-Bundle</artifactId>
+    <artifactId>heat-bundle</artifactId>
 
     <dependencies>
         <dependency>
             <groupId>com.hotels</groupId>
-            <artifactId>Heat-CoreUtils</artifactId>
+            <artifactId>heat-core-utils</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>com.hotels</groupId>
-            <artifactId>Heat-Internal-Modules</artifactId>
+            <artifactId>heat-internal-modules</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>com.hotels</groupId>
-            <artifactId>Heat-ModuleSupport</artifactId>
+            <artifactId>heat-module-support</artifactId>
             <version>${project.version}</version>
         </dependency>
     </dependencies>

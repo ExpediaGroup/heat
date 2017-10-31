@@ -3,13 +3,13 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.hotels</groupId>
     <artifactId>Heat-Example-TestModule</artifactId>
-    <version>1.0.0</version>
+    <version>1.0.0-SNAPSHOT</version>
 
     <dependencies>
         <dependency>
             <groupId>com.hotels</groupId>
-            <artifactId>Heat-Bundle</artifactId>
-            <version>1.0.0</version>
+            <artifactId>heat-bundle</artifactId>
+            <version>1.0.0-SNAPSHOT</version>
         </dependency>
         <!--<dependency>
             <groupId>com.hotels</groupId>

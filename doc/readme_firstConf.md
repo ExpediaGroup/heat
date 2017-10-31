@@ -40,7 +40,7 @@ We have to customise the dependency section and the properties one.
     <dependencies>
         <dependency>
             <groupId>hcom.funcTest</groupId>
-            <artifactId>Heat-Bundle</artifactId>
+            <artifactId>heat-bundle</artifactId>
             <version>1.0</version>
         </dependency>
         <!--<dependency>
