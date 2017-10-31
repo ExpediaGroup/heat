@@ -3,9 +3,9 @@
     <artifactId>Heat-CoreUtils</artifactId>
 
     <parent>
-        <groupId>hcom.funcTest</groupId>
+        <groupId>com.hotels</groupId>
         <artifactId>Heat-Core</artifactId>
-        <version>1.0</version>
+        <version>1.0.0</version>
     </parent>
 
     <dependencies>
@@ -15,7 +15,7 @@
             <version>1.1.2</version>
         </dependency>
         <dependency>
-            <groupId>hcom.funcTest</groupId>
+            <groupId>com.hotels</groupId>
             <artifactId>Heat-ModuleSupport</artifactId>
             <version>${project.version}</version>
         </dependency>
