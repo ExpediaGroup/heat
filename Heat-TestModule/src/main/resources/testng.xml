@@ -4,8 +4,8 @@
 
     <!-- Please do not touch this section: START -->
     <listeners>
-        <listener class-name="com.hotels.restassuredframework.core.listeners.CustomTestNgListener"/>
-        <listener class-name="com.hotels.restassuredframework.core.listeners.CustomJUnitReportListener" />
+        <listener class-name="com.hotels.heat.core.listeners.CustomTestNgListener"/>
+        <listener class-name="com.hotels.heat.core.listeners.CustomJUnitReportListener" />
     </listeners>
     <parameter name="envPropFilePath" value="environment.properties"/>
     <!-- Please do not touch this section: END -->
@@ -14,7 +14,7 @@
         <parameter name="inputJsonPath" value="/testCases/ExampleSingleModeTestCases.json"/>
         <parameter name="enabledEnvironments" value="environment1,environment2"/>
         <classes>
-            <class name="com.hotels.restassuredframework.core.runner.SingleMode"/>
+            <class name="com.hotels.heat.core.runner.SingleMode"/>
         </classes>
     </test>
 
@@ -22,7 +22,7 @@
         <parameter name="inputJsonPath" value="/testCases/GmapsSingleModeTestCases.json"/>
         <parameter name="enabledEnvironments" value="environment1"/>
         <classes>
-            <class name="com.hotels.restassuredframework.core.runner.SingleMode"/>
+            <class name="com.hotels.heat.core.runner.SingleMode"/>
         </classes>
     </test>
 
@@ -30,7 +30,7 @@
         <parameter name="inputJsonPath" value="/testCases/GmapsSingleModeTestCases.json"/>
         <parameter name="enabledEnvironments" value="environment2"/>
         <classes>
-            <class name="com.hotels.restassuredframework.core.runner.SingleMode"/>
+            <class name="com.hotels.heat.core.runner.SingleMode"/>
         </classes>
     </test>
 
@@ -38,7 +38,7 @@
         <parameter name="inputJsonPath" value="/testCases/GmapsSingleModePostTestCases.json"/>
         <parameter name="enabledEnvironments" value="environment3"/>
         <classes>
-            <class name="com.hotels.restassuredframework.core.runner.SingleMode"/>
+            <class name="com.hotels.heat.core.runner.SingleMode"/>
         </classes>
     </test>
 
@@ -46,7 +46,7 @@
         <parameter name="inputJsonPath" value="/testCases/GmapFlowModeTestCases.json"/>
         <parameter name="enabledEnvironments" value="environment1"/>
         <classes>
-            <class name="com.hotels.restassuredframework.core.runner.FlowMode"/>
+            <class name="com.hotels.heat.core.runner.FlowMode"/>
         </classes>
     </test>
 
@@ -54,7 +54,7 @@
         <parameter name="inputJsonPath" value="/testCases/GmapsCompareModeTestCases.json"/>
         <parameter name="enabledEnvironments" value="environment1"/>
         <classes>
-            <class name="com.hotels.restassuredframework.core.runner.CompareMode"/>
+            <class name="com.hotels.heat.core.runner.CompareMode"/>
         </classes>
     </test>
 

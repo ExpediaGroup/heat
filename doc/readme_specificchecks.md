@@ -29,7 +29,7 @@ If you want to **skip the execution** for a given test case within the JSON inpu
 <a name="createAndRegister"></a>
 ## Create and register your SpecificCheck
 
-Your own specific check must extends the HEAT core abstract class **com.hotels.restassuredframework.core.heatspecificchecks.SpecificChecks** and can be placed wherever you prefer within your project.
+Your own specific check must extends the HEAT core abstract class **com.hotels.heat.core.heatspecificchecks.SpecificChecks** and can be placed wherever you prefer within your project.
 
 ```java
 public class ExampleSpecificChecks extends SpecificChecks {

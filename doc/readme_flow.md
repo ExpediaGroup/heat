@@ -14,14 +14,14 @@ In this way, you'll be able to perform sequential requests (each of which can ha
 <a name="testngXml"></a>
 ## testng.xml
 If you want to execute your test with the "Flow Mode", you have to specify it in the **testng.xml** file (documentation [here](readme_singleMode.md)).
-The class that, in the core module, is dedicated to handle this running mode is **com.hotels.restassuredframework.core.runner.FlowMode**.
+The class that, in the core module, is dedicated to handle this running mode is **com.hotels.heat.core.runner.FlowMode**.
 
 ```xml
     <test name="GOOGLE_FLOW_ENV1" enabled="true">
         <parameter name="inputJsonPath" value="/testCases/GmapFlowModeTestCases.json"/>
         <parameter name="enabledEnvironments" value="environment1"/>
         <classes>
-            <class name="com.hotels.restassuredframework.core.runner.FlowMode"/>
+            <class name="com.hotels.heat.core.runner.FlowMode"/>
         </classes>
     </test>
 ```

@@ -6,7 +6,7 @@
         <artifactId>Heat-Core</artifactId>
         <version>1.0</version>
     </parent>
-    
+
     <artifactId>Heat-Internal-Modules</artifactId>
     <packaging>jar</packaging>
     <properties>
@@ -16,7 +16,7 @@
         <main.basedir>${project.parent.basedir}</main.basedir>
         <checkstyle.basedir>${main.basedir}/Heat-CoreUtils/rules</checkstyle.basedir>
     </properties>
-    
+
     <dependencies>
         <dependency>
             <groupId>hcom.funcTest</groupId>
@@ -60,10 +60,10 @@
                 <version>0.7.5.201505241946</version>
                 <configuration>
                     <excludes>
-                        <exclude>com/hotels/restassuredframework/module/dateretrieving/DateHeatPlaceholderModule.class</exclude>
-                        <exclude>com/hotels/restassuredframework/module/dateretrieving/DateHeatPlaceholderModuleProvider.class</exclude>
-                        <exclude>com/hotels/restassuredframework/module/syspropretrieving/SysPropHeatPlaceholderModule.class</exclude>
-                        <exclude>com/hotels/restassuredframework/module/syspropretrieving/SysPropHeatModulePlaceholderProvider.class</exclude>
+                        <exclude>com/hotels/heat/module/dateretrieving/DateHeatPlaceholderModule.class</exclude>
+                        <exclude>com/hotels/heat/module/dateretrieving/DateHeatPlaceholderModuleProvider.class</exclude>
+                        <exclude>com/hotels/heat/module/syspropretrieving/SysPropHeatPlaceholderModule.class</exclude>
+                        <exclude>com/hotels/heat/module/syspropretrieving/SysPropHeatModulePlaceholderProvider.class</exclude>
                     </excludes>
                 </configuration>
                 <executions>
@@ -131,6 +131,6 @@
             </plugin>
         </plugins>
     </build>
-    
-    
+
+
 </project>
