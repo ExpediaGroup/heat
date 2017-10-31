@@ -19,10 +19,10 @@
     </scm>
 
     <modules>
-        <module>Heat-ModuleSupport</module>
-        <module>Heat-CoreUtils</module>
-        <module>Heat-Internal-Modules</module>
-        <module>Heat-Bundle</module>
+        <module>heat-module-support</module>
+        <module>heat-core-utils</module>
+        <module>heat-internal-modules</module>
+        <module>heat-bundle</module>
     </modules>
 
     <inceptionYear>2015</inceptionYear>

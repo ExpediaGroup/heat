@@ -14,7 +14,7 @@
         <maven.compiler.target>1.8</maven.compiler.target>
         <!-- Maven Checkstyle Plugin -->
         <main.basedir>${project.parent.basedir}</main.basedir>
-        <checkstyle.basedir>${main.basedir}/Heat-CoreUtils/rules</checkstyle.basedir>
+        <checkstyle.basedir>${main.basedir}/heat-core-utils/rules</checkstyle.basedir>
     </properties>
 
     <dependencies>
