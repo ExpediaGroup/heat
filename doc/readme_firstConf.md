@@ -39,12 +39,12 @@ We have to customise the dependency section and the properties one.
 ```xml
     <dependencies>
         <dependency>
-            <groupId>hcom.funcTest</groupId>
+            <groupId>com.hotels</groupId>
             <artifactId>heat-bundle</artifactId>
             <version>1.0</version>
         </dependency>
         <!--<dependency>
-            <groupId>hcom.funcTest</groupId>
+            <groupId>com.hotels</groupId>
             <artifactId>EXTERNAL MODULE</artifactId>
             <version>1.0</version>
         </dependency>-->

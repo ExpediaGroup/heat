@@ -34,12 +34,12 @@ Anyway, if you want use the minimal set of dependencies to define your own Place
 ...
     <dependencies>
         <dependency>
-            <groupId>hcom.funcTest</groupId>
+            <groupId>com.hotels</groupId>
             <artifactId>heat-module-support</artifactId>
             <version>1.0.X</version>
         </dependency>
         <dependency>
-            <groupId>hcom.funcTest</groupId>
+            <groupId>com.hotels</groupId>
             <artifactId>heat-core-utils</artifactId>
             <version>1.0.X</version>
         </dependency>
