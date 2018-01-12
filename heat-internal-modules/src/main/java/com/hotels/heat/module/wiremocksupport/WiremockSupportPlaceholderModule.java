@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2015-2017 Expedia Inc.
+ * Copyright (C) 2015-2018 Expedia Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,16 +15,19 @@
  */
 package com.hotels.heat.module.wiremocksupport;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import com.hotels.heat.core.dto.HeatTestDetails;
 import com.hotels.heat.core.heatmodules.HeatPlaceholderModule;
-import com.hotels.heat.module.syspropretrieving.SysPropHandler;
-import com.hotels.heat.module.syspropretrieving.SysPropHeatPlaceholderModule;
 
-public class WiremockSupportPlaceholderModule  implements HeatPlaceholderModule {
+/**
+ * Wiremock Support Placeholder Module.
+ */
+public final class WiremockSupportPlaceholderModule  implements HeatPlaceholderModule {
 
-    public static final String DEFAULT_PRELOADED_VALUE = "DEFAULT";
-    public static final String NEW_PLACEHOLDER = "PLACEHOLDER";
-    public static final String SYS_PROP_PLACEHOLDER = "${" + NEW_PLACEHOLDER; //${SysProp
+    public static final String WIREMOCK_PLACEHOLDER = "wiremock";
+    public static final String WIREMOCK_PROP_PLACEHOLDER = "${" + WIREMOCK_PLACEHOLDER; //${wiremock
     private static WiremockSupportPlaceholderModule wiremockSupportInstance;
 
     private WiremockSupportPlaceholderModule() {
