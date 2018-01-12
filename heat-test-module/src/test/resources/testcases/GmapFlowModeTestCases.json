@@ -212,6 +212,30 @@
             }
           }
         ]
+      },
+      {
+        "testId": "002",
+        "testName": "Flow Mode applying wiremock internal module logic",
+        "e2eFlowSteps": [
+          {
+            "objectName": "Find_Distance",
+            "testName": "Check wiremock requests",
+            "stepNumber": "1",
+            "beforeStep" : {
+              "WM_REQUEST" : "${wiremock[WM_INSTANCE].requests}"
+            },
+
+            "expects": {
+              "fieldCheck": [
+                {
+                  "description": "result response code = 200",
+                  "actualValue": "${WM_REQUEST.responseCode}",
+                  "expectedValue": "200"
+                }
+              ]
+            }
+          }
+        ]
       }
     ]
   }
