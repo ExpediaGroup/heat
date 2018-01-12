@@ -24,19 +24,20 @@ import com.hotels.heat.core.heatmodules.HeatPlaceholderModule;
 /**
  * Wiremock Support Placeholder Module.
  */
-public final class WiremockSupportPlaceholderModule  implements HeatPlaceholderModule {
+public final class WiremockSupportModule implements HeatPlaceholderModule {
 
+    public static final String DEFAULT_PRELOADED_VALUE = "DEFAULT";
     public static final String WIREMOCK_PLACEHOLDER = "wiremock";
     public static final String WIREMOCK_PROP_PLACEHOLDER = "${" + WIREMOCK_PLACEHOLDER; //${wiremock
-    private static WiremockSupportPlaceholderModule wiremockSupportInstance;
+    private static WiremockSupportModule wiremockSupportInstance;
 
-    private WiremockSupportPlaceholderModule() {
+    private WiremockSupportModule() {
 
     }
 
-    public static WiremockSupportPlaceholderModule getInstance() {
+    public static WiremockSupportModule getInstance() {
         if (wiremockSupportInstance == null) {
-            wiremockSupportInstance = new WiremockSupportPlaceholderModule();
+            wiremockSupportInstance = new WiremockSupportModule();
         }
         return wiremockSupportInstance;
     }
@@ -44,7 +45,25 @@ public final class WiremockSupportPlaceholderModule  implements HeatPlaceholderM
     @Override
     public Map<String, String> process(String stringToProcess, HeatTestDetails testDetails) {
         Map<String, String> processedMap = new HashMap<>();
+        processedMap.put(DEFAULT_PRELOADED_VALUE, stringToProcess);
+
+        String instanceName = getWmInstanceName(stringToProcess);
+        String action = getActionToRun(stringToProcess);
+
+        WiremockSupportHandler wmSupportHandler = new WiremockSupportHandler(instanceName, testDetails);
+        wmSupportHandler.executeAction(action);
+
+
+
 
         return processedMap;
+    }
+
+    private String getWmInstanceName(String stringToProcess) {
+        return "WM_INSTANCE";
+    }
+
+    private String getActionToRun(String stringToProcess) { //TODO understand what action it is necessary to do
+        return "requests";
     }
 }

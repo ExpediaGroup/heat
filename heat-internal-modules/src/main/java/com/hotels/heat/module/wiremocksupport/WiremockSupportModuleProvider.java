@@ -29,7 +29,7 @@ public class WiremockSupportModuleProvider  implements HeatPlaceholderModuleProv
     @Override
     public List<String> getHandledPlaceholders() {
         List<String> listPlaceholders = new ArrayList<>();
-        listPlaceholders.add(WiremockSupportPlaceholderModule.WIREMOCK_PROP_PLACEHOLDER);
+        listPlaceholders.add(WiremockSupportModule.WIREMOCK_PROP_PLACEHOLDER);
         return listPlaceholders;
     }
 
@@ -39,7 +39,7 @@ public class WiremockSupportModuleProvider  implements HeatPlaceholderModuleProv
      */
     @Override
     public HeatPlaceholderModule getModuleInstance() {
-        return WiremockSupportPlaceholderModule.getInstance();
+        return WiremockSupportModule.getInstance();
     }
 
 }

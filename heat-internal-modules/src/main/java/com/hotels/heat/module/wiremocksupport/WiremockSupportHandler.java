@@ -15,9 +15,46 @@
  */
 package com.hotels.heat.module.wiremocksupport;
 
+import com.hotels.heat.core.dto.HeatTestDetails;
+import com.hotels.heat.core.utils.RestAssuredRequestMaker;
+import com.jayway.restassured.specification.RequestSpecification;
+
 /**
  * Wiremock Support Handler.
  */
 public class WiremockSupportHandler {
 
+    private String testDescription;
+    private String environment;
+    private String wmPath;
+    private RequestSpecification reqSpec;
+
+
+    public WiremockSupportHandler(String wmInstanceName, HeatTestDetails heatTestDetails) {
+        this.testDescription = heatTestDetails.getTestDescription();
+        this.environment = heatTestDetails.getEnvironment();
+        RestAssuredRequestMaker requestMaker = new RestAssuredRequestMaker();
+        wmPath = getPath(wmInstanceName);
+        reqSpec = requestMaker.protocolSetting(wmPath);
+
+    }
+
+    private String getPath(String wmInstanceName) { //TODO: retrieve path from environment.properties
+        return "http://localhost:30002";
+    }
+
+    public void executeAction(String action) {
+        switch (action) {
+        case "requests":
+            //TODO do something
+            break;
+        case "reset":
+            //TODO do something
+            break;
+
+        default:
+            //TODO action not supported yet
+            break;
+        }
+    }
 }
