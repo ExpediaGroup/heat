@@ -20,6 +20,8 @@ import java.util.Map;
 
 import com.hotels.heat.core.dto.HeatTestDetails;
 import com.hotels.heat.core.heatmodules.HeatPlaceholderModule;
+import com.hotels.heat.core.utils.TestCaseUtils;
+import org.testng.annotations.Parameters;
 
 /**
  * Wiremock Support Placeholder Module.
@@ -30,6 +32,8 @@ public final class WiremockSupportModule implements HeatPlaceholderModule {
     public static final String WIREMOCK_PLACEHOLDER = "wiremock";
     public static final String WIREMOCK_PROP_PLACEHOLDER = "${" + WIREMOCK_PLACEHOLDER; //${wiremock
     private static WiremockSupportModule wiremockSupportInstance;
+    private TestCaseUtils tcUtils = new TestCaseUtils();
+    private String propFilePath;
 
     private WiremockSupportModule() {
 
@@ -48,22 +52,33 @@ public final class WiremockSupportModule implements HeatPlaceholderModule {
         processedMap.put(DEFAULT_PRELOADED_VALUE, stringToProcess);
 
         String instanceName = getWmInstanceName(stringToProcess);
+        String basePath = getWmBasePath("environment.properties", instanceName);
         String action = getActionToRun(stringToProcess);
 
-        WiremockSupportHandler wmSupportHandler = new WiremockSupportHandler(instanceName, testDetails);
+        WiremockSupportHandler wmSupportHandler = new WiremockSupportHandler(instanceName, basePath, testDetails);
         wmSupportHandler.executeAction(action);
 
 
-
+        //processedMap.put(DEFAULT_PRELOADED_VALUE, "pippo");
 
         return processedMap;
     }
 
     private String getWmInstanceName(String stringToProcess) {
-        return "WM_INSTANCE";
+        String instanceName = tcUtils.regexpExtractor(stringToProcess, "\\$\\{" + WIREMOCK_PLACEHOLDER + "\\[(.*?)\\].*\\}", 1);
+        return instanceName;
     }
 
-    private String getActionToRun(String stringToProcess) { //TODO understand what action it is necessary to do
-        return "requests";
+
+    private String getWmBasePath(String envPropFilePath, String propertyName) {
+        WiremockUtils utils = new WiremockUtils();
+        String basePath = utils.getEnvironmentProperty(envPropFilePath, propertyName);
+        return basePath;
+    }
+
+
+    private String getActionToRun(String stringToProcess) {
+        String action = tcUtils.regexpExtractor(stringToProcess, "\\$\\{"+ WIREMOCK_PLACEHOLDER + "\\[.*?\\]\\.(.*?)\\}", 1);
+        return action;
     }
 }

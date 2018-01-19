@@ -17,7 +17,11 @@ package com.hotels.heat.module.wiremocksupport;
 
 import com.hotels.heat.core.dto.HeatTestDetails;
 import com.hotels.heat.core.utils.RestAssuredRequestMaker;
+import com.jayway.restassured.internal.http.Method;
+import com.jayway.restassured.response.Response;
 import com.jayway.restassured.specification.RequestSpecification;
+
+import java.util.HashMap;
 
 /**
  * Wiremock Support Handler.
@@ -28,25 +32,30 @@ public class WiremockSupportHandler {
     private String environment;
     private String wmPath;
     private RequestSpecification reqSpec;
+    private RestAssuredRequestMaker requestMaker;
 
 
-    public WiremockSupportHandler(String wmInstanceName, HeatTestDetails heatTestDetails) {
+    public WiremockSupportHandler(String wmInstanceName, String wmBasePath, HeatTestDetails heatTestDetails) {
         this.testDescription = heatTestDetails.getTestDescription();
         this.environment = heatTestDetails.getEnvironment();
-        RestAssuredRequestMaker requestMaker = new RestAssuredRequestMaker();
-        wmPath = getPath(wmInstanceName);
-        reqSpec = requestMaker.protocolSetting(wmPath);
+        requestMaker = new RestAssuredRequestMaker();
+        wmPath = wmBasePath;
 
-    }
 
-    private String getPath(String wmInstanceName) { //TODO: retrieve path from environment.properties
-        return "http://localhost:30002";
     }
 
     public void executeAction(String action) {
         switch (action) {
         case "requests":
-            //TODO do something
+            String urlOperation = wmPath + "/__admin/requests";
+            Method httpMethod = Method.GET;
+            requestMaker.setBasePath(urlOperation);
+            requestMaker.setRequestSpecification(new HashMap<>(), new HashMap<>(), urlOperation);
+            Response wmRsp = requestMaker.executeHttpRequest(httpMethod, urlOperation, new HashMap<>());
+            String rspAsString = wmRsp.asString();
+
+
+
             break;
         case "reset":
             //TODO do something
