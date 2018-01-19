@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2015-2017 Expedia Inc.
+ * Copyright (C) 2015-2018 Expedia Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -33,8 +33,8 @@ public final class TestSuiteHandler {
 
     private static TestSuiteHandler testSuiteHandler;
     private EnvironmentHandler environmentHandler;
-    private TestCaseUtils tcUtils;
-    private LoggingUtils logUtils;
+    private final TestCaseUtils tcUtils;
+    private final LoggingUtils logUtils;
     private String webappName;
     private String propertyFilePath;
 
@@ -52,7 +52,6 @@ public final class TestSuiteHandler {
             testSuiteHandler = new TestSuiteHandler();
         }
         return testSuiteHandler;
-
     }
 
     public String getWebappName() {

@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2015-2017 Expedia Inc.
+ * Copyright (C) 2015-2018 Expedia Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -66,9 +66,7 @@ public class TestCaseUtils {
     private static final String SUITE_DESCRIPTION_DEFAULT = "TEST SUITE";
     private static final String SUITE_DESCRIPTION_PATH = "suiteDesc";
 
-    private Map<String, Object> tcParams;
     private Method httpMethod;
-    private String webappPath;
     private String suiteDescription;
     private Map<String, String> jsonSchemas;
     private Iterator<Object[]> tcArrayIterator;
@@ -84,7 +82,6 @@ public class TestCaseUtils {
      * inside the suite.
      */
     public TestCaseUtils() {
-        this.webappPath = "";
         this.httpMethod = Method.GET;
         this.suiteDescription = SUITE_DESCRIPTION_DEFAULT;
     }
@@ -220,14 +217,6 @@ public class TestCaseUtils {
         }
 
         return isTSrunnable;
-    }
-
-    public void setWebappPath(String path) {
-        this.webappPath = path;
-    }
-
-    public void setTcParams(Map<String, Object> params) {
-        tcParams = params;
     }
 
     public Method getHttpMethod() {

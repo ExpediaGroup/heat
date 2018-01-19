@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2015-2017 Expedia Inc.
+ * Copyright (C) 2015-2018 Expedia Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -116,7 +116,6 @@ public class BasicMultipleChecks {
                 throw new HeatException(this.logUtils.getExceptionDetails() + "test not runnable: webapp path not valid");
             } else if (webappPath == null) {
                 this.context.setAttribute(this.context.getAttribute(TestBaseRunner.ATTR_TESTCASE_ID).toString(), TestBaseRunner.STATUS_SKIPPED);
-                TestSuiteHandler.getInstance().getTestCaseUtils().setWebappPath(webappPath);
             }
         } else {
             this.logUtils.error("environment handler null");

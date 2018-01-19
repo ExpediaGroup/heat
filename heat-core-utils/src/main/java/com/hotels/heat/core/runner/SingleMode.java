@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2015-2017 Expedia Inc.
+ * Copyright (C) 2015-2018 Expedia Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -55,7 +55,7 @@ public class SingleMode extends TestBaseRunner {
      */
     @BeforeSuite
     @Override
-    @Parameters(value = {ENV_PROP_FILE_PATH, WEBAPP_NAME})
+    @Parameters({ENV_PROP_FILE_PATH, WEBAPP_NAME})
     public void beforeTestSuite(String propFilePath,
                                 @Optional(NO_INPUT_WEBAPP_NAME) String inputWebappName,
                                 ITestContext context) {
@@ -71,7 +71,7 @@ public class SingleMode extends TestBaseRunner {
      */
     @BeforeTest
     @Override
-    @Parameters(value = {INPUT_JSON_PATH, ENABLED_ENVIRONMENTS})
+    @Parameters({INPUT_JSON_PATH, ENABLED_ENVIRONMENTS})
     public void beforeTestCase(String inputJsonParamPath,
                                String enabledEnvironments,
                                ITestContext context) {
@@ -97,7 +97,6 @@ public class SingleMode extends TestBaseRunner {
             getLogUtils().debug("test not skippable");
             Response apiResponse = executeRequest(testCaseParamsElaborated);
 
-            TestSuiteHandler.getInstance().getTestCaseUtils().setWebappPath(webappPath);
             BasicChecks basicChecks = new BasicChecks(testContext);
             basicChecks.setResponse(apiResponse);
             basicChecks.commonTestValidation(testCaseParamsElaborated);
@@ -116,11 +115,9 @@ public class SingleMode extends TestBaseRunner {
 
     private Response executeRequest(Map testCaseParamsElaborated) {
         Response apiRsp;
-
         try {
             RestAssuredRequestMaker restAssuredRequestMaker = new RestAssuredRequestMaker();
             TestCaseUtils testCaseUtils = TestSuiteHandler.getInstance().getTestCaseUtils();
-            testCaseUtils.setTcParams(testCaseParamsElaborated);
 
             restAssuredRequestMaker.setBasePath(webappPath);
             TestRequest tr = restAssuredRequestMaker.buildRequestByParams(testCaseUtils.getHttpMethod(), testCaseParamsElaborated);
@@ -128,13 +125,11 @@ public class SingleMode extends TestBaseRunner {
             if (apiRsp == null) {
                 throw new HeatException(getLogUtils().getExceptionDetails() + "Exception: the service has provided a response null");
             }
-
         } catch (Exception oEx) {
             getLogUtils().error("Exception class '{}', cause '{}', message '{}'",
-                    new Object[] {oEx.getClass(), oEx.getCause(), oEx.getLocalizedMessage()});
+                oEx.getClass(), oEx.getCause(), oEx.getLocalizedMessage());
             throw new HeatException(getLogUtils().getExceptionDetails() + "Exception message: '" + oEx.getLocalizedMessage() + "'", oEx);
         }
-
         return apiRsp;
     }
 

@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2015-2017 Expedia Inc.
+ * Copyright (C) 2015-2018 Expedia Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -53,7 +53,7 @@ public class FlowMode extends TestBaseRunner {
             flowChecks.setRestAssuredRequestMaker(restAssuredRequestMaker);
 
             TestCaseMapHandler tcMapHandler = new TestCaseMapHandler(testCaseParamsElaborated, getPlaceholderHandler());
-            Map<String, Object> elaboratedTestCaseParams = (Map) tcMapHandler.retriveProcessedMap();
+            Map<String, Object> elaboratedTestCaseParams = tcMapHandler.retriveProcessedMap();
             Map<String, Response> rspRetrieved = flowChecks.retrieveInfo(elaboratedTestCaseParams);
 
             super.specificChecks(testCaseParamsElaborated, rspRetrieved, testSuiteHandler.getEnvironmentHandler().getEnvironmentUnderTest());
