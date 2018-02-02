@@ -15,22 +15,29 @@
  */
 package com.hotels.heat.module.wiremocksupport;
 
+import java.util.Properties;
+
+import com.hotels.heat.core.handlers.PlaceholderHandler;
+import com.hotels.heat.core.handlers.PropertyHandler;
 import com.hotels.heat.core.handlers.TestSuiteHandler;
 import com.hotels.heat.core.utils.log.LoggingUtils;
 
-import java.io.FileInputStream;
-import java.io.InputStream;
-import java.util.Properties;
-
 public class WiremockUtils {
+    private static WiremockUtils instance;
     private LoggingUtils logUtils;
     private Properties properties;
 
 
-
-    public WiremockUtils() {
+    private WiremockUtils() {
         this.logUtils = TestSuiteHandler.getInstance().getLogUtils();
         this.properties = new Properties();
+    }
+
+    public static WiremockUtils getInstance() {
+        if (instance == null) {
+            instance = new WiremockUtils();
+        }
+        return instance;
     }
 
 
@@ -38,29 +45,18 @@ public class WiremockUtils {
      * Loads and cache the environment properties from file system.
      */
     private void loadEnvironmentProperties(String propFile) {
-
-            InputStream inputStream = null;
-            try {
-                logUtils.trace("loading '{}' file", propFile);
-                inputStream = new FileInputStream(propFile);
-                properties.load(inputStream);
-
-            } catch (Exception oEx) {
-                logUtils.error("Error! '{}'", oEx.getLocalizedMessage());
-            } finally {
-                try {
-                    inputStream.close();
-                } catch (Exception oEx) {
-                    logUtils.error("Error! '{}'", oEx.getLocalizedMessage());
-                }
-            }
+        PropertyHandler ph = new PropertyHandler(propFile, new PlaceholderHandler());
+        ph.loadFromPropertyFile();
+        properties = ph.getProperties();
     }
 
 
     public String getEnvironmentProperty(String propFile, String propertyName) {
         loadEnvironmentProperties(propFile);
-        String environment = System.getProperty("environment");
-        //String environment = TestSuiteHandler.getInstance().getEnvironmentHandler().getEnvironmentUnderTest();
+        String environment = TestSuiteHandler.getInstance().getEnvironmentHandler().getEnvironmentUnderTest();
+        if (environment == null) {
+            environment = System.getProperty("environment");
+        }
         String basePath = this.properties.getProperty(propertyName + "." + environment + ".path");
 
         return basePath;

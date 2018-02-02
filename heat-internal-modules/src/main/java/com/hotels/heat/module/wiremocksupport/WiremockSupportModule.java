@@ -21,7 +21,6 @@ import java.util.Map;
 import com.hotels.heat.core.dto.HeatTestDetails;
 import com.hotels.heat.core.heatmodules.HeatPlaceholderModule;
 import com.hotels.heat.core.utils.TestCaseUtils;
-import org.testng.annotations.Parameters;
 
 /**
  * Wiremock Support Placeholder Module.
@@ -53,32 +52,29 @@ public final class WiremockSupportModule implements HeatPlaceholderModule {
 
         String instanceName = getWmInstanceName(stringToProcess);
         String basePath = getWmBasePath("environment.properties", instanceName);
-        String action = getActionToRun(stringToProcess);
+        WiremockAction action = getActionToRun(stringToProcess);
 
         WiremockSupportHandler wmSupportHandler = new WiremockSupportHandler(instanceName, basePath, testDetails);
-        wmSupportHandler.executeAction(action);
+        String actionResult = wmSupportHandler.executeAction(action);
 
-
-        //processedMap.put(DEFAULT_PRELOADED_VALUE, "pippo");
+        processedMap.put(DEFAULT_PRELOADED_VALUE, actionResult);
 
         return processedMap;
     }
 
     private String getWmInstanceName(String stringToProcess) {
-        String instanceName = tcUtils.regexpExtractor(stringToProcess, "\\$\\{" + WIREMOCK_PLACEHOLDER + "\\[(.*?)\\].*\\}", 1);
-        return instanceName;
+        return tcUtils.regexpExtractor(stringToProcess, "\\$\\{" + WIREMOCK_PLACEHOLDER + "\\[(.*?)\\].*\\}", 1);
     }
 
 
     private String getWmBasePath(String envPropFilePath, String propertyName) {
-        WiremockUtils utils = new WiremockUtils();
-        String basePath = utils.getEnvironmentProperty(envPropFilePath, propertyName);
-        return basePath;
+        return WiremockUtils.getInstance().getEnvironmentProperty(envPropFilePath, propertyName);
     }
 
 
-    private String getActionToRun(String stringToProcess) {
-        String action = tcUtils.regexpExtractor(stringToProcess, "\\$\\{"+ WIREMOCK_PLACEHOLDER + "\\[.*?\\]\\.(.*?)\\}", 1);
-        return action;
+    private WiremockAction getActionToRun(String stringToProcess) {
+        String actionName = tcUtils.regexpExtractor(stringToProcess, "\\$\\{" + WIREMOCK_PLACEHOLDER + "\\[.*?\\]\\.(.*?)\\}", 1);
+        WiremockAction wiremockAction = WiremockAction.fromString(actionName);
+        return wiremockAction;
     }
 }

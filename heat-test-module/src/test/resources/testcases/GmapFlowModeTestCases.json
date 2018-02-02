@@ -26,7 +26,16 @@
             "beforeStep" : {
               "WM_REQUESTS" : "${wiremock[WM_INSTANCE].requests}"
             },
-            "headers": {
+            "webappName": "GMAPS_DISTANCE",
+            "httpMethod": "GET",
+            "url": "/${preload[outputRspFormat]}",
+            "queryParameters": {
+              "units": "meters",
+              "origins": "via Atenisio Carducci 8, Taranto Italia",
+              "destinations": "via dei Giuochi Istmici 40, Roma Italia",
+              "key": "${preload[DISTANCE_API_KEY]}"
+            },
+              "headers": {
               "Cache-Control": "no-cache"
             },
             "expects": {

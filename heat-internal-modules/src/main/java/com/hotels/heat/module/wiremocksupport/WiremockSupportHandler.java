@@ -15,13 +15,13 @@
  */
 package com.hotels.heat.module.wiremocksupport;
 
+import java.util.HashMap;
+
 import com.hotels.heat.core.dto.HeatTestDetails;
 import com.hotels.heat.core.utils.RestAssuredRequestMaker;
 import com.jayway.restassured.internal.http.Method;
 import com.jayway.restassured.response.Response;
 import com.jayway.restassured.specification.RequestSpecification;
-
-import java.util.HashMap;
 
 /**
  * Wiremock Support Handler.
@@ -44,26 +44,36 @@ public class WiremockSupportHandler {
 
     }
 
-    public void executeAction(String action) {
+    public String executeAction(WiremockAction action) {
+        String urlOperation;
+        Method httpMethod;
+        String rspAsString = "";
+
         switch (action) {
-        case "requests":
-            String urlOperation = wmPath + "/__admin/requests";
-            Method httpMethod = Method.GET;
-            requestMaker.setBasePath(urlOperation);
-            requestMaker.setRequestSpecification(new HashMap<>(), new HashMap<>(), urlOperation);
-            Response wmRsp = requestMaker.executeHttpRequest(httpMethod, urlOperation, new HashMap<>());
-            String rspAsString = wmRsp.asString();
-
-
-
+        case REQUESTS:
+            urlOperation = wmPath + WiremockAction.REQUESTS.getActionSubpath();
+            httpMethod = WiremockAction.REQUESTS.getActionHttpMethod();
+            rspAsString = this.makeHttpCall(urlOperation, httpMethod);
             break;
-        case "reset":
-            //TODO do something
+        case RESET:
+            urlOperation = wmPath + WiremockAction.REQUESTS.getActionSubpath();
+            httpMethod = WiremockAction.REQUESTS.getActionHttpMethod();
+            rspAsString = this.makeHttpCall(urlOperation, httpMethod);
             break;
 
         default:
             //TODO action not supported yet
             break;
         }
+
+        return rspAsString;
+    }
+
+    private String makeHttpCall(String urlOperation, Method httpMethod) {
+        requestMaker.setBasePath(urlOperation);
+        requestMaker.setRequestSpecification(new HashMap<>(), new HashMap<>(), urlOperation);
+        Response wmRsp = requestMaker.executeHttpRequest(httpMethod, urlOperation, new HashMap<>());
+
+        return wmRsp.asString();
     }
 }
