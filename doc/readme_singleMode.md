@@ -242,7 +242,6 @@ The `contentType` can be omitted, in that case the framework will try to select 
 ```
 "responseCode": "200"
 ```
-*NOTE: if you don't specify the "responseCode" field, it's valued with "200" as default.*
 
 * **jsonSchemaToCheck** (_optional_) is the ID of the json schema to use to verify the correctness of the obtained response. Please refer to [jsonSchemas block](#single-mode.firstConf.jsonInputFile.jsonSchemas) to define the IDs.
 

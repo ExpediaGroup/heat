@@ -22,15 +22,9 @@
           {
             "objectName": "Find_Distance",
             "stepNumber": "1",
-            "webappName": "GMAPS_DISTANCE",
-            "httpMethod": "GET",
             "testName": "flow mode test for new heat #1",
-            "url": "/${preload[outputRspFormat]}",
-            "queryParameters": {
-              "units": "meters",
-              "origins": "via Atenisio Carducci 8, Taranto Italia",
-              "destinations": "via dei Giuochi Istmici 40, Roma Italia",
-              "key": "${preload[DISTANCE_API_KEY]}"
+            "beforeStep" : {
+              "WM_REQUESTS" : "${wiremock[WM_INSTANCE].requests}"
             },
             "headers": {
               "Cache-Control": "no-cache"
@@ -40,7 +34,7 @@
               "fieldCheck": [
                 {
                   "description": "result has to be OK",
-                  "actualValue": "${wiremock[WM_INSTANCE].requests}",
+                  "actualValue": "${WM_REQUESTS.requestNumber}",
                   "expectedValue": "OK"
                 }
               ]
