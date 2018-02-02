@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2015-2017 Expedia Inc.
+ * Copyright (C) 2015-2018 Expedia Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,9 +15,12 @@
  */
 package com.hotels.heat.core.checks;
 
-import com.hotels.heat.core.specificexception.HeatException;
-import com.jayway.restassured.builder.ResponseBuilder;
-import com.jayway.restassured.response.Response;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -28,10 +31,10 @@ import org.testng.ITestContext;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import com.hotels.heat.core.specificexception.HeatException;
+
+import com.jayway.restassured.builder.ResponseBuilder;
+import com.jayway.restassured.response.Response;
 
 
 /**
