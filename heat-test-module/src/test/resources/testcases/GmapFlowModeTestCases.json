@@ -4,7 +4,7 @@
       "suiteDesc": "Example Flow Mode Tests",
       "flowMode": "true"
     },
-    "preloadVariables": {
+    "beforeTestSuite": {
         "CHECK_IN":"${TODAY+100_YYYY-MM-dd}",
         "CHECK_OUT":"${TODAY+101_YYYY-MM-dd}",
         "PIPPO":"PIPPO",

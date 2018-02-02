@@ -4,7 +4,7 @@
                 "generalSettings": {
                     "httpMethod": "GET"
                 },
-                "preloadVariables": {
+                "beforeTestSuite": {
                     "APPID": "81729a81d49d2ec5d46ae43b602f462c"
                 },
                 "jsonSchemas": {

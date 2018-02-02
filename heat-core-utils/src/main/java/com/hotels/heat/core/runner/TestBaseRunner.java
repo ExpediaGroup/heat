@@ -41,21 +41,21 @@ import com.jayway.restassured.response.Response;
  * Generic Test Runner class.
  */
 public class TestBaseRunner implements RunnerInterface {
-
     static {
-        (new LoggingUtils()).info("\n\n"
-            + "      ___           ___           ___                 \n"
-            + "     /__/\\         /  /\\         /  /\\          ___   \n"
-            + "     \\  \\:\\       /  /:/_       /  /::\\        /  /\\  \n"
-            + "      \\__\\:\\     /  /:/ /\\     /  /:/\\:\\      /  /:/  \n"
-            + "  ___ /  /::\\   /  /:/ /:/_   /  /:/~/::\\    /  /:/   \n"
-            + " /__/\\  /:/\\:\\ /__/:/ /:/ /\\ /__/:/ /:/\\:\\  /  /::\\   \n"
-            + " \\  \\:\\/:/__\\/ \\  \\:\\/:/ /:/ \\  \\:\\/:/__\\/ /__/:/\\:\\  \n"
-            + "  \\  \\::/       \\  \\::/ /:/   \\  \\::/      \\__\\/  \\:\\ \n"
-            + "   \\  \\:\\        \\  \\:\\/:/     \\  \\:\\           \\  \\:\\\n"
-            + "    \\  \\:\\        \\  \\::/       \\  \\:\\           \\__\\/\n"
-            + "     \\__\\/         \\__\\/         \\__\\/                \n");
-
+        new LoggingUtils().info(
+                "\n\n"
+                + "      ___           ___           ___                 \n"
+                + "     /__/\\         /  /\\         /  /\\          ___   \n"
+                + "     \\  \\:\\       /  /:/_       /  /::\\        /  /\\  \n"
+                + "      \\__\\:\\     /  /:/ /\\     /  /:/\\:\\      /  /:/  \n"
+                + "  ___ /  /::\\   /  /:/ /:/_   /  /:/~/::\\    /  /:/   \n"
+                + " /__/\\  /:/\\:\\ /__/:/ /:/ /\\ /__/:/ /:/\\:\\  /  /::\\   \n"
+                + " \\  \\:\\/:/__\\/ \\  \\:\\/:/ /:/ \\  \\:\\/:/__\\/ /__/:/\\:\\  \n"
+                + "  \\  \\::/       \\  \\::/ /:/   \\  \\::/      \\__\\/  \\:\\ \n"
+                + "   \\  \\:\\        \\  \\:\\/:/     \\  \\:\\           \\  \\:\\\n"
+                + "    \\  \\:\\        \\  \\::/       \\  \\:\\           \\__\\/\n"
+                + "     \\__\\/         \\__\\/         \\__\\/                \n"
+        );
     }
 
     public static final String ATTR_TESTCASE_ID = "testId";
@@ -88,7 +88,7 @@ public class TestBaseRunner implements RunnerInterface {
      */
     @BeforeSuite
     @Override
-    @Parameters(value = {ENV_PROP_FILE_PATH, WEBAPP_NAME})
+    @Parameters({ENV_PROP_FILE_PATH, WEBAPP_NAME})
     public void beforeTestSuite(String propFilePath,
                                 @Optional(NO_INPUT_WEBAPP_NAME) String inputWebappName,
                                 ITestContext context) {
@@ -96,7 +96,6 @@ public class TestBaseRunner implements RunnerInterface {
         testSuiteHandler.setPropertyFilePath(propFilePath);
         testSuiteHandler.populateEnvironmentHandler();
         testSuiteHandler.populateTestCaseUtils();
-
     }
 
     /**
@@ -107,7 +106,7 @@ public class TestBaseRunner implements RunnerInterface {
      */
     @BeforeTest
     @Override
-    @Parameters(value = {INPUT_JSON_PATH, ENABLED_ENVIRONMENTS})
+    @Parameters({INPUT_JSON_PATH, ENABLED_ENVIRONMENTS})
     public void beforeTestCase(String inputJsonParamPath,
         String enabledEnvironments,
         ITestContext context) {
@@ -122,8 +121,7 @@ public class TestBaseRunner implements RunnerInterface {
     @Override
     @DataProvider(name = "provider")
     public Iterator<Object[]> providerJson() {
-        Iterator<Object[]> it = TestSuiteHandler.getInstance().getTestCaseUtils().jsonReader(inputJsonPath, testContext);
-        return it;
+        return TestSuiteHandler.getInstance().getTestCaseUtils().jsonReader(inputJsonPath, testContext);
     }
 
     /**
@@ -138,7 +136,7 @@ public class TestBaseRunner implements RunnerInterface {
 
         // now we start elaborating the parameters.
         placeholderHandler = new PlaceholderHandler();
-        placeholderHandler.setPreloadedVariables(testSuiteHandler.getTestCaseUtils().getPreloadedVariables());
+        placeholderHandler.setPreloadedVariables(testSuiteHandler.getTestCaseUtils().getBeforeSuiteVariables());
 
         TestCaseMapHandler tcMapHandler = new TestCaseMapHandler(testCaseParams, placeholderHandler);
 
@@ -169,7 +167,7 @@ public class TestBaseRunner implements RunnerInterface {
      * @return a boolean that indicates if this test case will be skipped
      */
     public boolean isTestCaseSkippable(String currentTestSuiteName, String currentTestCaseId, String webappName, String webappPath) {
-        boolean thisTestIsSkippable = false;
+        boolean thisTestIsSkippable;
         TestSuiteHandler testSuiteHandler = TestSuiteHandler.getInstance();
 
         boolean isParamsValid = testSuiteHandler.getTestCaseUtils().isCommonParametersValid(webappName, webappPath, getInputJsonPath(),
@@ -177,7 +175,6 @@ public class TestBaseRunner implements RunnerInterface {
         if (!isParamsValid) {
             thisTestIsSkippable = true; //Skip current test if shared parameters are missing
         } else {
-
             boolean isCurrentInList = false;
             List<String> heatTestPropertyList = testSuiteHandler.getEnvironmentHandler().getHeatTestPropertyList();
             for (String heatTestProperty : heatTestPropertyList) {
@@ -196,11 +193,9 @@ public class TestBaseRunner implements RunnerInterface {
                     isCurrentInList = true; //Both suite and test id are specified
                 }
             }
-
             //Skipping current test if there is a list of tests to run (sys property 'heatTest') and the current one is not in that list
-            thisTestIsSkippable =  heatTestPropertyList.size() > 0 && !isCurrentInList;
+            thisTestIsSkippable = !heatTestPropertyList.isEmpty() && !isCurrentInList;
         }
-
         return thisTestIsSkippable;
     }
 
@@ -211,7 +206,7 @@ public class TestBaseRunner implements RunnerInterface {
      * @return an array of strings containing all the single properties specified in the 'heatTest' system property
      */
     public static String[] heatTestPropertySplit(String heatTestProperty) {
-        String[] safeSplit = null;
+        String[] safeSplit;
         if (heatTestProperty != null) {
             //if an element of that list does not contain ".", it means that it is not a specific test case and the output will be a String[] of two elements
             // and the second one is null (it is a test SUITE)
@@ -237,11 +232,11 @@ public class TestBaseRunner implements RunnerInterface {
      */
     @Override
     public void specificChecks(Map testCaseParams, Map<String, Response> rspRetrieved, String environment) {
-        ServiceLoader.load(SpecificChecks.class).forEach((checks) -> {
-            checks.process(getTestContext().getName(), testCaseParams, rspRetrieved,
-                    TestSuiteHandler.getInstance().getLogUtils().getTestCaseDetails(),
-                    TestSuiteHandler.getInstance().getEnvironmentHandler().getEnvironmentUnderTest());
-        });
+        ServiceLoader.load(SpecificChecks.class).forEach(checks -> checks.process(
+                getTestContext().getName(), testCaseParams, rspRetrieved,
+                TestSuiteHandler.getInstance().getLogUtils().getTestCaseDetails(),
+                TestSuiteHandler.getInstance().getEnvironmentHandler().getEnvironmentUnderTest()
+        ));
     }
 
 

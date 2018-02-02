@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2015-2017 Expedia Inc.
+ * Copyright (C) 2015-2018 Expedia Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -77,15 +77,15 @@ public class PlaceholderHandler {
 
     /**
      * PlaceholderHandler class is useful to placeholderProcessString json input files structure,
- so that it is possible to manage external libraries, preloaded variables and so on
- with specific placeholders.
+     * so that it is possible to manage external libraries, preloaded variables and so on
+     * with specific placeholders.
      */
     public PlaceholderHandler() {
         this.logUtils = TestSuiteHandler.getInstance().getLogUtils();
         //here we are checking if there are some external libraries to load (see Java Service Provider Interface pattern)
         //providerMap contains placeholders (key) and the specific class instances that are able to manage them (value)
         providerMap = new HashMap<>();
-        ServiceLoader.load(HeatPlaceholderModuleProvider.class).forEach((provider) -> {
+        ServiceLoader.load(HeatPlaceholderModuleProvider.class).forEach(provider -> {
             providerMap = constructProviderMap(providerMap, provider.getHandledPlaceholders(), provider);
         });
         this.logUtils.trace("found n. {} provider(s)", providerMap.size());
@@ -106,14 +106,11 @@ public class PlaceholderHandler {
             HeatPlaceholderModuleProvider provider) {
         try {
             logUtils.trace("found provider for: {}", provider.getHandledPlaceholders());
-            handledPlaceholders.forEach((placeholder) -> {
-                providerMapInput.put(placeholder, provider);
-            });
+            handledPlaceholders.forEach(placeholder -> providerMapInput.put(placeholder, provider));
         } catch (Exception oEx) {
             logUtils.error("catched exception message: '{}' \n cause: '{}'",
                         oEx.getLocalizedMessage(), oEx.getCause());
         }
-
         return providerMapInput;
     }
 
@@ -217,7 +214,7 @@ public class PlaceholderHandler {
                 for (Map.Entry<String, HeatPlaceholderModuleProvider> entry : providerMap.entrySet()) {
                     if (outputObj.toString().contains(entry.getKey())) {
                         HeatTestDetails testDetails = new HeatTestDetails(eh.getEnvironmentUnderTest(), logUtils.getTestCaseDetails());
-                        outputObj = (Map<String, String>) entry.getValue().getModuleInstance().process(outputObj.toString(), testDetails);
+                        outputObj = entry.getValue().getModuleInstance().process(outputObj.toString(), testDetails);
                         break;
                     }
                 }
@@ -329,7 +326,7 @@ public class PlaceholderHandler {
      * @return the string retrieved
      */
     private String retriveStringFromPath(Response rsp, String path) {
-        String output = "";
+        String output;
         try {
             if (JSONPATH_COMPLETE.equals(path)) {
                 output = rsp.asString().trim();
