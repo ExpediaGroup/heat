@@ -58,6 +58,7 @@ public final class WiremockSupportModule implements HeatPlaceholderModule {
         String actionResult = wmSupportHandler.executeAction(action);
 
         processedMap.put(DEFAULT_PRELOADED_VALUE, actionResult);
+        processedMap.put("total", "1");
 
         return processedMap;
     }

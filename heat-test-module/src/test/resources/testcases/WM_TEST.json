@@ -1,0 +1,55 @@
+{
+  "testSuite": {
+    "generalSettings": {
+      "suiteDesc": "Example Flow Mode Tests",
+      "flowMode": "true"
+    },
+    "beforeTestSuite": {
+      "CHECK_IN":"${TODAY+100_YYYY-MM-dd}",
+      "CHECK_OUT":"${TODAY+101_YYYY-MM-dd}",
+      "PIPPO":"PIPPO",
+      "OK":"OK",
+      "STRING_TO_PARSE":"_PIPPO_OK_PAPERINO",
+      "outputRspFormat":"json",
+      "DISTANCE_API_KEY":"AIzaSyDuJvGUBixcL3uzS4dDVtDE-jex24F0BFk",
+      "GEOCODE_API_KEY":"AIzaSyBHOMI_1PF4ag943jCgIavFtGYN5lJn61I",
+      "WM_REQUESTS" : "pippo"
+    },
+    "testCases": [
+      {
+        "testId": "001",
+        "testName": "Generic test on Wiremock internal module feature",
+        "e2eFlowSteps": [
+          {
+            "objectName": "Test __admin/requests in beforeStep",
+            "stepNumber": "1",
+            "testName": "Wiremock internal module First step",
+            "beforeStep" : {
+              "WM_REQUESTS" : "${wiremock[WM_INSTANCE].requests}"
+            },
+            "webappName": "WM_INSTANCE",
+            "httpMethod": "GET",
+            "url": "/pippo",
+            "queryParameters": {},
+            "headers": {},
+            "expects": {
+              "responseCode": "404",
+              "fieldCheck": [
+                {
+                  "description": "Check beforeStep works fine",
+                  "actualValue": "${preload(WM_REQUESTS).get(requestNumber)}",
+                  "expectedValue": "0"
+                },
+                {
+                  "description": "Check beforeStep works fine",
+                  "actualValue": "${path[meta.total]}",
+                  "expectedValue": "1"
+                }
+              ]
+            }
+          }
+        ]
+      }
+    ]
+  }
+}

@@ -4,38 +4,36 @@
       "suiteDesc": "Example Flow Mode Tests",
       "flowMode": "true"
     },
-    "beforeTestSuite": {
-        "CHECK_IN":"${TODAY+100_YYYY-MM-dd}",
-        "CHECK_OUT":"${TODAY+101_YYYY-MM-dd}",
-        "PIPPO":"PIPPO",
-        "OK":"OK",
-        "STRING_TO_PARSE":"_PIPPO_OK_PAPERINO",
-        "outputRspFormat":"json",
-        "DISTANCE_API_KEY":"AIzaSyDuJvGUBixcL3uzS4dDVtDE-jex24F0BFk",
-        "GEOCODE_API_KEY":"AIzaSyBHOMI_1PF4ag943jCgIavFtGYN5lJn61I"
+    "preloadVariables": {
+      "CHECK_IN":"${TODAY+100_YYYY-MM-dd}",
+      "CHECK_OUT":"${TODAY+101_YYYY-MM-dd}",
+      "PIPPO":"PIPPO",
+      "OK":"OK",
+      "STRING_TO_PARSE":"_PIPPO_OK_PAPERINO",
+      "outputRspFormat":"json",
+      "DISTANCE_API_KEY":"AIzaSyDuJvGUBixcL3uzS4dDVtDE-jex24F0BFk",
+      "GEOCODE_API_KEY":"AIzaSyBHOMI_1PF4ag943jCgIavFtGYN5lJn61I"
     },
     "testCases": [
       {
-        "testId": "003",
+        "testId": "001",
         "testName": "Generic test on flow mode",
         "e2eFlowSteps": [
           {
             "objectName": "Find_Distance",
             "stepNumber": "1",
-            "testName": "flow mode test for new heat #1",
-            "beforeStep" : {
-              "WM_REQUESTS" : "${wiremock[WM_INSTANCE].requests}"
-            },
             "webappName": "GMAPS_DISTANCE",
             "httpMethod": "GET",
+            "testName": "flow mode test for new heat #1",
             "url": "/${preload[outputRspFormat]}",
             "queryParameters": {
               "units": "meters",
-              "origins": "via Atenisio Carducci 8, Taranto Italia",
-              "destinations": "via dei Giuochi Istmici 40, Roma Italia",
-              "key": "${preload[DISTANCE_API_KEY]}"
+              "origins":"via Atenisio Carducci 8, Taranto Italia",
+              "destinations":"via dei Giuochi Istmici 40, Roma Italia",
+              "key":"${preload[DISTANCE_API_KEY]}"
             },
-              "headers": {
+            "headers":
+            {
               "Cache-Control": "no-cache"
             },
             "expects": {
@@ -43,14 +41,178 @@
               "fieldCheck": [
                 {
                   "description": "result has to be OK",
-                  "actualValue": "${WM_REQUESTS.requestNumber}",
+                  "actualValue": "${path[status]}",
                   "expectedValue": "OK"
+                },
+                {
+                  "description": "result has to be OK",
+                  "actualValue": "${path[status]}",
+                  "expectedValue": "${preload[OK]}"
+                },
+                {
+                  "description": "result field has to be present",
+                  "actualValue": "${path[status]}",
+                  "expectedValue": "${Present}"
+                },
+                {
+                  "description": "pippo field has not to be present",
+                  "actualValue": "${path[pippo]}",
+                  "expectedValue": "${NotPresent}"
+                },
+                {
+                  "description": "all the response has to contain the string \"status\":\"OK\"",
+                  "actualValue": "${path[.]}",
+                  "expectedValue": ["\"status\" : \"OK\""]
+                },
+                {
+                  "description": "all the response has to contain the string \"status\":\"OK\" (with the operation)",
+                  "actualValue": "${path[.]}",
+                  "operation": "contains",
+                  "expectedValue": ["\"status\" : \"OK\""]
+                },
+                {
+                  "description": "all the response has NOT to contain the string \"status\":\"PIPPO\"",
+                  "actualValue": "${path[.]}",
+                  "operation": "not contains",
+                  "expectedValue": ["\"status\":\"${preload[PIPPO]}\""]
+                },
+                {
+                  "description": "elements in rows has to be made of only 1 object",
+                  "actualValue": "${path[rows[0].elements.size()]}",
+                  "expectedValue": "1"
+                },
+                {
+                  "description": "distance value has to be greater than 0",
+                  "actualValue": "${path[rows[0].elements[0].distance.value]}",
+                  "operation" : ">",
+                  "expectedValue": "0"
+                },
+                {
+                  "description": "regexp test",
+                  "actualValue": {
+                    "regexp":"_PIPPO_(.*?)_PAPERINO",
+                    "stringToParse":"_PIPPO_PLUTO_PAPERINO"
+                  },
+                  "expectedValue": "PLUTO"
+                },
+                {
+                  "description": "regexp test",
+                  "actualValue": {
+                    "regexp":"_PIPPO_(.*?)_PAPERINO",
+                    "stringToParse":"_PIPPO_PIPPO_PAPERINO"
+                  },
+                  "expectedValue": "${preload[PIPPO]}"
+                },
+                {
+                  "description": "regexp test",
+                  "actualValue": {
+                    "regexp":"_PIPPO_(.*?)_PAPERINO",
+                    "stringToParse":"_PIPPO_PIPPO_PAPERINO"
+                  },
+                  "expectedValue": {
+                    "regexp":"_PIPPO_(.*?)_PAPERINO",
+                    "stringToParse":"_PIPPO_PIPPO_PAPERINO"
+                  }
+                },
+                {
+                  "description": "occurrences of test",
+                  "actualValue": {
+                    "occurrenceOf":"OK",
+                    "stringToParse":"${path[.]}"
+                  },
+                  "expectedValue": "2"
+                },
+                {
+                  "description": "if the result is ok, then check if the response contains 'OK' string",
+                  "condition": [
+                    {
+                      "description": "if the result is OK",
+                      "actualValue": "${path[status]}",
+                      "expectedValue": "OK"
+                    }
+                  ],
+                  "actualValue": "${path[.]}",
+                  "expectedValue": ["${preload[OK]}","status"]
+                },
+                {
+                  "description": "if the result is ok, then check if the response contains 'OK' string",
+                  "condition": [
+                    {
+                      "description": "if the result is OK",
+                      "actualValue": "${path[status]}",
+                      "expectedValue": "OK"
+                    }
+                  ],
+                  "operation": "not contains",
+                  "actualValue": "${path[.]}",
+                  "expectedValue": ["${preload[PIPPO]}","pluto"]
+                },
+                {
+                  "description": "expected value array with placeholder",
+                  "actualValue": "${path[.]}",
+                  "operation":"not contains",
+                  "expectedValue": ["${preload[PIPPO]}","pluto"]
+                },
+                {
+                  "description": "regexp match test 1",
+                  "actualValue": {
+                    "regexpToMatch":"_PIPPO_(.*?)_PAPERINO",
+                    "stringToParse":"_PIPPO_PIPPO_PAPERINO"
+                  },
+                  "expectedValue": "true"
+                },
+                {
+                  "description": "regexp match test 2",
+                  "actualValue": {
+                    "regexpToMatch":"_PIPPO_(.*?)_PAPERINO",
+                    "stringToParse":"BLA BLA BLA BLA"
+                  },
+                  "expectedValue": "false"
+                }
+              ],
+              "headerCheck": {
+                "Content-Type": "application/json; charset=UTF-8"
+              }
+            },
+            "outputParams" : {
+              "destinationAddress" : "${path[destination_addresses[0]]}",
+              "origin_addresses" : "${path[origin_addresses[0]]}"
+            }
+          },
+          {
+            "objectName": "Find_Geocode",
+            "stepNumber": "2",
+            "webappName": "GMAPS_GEOCODE",
+            "httpMethod": "GET",
+            "url": "/json",
+            "testName": "SRLE call channel ANDROID number 2",
+            "queryParameters": {
+              "address": "${getStep(1).getOutputParam(origin_addresses)}",
+              "key": "${preload[GEOCODE_API_KEY]}"
+            },
+            "headers":
+            {
+              "Cache-Control": "no-cache"
+            },
+            "expects": {
+              "responseCode": "200",
+              "fieldCheck": [
+                {
+                  "description": "the result array has not to be empty",
+                  "actualValue": "${path[results.size()]}",
+                  "operation":">",
+                  "expectedValue": "0"
+                },
+                {
+                  "description": "the origin_addresses has to contain part of the result of the geocode result",
+                  "actualValue": "${getStep(1).getOutputParam(origin_addresses)}",
+                  "expectedValue": ["${path[results[0].address_components.findAll{address_components -> address_components.types[0] == 'street_number'}[0].long_name]}"]
                 }
               ]
             }
           }
-          ]
-        }
+        ]
+      }
     ]
   }
 }
