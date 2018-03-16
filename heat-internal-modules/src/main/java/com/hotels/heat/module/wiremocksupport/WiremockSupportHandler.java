@@ -16,10 +16,12 @@
 package com.hotels.heat.module.wiremocksupport;
 
 import java.util.HashMap;
+import java.util.Map;
 
 import com.hotels.heat.core.dto.HeatTestDetails;
 import com.hotels.heat.core.utils.RestAssuredRequestMaker;
 import com.jayway.restassured.internal.http.Method;
+import com.jayway.restassured.path.json.JsonPath;
 import com.jayway.restassured.response.Response;
 import com.jayway.restassured.specification.RequestSpecification;
 
@@ -28,6 +30,7 @@ import com.jayway.restassured.specification.RequestSpecification;
  */
 public class WiremockSupportHandler {
 
+    public static final String DEFAULT_VALUE = "";
     private String testDescription;
     private String environment;
     private String wmPath;
@@ -44,29 +47,38 @@ public class WiremockSupportHandler {
 
     }
 
-    public String executeAction(WiremockAction action) {
+    public Map<String, String> executeAction(WiremockAction action) {
         String urlOperation;
         Method httpMethod;
-        String rspAsString = "";
+        Map<String, String> rsp = new HashMap<>();
 
         switch (action) {
         case REQUESTS:
             urlOperation = wmPath + WiremockAction.REQUESTS.getActionSubpath();
             httpMethod = WiremockAction.REQUESTS.getActionHttpMethod();
-            rspAsString = this.makeHttpCall(urlOperation, httpMethod);
+            String httpResp = this.makeHttpCall(urlOperation, httpMethod);
+            rsp.put("response", httpResp);
+            rsp.put("total", String.valueOf(applyJsonPath(httpResp, "meta.total")));
             break;
         case RESET:
-            urlOperation = wmPath + WiremockAction.REQUESTS.getActionSubpath();
-            httpMethod = WiremockAction.REQUESTS.getActionHttpMethod();
-            rspAsString = this.makeHttpCall(urlOperation, httpMethod);
+            urlOperation = wmPath + WiremockAction.RESET.getActionSubpath();
+            httpMethod = WiremockAction.RESET.getActionHttpMethod();
+            rsp.put("response", this.makeHttpCall(urlOperation, httpMethod));
             break;
-
+        case UNKNOWN:
         default:
-            //TODO action not supported yet
+            rsp.put("response" , DEFAULT_VALUE);
             break;
         }
 
-        return rspAsString;
+        rsp.put(WiremockSupportModule.DEFAULT_PRELOADED_VALUE, rsp.get("response"));
+        return rsp;
+    }
+
+    private  <T> T applyJsonPath(String httpResp, String jsonPath) {
+        JsonPath jsonPathResp = new JsonPath(httpResp);
+        T resp = jsonPathResp.get(jsonPath);
+        return resp;
     }
 
     private String makeHttpCall(String urlOperation, Method httpMethod) {

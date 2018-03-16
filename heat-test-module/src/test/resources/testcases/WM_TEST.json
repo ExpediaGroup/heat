@@ -37,7 +37,7 @@
               "fieldCheck": [
                 {
                   "description": "Check beforeStep works fine",
-                  "actualValue": "${preload(WM_REQUESTS).get(requestNumber)}",
+                  "actualValue": "${preload(WM_REQUESTS).get(total)}",
                   "expectedValue": "0"
                 },
                 {

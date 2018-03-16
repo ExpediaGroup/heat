@@ -18,6 +18,9 @@ package com.hotels.heat.module.wiremocksupport;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.hotels.heat.core.dto.HeatTestDetails;
 import com.hotels.heat.core.heatmodules.HeatPlaceholderModule;
 import com.hotels.heat.core.utils.TestCaseUtils;
@@ -33,6 +36,7 @@ public final class WiremockSupportModule implements HeatPlaceholderModule {
     private static WiremockSupportModule wiremockSupportInstance;
     private TestCaseUtils tcUtils = new TestCaseUtils();
     private String propFilePath;
+    private Logger logger = LoggerFactory.getLogger(WiremockSupportModule.class);
 
     private WiremockSupportModule() {
 
@@ -50,15 +54,18 @@ public final class WiremockSupportModule implements HeatPlaceholderModule {
         Map<String, String> processedMap = new HashMap<>();
         processedMap.put(DEFAULT_PRELOADED_VALUE, stringToProcess);
 
-        String instanceName = getWmInstanceName(stringToProcess);
-        String basePath = getWmBasePath("environment.properties", instanceName);
-        WiremockAction action = getActionToRun(stringToProcess);
+        try {
+            String instanceName = getWmInstanceName(stringToProcess);
+            String basePath = getWmBasePath("environment.properties", instanceName);
+            WiremockAction action = getActionToRun(stringToProcess);
 
-        WiremockSupportHandler wmSupportHandler = new WiremockSupportHandler(instanceName, basePath, testDetails);
-        String actionResult = wmSupportHandler.executeAction(action);
+            WiremockSupportHandler wmSupportHandler = new WiremockSupportHandler(instanceName, basePath, testDetails);
+            Map<String, String> actionResult = wmSupportHandler.executeAction(action);
+            processedMap.putAll(actionResult);
 
-        processedMap.put(DEFAULT_PRELOADED_VALUE, actionResult);
-        processedMap.put("total", "1");
+        } catch (Exception e) {
+            logger.error(e.getMessage());
+        }
 
         return processedMap;
     }
@@ -74,8 +81,11 @@ public final class WiremockSupportModule implements HeatPlaceholderModule {
 
 
     private WiremockAction getActionToRun(String stringToProcess) {
+        WiremockAction wiremockAction = WiremockAction.UNKNOWN;
         String actionName = tcUtils.regexpExtractor(stringToProcess, "\\$\\{" + WIREMOCK_PLACEHOLDER + "\\[.*?\\]\\.(.*?)\\}", 1);
-        WiremockAction wiremockAction = WiremockAction.fromString(actionName);
+        if (!stringToProcess.equals(actionName)) {
+            wiremockAction = WiremockAction.fromString(actionName);
+        }
         return wiremockAction;
     }
 }

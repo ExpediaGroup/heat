@@ -17,10 +17,8 @@ package com.hotels.heat.module.wiremocksupport;
 
 import com.jayway.restassured.internal.http.Method;
 
-/**
- * Created by lpelosi on 02/02/18.
- */
 public enum WiremockAction {
+    UNKNOWN,
     REQUESTS("requests", "/__admin/requests", Method.GET),
     RESET("reset", "/__admin/reset", Method.POST);
 
@@ -32,6 +30,10 @@ public enum WiremockAction {
         this.actionName = actionName;
         this.actionSubpath = actionSubpath;
         this.actionHttpMethod = actionHttpMethod;
+    }
+
+    private WiremockAction(){
+
     }
 
     public String getActionName() {
