@@ -19,17 +19,19 @@ import com.jayway.restassured.internal.http.Method;
 
 public enum WiremockAction {
     UNKNOWN,
-    REQUESTS("requests", "/__admin/requests", Method.GET),
-    RESET("reset", "/__admin/reset", Method.POST);
+    REQUESTS("requests", "/__admin/requests", Method.GET, new String[]{"response", "total"}),
+    RESET("reset", "/__admin/reset", Method.POST, new String[]{"response"});
 
     private String actionName;
     private String actionSubpath;
     private Method actionHttpMethod;
+    private String[] properties;
 
-    private WiremockAction(String actionName, String actionSubpath, Method actionHttpMethod) {
+    private WiremockAction(String actionName, String actionSubpath, Method actionHttpMethod, String[] properties) {
         this.actionName = actionName;
         this.actionSubpath = actionSubpath;
         this.actionHttpMethod = actionHttpMethod;
+        this.properties = properties;
     }
 
     private WiremockAction(){

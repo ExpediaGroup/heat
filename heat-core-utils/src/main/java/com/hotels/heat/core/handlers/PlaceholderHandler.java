@@ -30,7 +30,7 @@ import com.hotels.heat.core.heatmodules.HeatPlaceholderModuleProvider;
 import com.hotels.heat.core.specificexception.HeatException;
 import com.hotels.heat.core.utils.TestCaseUtils;
 import com.hotels.heat.core.utils.log.LoggingUtils;
-
+import com.jayway.restassured.path.json.JsonPath;
 import com.jayway.restassured.path.json.config.JsonPathConfig;
 import com.jayway.restassured.response.Response;
 
@@ -160,7 +160,18 @@ public class PlaceholderHandler {
     private String getPathVar(Object inputObj) {
         TestCaseUtils testCaseUtils = TestSuiteHandler.getInstance().getTestCaseUtils();
         String jsonPathToRetrieve = testCaseUtils.regexpExtractor(inputObj.toString(), PATH_JSONPATH_REGEXP, 1);
-        return retriveStringFromPath(response, jsonPathToRetrieve);
+        String[] arguments = jsonPathToRetrieve.split(",");
+        String result = null;
+        if (arguments.length == 1) {
+            result = retriveStringFromPath(response, jsonPathToRetrieve);
+        } else {
+            //TODO to handle this case: "actualValue": "${path[${preload(WM_REQUESTS).get(response)},requests[0].request.headers.User-Agent]}",
+            String resolvedPreloaded = processPreloadPlaceholders(arguments[0]);
+            JsonPath jsPath = new JsonPath(resolvedPreloaded);
+            result = jsPath.get(arguments[1]);
+        }
+
+        return result;
     }
 
     /**

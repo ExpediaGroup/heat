@@ -27,7 +27,7 @@
             "beforeStep" : {
               "WM_REQUESTS" : "${wiremock[WM_INSTANCE].requests}"
             },
-            "webappName": "WM_INSTANCE",
+            "webappName": "SRLE",
             "httpMethod": "GET",
             "url": "/pippo",
             "queryParameters": {},
@@ -37,14 +37,14 @@
               "fieldCheck": [
                 {
                   "description": "Check beforeStep works fine",
-                  "actualValue": "${preload(WM_REQUESTS).get(total)}",
+                  "actualValue": "${preload(WM_REQUESTS).get(response).path[pippo.pluto]}",
                   "expectedValue": "0"
                 },
                 {
-                  "description": "Check beforeStep works fine",
-                  "actualValue": "${path[meta.total]}",
-                  "expectedValue": "1"
-                }
+                  "description": "Verify User-Agent",
+                  "actualValue": "${path[${preload(WM_REQUESTS).get(response)},requests[0].request.headers.User-Agent]}",
+                  "expectedValue": "Apache-HttpClient/4.5.1 (Java/1.8.0_101)"
+                },
               ]
             }
           }

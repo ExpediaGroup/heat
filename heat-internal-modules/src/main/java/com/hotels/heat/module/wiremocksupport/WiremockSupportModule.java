@@ -64,7 +64,7 @@ public final class WiremockSupportModule implements HeatPlaceholderModule {
             processedMap.putAll(actionResult);
 
         } catch (Exception e) {
-            logger.error(e.getMessage());
+            logger.error("Error during Wiremock module execution: {}", e.getMessage());
         }
 
         return processedMap;
