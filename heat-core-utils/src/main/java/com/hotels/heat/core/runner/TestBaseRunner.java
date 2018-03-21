@@ -56,6 +56,19 @@ public class TestBaseRunner implements RunnerInterface {
                 + "    \\  \\:\\        \\  \\::/       \\  \\:\\           \\__\\/\n"
                 + "     \\__\\/         \\__\\/         \\__\\/                \n"
         );
+
+        new LoggingUtils().info(
+                "\n"
+                + "+-----------------------------------------------------------------------+\n"
+                + "| Environment under test : '{}'\n"
+                + "+-----------------------------------------------------------------------+\n"
+                + "| Requested Log Level: : '{}'\n"
+                + "| Specific test requested: '{}'\n"
+                + "+-----------------------------------------------------------------------+\n",
+                System.getProperty("environment", System.getProperty("defaultEnvironment")),
+                System.getProperty("logLevel", "INFO"),
+                System.getProperty("heatTest", "All Tests"));
+
     }
 
     public static final String ATTR_TESTCASE_ID = "testId";
@@ -96,6 +109,7 @@ public class TestBaseRunner implements RunnerInterface {
         testSuiteHandler.setPropertyFilePath(propFilePath);
         testSuiteHandler.populateEnvironmentHandler();
         testSuiteHandler.populateTestCaseUtils();
+
     }
 
     /**
