@@ -166,7 +166,10 @@ public class PlaceholderHandler {
             result = retriveStringFromPath(response, jsonPathToRetrieve);
         } else {
             //TODO to handle this case: "actualValue": "${path[${preload(WM_REQUESTS).get(response)},requests[0].request.headers.User-Agent]}",
-            String resolvedPreloaded = processPreloadPlaceholders(arguments[0]);
+            String resolvedPreloaded = arguments[0];
+            if (arguments[0].contains("${preload(")) {
+                resolvedPreloaded = processPreloadPlaceholders(arguments[0]); //assuming that the first argument is a ${preload(WM_REQUESTS).get(response)}
+            }
             JsonPath jsPath = new JsonPath(resolvedPreloaded);
             result = jsPath.get(arguments[1]);
         }

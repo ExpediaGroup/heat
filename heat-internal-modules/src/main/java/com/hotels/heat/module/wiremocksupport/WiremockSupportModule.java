@@ -84,7 +84,7 @@ public final class WiremockSupportModule implements HeatPlaceholderModule {
         WiremockAction wiremockAction = WiremockAction.UNKNOWN;
         String actionName = tcUtils.regexpExtractor(stringToProcess, "\\$\\{" + WIREMOCK_PLACEHOLDER + "\\[.*?\\]\\.(.*?)\\}", 1);
         if (!stringToProcess.equals(actionName)) {
-            wiremockAction = WiremockAction.fromString(actionName);
+            wiremockAction = WiremockAction.valueOf(actionName.toUpperCase());
         }
         return wiremockAction;
     }

@@ -58,7 +58,8 @@ public class WiremockSupportHandler {
             httpMethod = WiremockAction.REQUESTS.getActionHttpMethod();
             String httpResp = this.makeHttpCall(urlOperation, httpMethod);
             rsp.put("response", httpResp);
-            rsp.put("total", String.valueOf(applyJsonPath(httpResp, "meta.total")));
+            int total = applyJsonPath(httpResp, "meta.total");
+            rsp.put("total", String.valueOf(total));
             break;
         case RESET:
             urlOperation = wmPath + WiremockAction.RESET.getActionSubpath();
