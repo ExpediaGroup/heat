@@ -4,7 +4,7 @@
       "suiteDesc": "Example Flow Mode Tests",
       "flowMode": "true"
     },
-    "preloadVariables": {
+    "beforeTestSuite": {
       "CHECK_IN":"${TODAY+100_YYYY-MM-dd}",
       "CHECK_OUT":"${TODAY+101_YYYY-MM-dd}",
       "PIPPO":"PIPPO",
@@ -113,6 +113,14 @@
                     "regexp":"_PIPPO_(.*?)_PAPERINO",
                     "stringToParse":"_PIPPO_PIPPO_PAPERINO"
                   }
+                },
+                {
+                  "description": "regexp match test",
+                  "actualValue": {
+                    "regexpToMatch":"([\d]{6})",
+                    "stringToParse":"377622"
+                  },
+                  "expectedValue": "true"
                 },
                 {
                   "description": "occurrences of test",
