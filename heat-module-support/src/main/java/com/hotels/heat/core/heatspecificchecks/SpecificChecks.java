@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2015-2017 Expedia Inc.
+ * Copyright (C) 2015-2018 Expedia Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,7 +18,7 @@ package com.hotels.heat.core.heatspecificchecks;
 import java.util.Map;
 import java.util.Set;
 
-import com.jayway.restassured.response.Response;
+import io.restassured.response.Response;
 
 /**
  * Abstract class to implement to create a specific check class in test modules.

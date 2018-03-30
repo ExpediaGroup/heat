@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2015-2017 Expedia Inc.
+ * Copyright (C) 2015-2018 Expedia Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -31,8 +31,8 @@ import com.hotels.heat.core.specificexception.HeatException;
 import com.hotels.heat.core.utils.TestCaseUtils;
 import com.hotels.heat.core.utils.log.LoggingUtils;
 
-import com.jayway.restassured.path.json.config.JsonPathConfig;
-import com.jayway.restassured.response.Response;
+import io.restassured.path.json.config.JsonPathConfig;
+import io.restassured.response.Response;
 
 
 /**

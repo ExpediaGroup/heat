@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2015-2017 Expedia Inc.
+ * Copyright (C) 2015-2018 Expedia Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,7 +15,7 @@
  */
 package com.hotels.heat.core.utils;
 
-import static com.jayway.restassured.path.json.JsonPath.with;
+import static io.restassured.path.json.JsonPath.with;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -35,8 +35,8 @@ import com.hotels.heat.core.runner.TestBaseRunner;
 import com.hotels.heat.core.specificexception.HeatException;
 import com.hotels.heat.core.utils.log.LoggingUtils;
 
-import com.jayway.restassured.internal.http.Method;
-import com.jayway.restassured.path.json.JsonPath;
+import io.restassured.http.Method;
+import io.restassured.path.json.JsonPath;
 
 /**
  * Class which reads out the test details from the JSON input files.
