@@ -131,8 +131,8 @@ public class PlaceholderHandler {
         try {
             if (inputStr.contains(PLACEHOLDER_SYMBOL_BEGIN)) {
                 outputObj = processGetStepPlaceholder(outputObj.toString());
-                outputObj = processPreloadPlaceholders(outputObj.toString());
                 outputObj = processPathPlaceholder(outputObj.toString());
+                outputObj = processPreloadPlaceholders(outputObj.toString());
                 outputObj = processCookiePlaceholder(outputObj.toString());
                 outputObj = processHeaderPlaceholder(outputObj.toString());
                 outputObj = processPlaceholderFromExternalModules(outputObj.toString());
@@ -160,12 +160,11 @@ public class PlaceholderHandler {
     private String getPathVar(Object inputObj) {
         TestCaseUtils testCaseUtils = TestSuiteHandler.getInstance().getTestCaseUtils();
         String jsonPathToRetrieve = testCaseUtils.regexpExtractor(inputObj.toString(), PATH_JSONPATH_REGEXP, 1);
-        String[] arguments = jsonPathToRetrieve.split(",");
+        String[] arguments = jsonPathToRetrieve.split(";");
         String result = null;
         if (arguments.length == 1) {
             result = retriveStringFromPath(response, jsonPathToRetrieve);
         } else {
-            //TODO to handle this case: "actualValue": "${path[${preload(WM_REQUESTS).get(response)},requests[0].request.headers.User-Agent]}",
             String resolvedPreloaded = arguments[0];
             if (arguments[0].contains("${preload(")) {
                 resolvedPreloaded = processPreloadPlaceholders(arguments[0]); //assuming that the first argument is a ${preload(WM_REQUESTS).get(response)}

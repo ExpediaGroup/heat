@@ -22,6 +22,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.hotels.heat.core.dto.HeatTestDetails;
+import com.hotels.heat.core.handlers.TestSuiteHandler;
 import com.hotels.heat.core.heatmodules.HeatPlaceholderModule;
 import com.hotels.heat.core.utils.TestCaseUtils;
 
@@ -56,7 +57,7 @@ public final class WiremockSupportModule implements HeatPlaceholderModule {
 
         try {
             String instanceName = getWmInstanceName(stringToProcess);
-            String basePath = getWmBasePath("environment.properties", instanceName);
+            String basePath = getWmBasePath(TestSuiteHandler.getInstance().getEnvironmentHandler().getPh().getPropFile(), instanceName);
             WiremockAction action = getActionToRun(stringToProcess);
 
             WiremockSupportHandler wmSupportHandler = new WiremockSupportHandler(instanceName, basePath, testDetails);
@@ -83,8 +84,11 @@ public final class WiremockSupportModule implements HeatPlaceholderModule {
     private WiremockAction getActionToRun(String stringToProcess) {
         WiremockAction wiremockAction = WiremockAction.UNKNOWN;
         String actionName = tcUtils.regexpExtractor(stringToProcess, "\\$\\{" + WIREMOCK_PLACEHOLDER + "\\[.*?\\]\\.(.*?)\\}", 1);
-        if (!stringToProcess.equals(actionName)) {
-            wiremockAction = WiremockAction.valueOf(actionName.toUpperCase());
+        String actionNameUpperCase = actionName.toUpperCase();
+        try {
+            wiremockAction = WiremockAction.valueOf(actionNameUpperCase);
+        } catch (Exception e) {
+            logger.warn("WiremockAction '{}' not detected: {}", actionNameUpperCase, e.getMessage());
         }
         return wiremockAction;
     }

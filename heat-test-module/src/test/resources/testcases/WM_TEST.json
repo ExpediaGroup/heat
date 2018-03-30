@@ -25,9 +25,9 @@
             "stepNumber": "1",
             "testName": "Wiremock internal module First step",
             "beforeStep" : {
-              "WM_REQUESTS" : "${wiremock[WM_INSTANCE].requests}"
+              "WM_REQUESTS" : "${wiremock[WM_INSTANCE].reset}"
             },
-            "webappName": "WM_INSTANCE",
+            "webappName": "GMAPS_GEOCODE",
             "httpMethod": "GET",
             "url": "/pippo",
             "queryParameters": {},
@@ -36,13 +36,8 @@
               "responseCode": "404",
               "fieldCheck": [
                 {
-                  "description": "Check beforeStep works fine",
-                  "actualValue": "${preload[WM_REQUESTS].get(total)}",
-                  "expectedValue": "0"
-                },
-                {
                   "description": "Verify path with 2 parameters",
-                  "actualValue": "${path[${preload[WM_REQUESTS].get(response)},requests[0].request.headers.User-Agent]}",
+                  "actualValue": "${path[${preload[WM_REQUESTS]};requests[0].request.headers.User-Agent]}",
                   "expectedValue": "curl/7.54.0"
                 }
               ]

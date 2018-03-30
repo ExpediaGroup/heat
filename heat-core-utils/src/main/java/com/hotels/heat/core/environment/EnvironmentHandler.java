@@ -155,6 +155,10 @@ public final class EnvironmentHandler {
         this.ph = ph;
     }
 
+    public PropertyHandler getPh() {
+        return ph;
+    }
+
     public void setEnabledEnvironments(String environmentToTest) {
         this.enabledEnvironments = environmentToTest;
     }

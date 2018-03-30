@@ -51,20 +51,26 @@ public class WiremockSupportHandler {
         String urlOperation;
         Method httpMethod;
         Map<String, String> rsp = new HashMap<>();
+        Response httpResp = null;
 
         switch (action) {
         case REQUESTS:
             urlOperation = wmPath + WiremockAction.REQUESTS.getActionSubpath();
             httpMethod = WiremockAction.REQUESTS.getActionHttpMethod();
-            String httpResp = this.makeHttpCall(urlOperation, httpMethod);
-            rsp.put("response", httpResp);
-            int total = applyJsonPath(httpResp, "meta.total");
+            httpResp = this.makeHttpCall(urlOperation, httpMethod);
+            int total = applyJsonPath(httpResp.asString(), "meta.total");
+
+            rsp.put("response", httpResp.asString());
+            rsp.put("status", String.valueOf(httpResp.statusCode()));
             rsp.put("total", String.valueOf(total));
             break;
         case RESET:
             urlOperation = wmPath + WiremockAction.RESET.getActionSubpath();
             httpMethod = WiremockAction.RESET.getActionHttpMethod();
-            rsp.put("response", this.makeHttpCall(urlOperation, httpMethod));
+            httpResp = this.makeHttpCall(urlOperation, httpMethod);
+
+            rsp.put("response", httpResp.asString());
+            rsp.put("status", String.valueOf(httpResp.statusCode()));
             break;
         case UNKNOWN:
         default:
@@ -82,11 +88,11 @@ public class WiremockSupportHandler {
         return resp;
     }
 
-    private String makeHttpCall(String urlOperation, Method httpMethod) {
+    private Response makeHttpCall(String urlOperation, Method httpMethod) {
         requestMaker.setBasePath(urlOperation);
         requestMaker.setRequestSpecification(new HashMap<>(), new HashMap<>(), urlOperation);
         Response wmRsp = requestMaker.executeHttpRequest(httpMethod, urlOperation, new HashMap<>());
 
-        return wmRsp.asString();
+        return wmRsp;
     }
 }
