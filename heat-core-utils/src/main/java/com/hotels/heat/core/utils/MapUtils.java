@@ -20,15 +20,38 @@ import java.util.Optional;
 import java.util.function.Function;
 
 /**
- * Created on 03/04/18.
- *
- * @author mrascioni
+ * Utils methods to work with Java {@link Map}.
  */
 public class MapUtils {
 
+    /**
+     * Return a function to get a nullable element from a map, eg.
+     *
+     * <pre>
+     *     Map<String, Object> map = ImmutableMap.of(
+     *          "key", ImmutableMap.of(
+     *              "nestedKey", true
+     *          )
+     *     );
+     *
+     *     MapUtils.get(map, "key")
+     *        .map(Map.class::cast)
+     *        .flatMap(MapUtils.get("nestedKey")
+     *        .ifPresent(v -> System.out.println("the value is " + v))
+     * </pre>
+     * @param key
+     * @return
+     */
     public static Function<Map<String, ?>, Optional<?>> get(String key) {
         return m -> get(m, key);
     }
+
+    /**
+     * Retrieve a nullable key from a map as an Optional.
+     * @param m
+     * @param key
+     * @return
+     */
     public static Optional<?> get(Map<String, ?> m, String key) {
         return Optional.ofNullable(m.get(key));
     }
