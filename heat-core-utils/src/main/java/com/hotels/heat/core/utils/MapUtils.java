@@ -37,7 +37,7 @@ public class MapUtils {
      *     MapUtils.get(map, "key")
      *        .map(Map.class::cast)
      *        .flatMap(MapUtils.get("nestedKey")
-     *        .ifPresent(v -> System.out.println("the value is " + v))
+     *        .ifPresent(v -> print("the value is " + v))
      * </pre>
      * @param key
      * @return
