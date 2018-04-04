@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2015-2017 Expedia Inc.
+ * Copyright (C) 2015-2018 Expedia Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -33,9 +33,9 @@ import com.jayway.restassured.response.Response;
  */
 public class BasicFlowChecks extends BasicMultipleChecks {
 
+    public static final String OUTPUT_PARAMS_JSON_ELEMENT = "outputParams";
     private static final String FIELD_DELAY_BEFORE = "delayBefore";
     private static final String FIELD_DELAY_AFTER = "delayAfter";
-    private static final String OUTPUT_PARAMS_JSON_ELEMENT = "outputParams";
 
     private ITestContext context;
 
