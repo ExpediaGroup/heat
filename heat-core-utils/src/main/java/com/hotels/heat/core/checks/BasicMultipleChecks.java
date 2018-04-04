@@ -20,6 +20,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.TreeMap;
 
 import org.testng.ITestContext;
@@ -28,7 +29,6 @@ import com.hotels.heat.core.environment.EnvironmentHandler;
 import com.hotels.heat.core.handlers.TestSuiteHandler;
 import com.hotels.heat.core.runner.TestBaseRunner;
 import com.hotels.heat.core.specificexception.HeatException;
-import com.hotels.heat.core.utils.MapUtils;
 import com.hotels.heat.core.utils.RestAssuredRequestMaker;
 import com.hotels.heat.core.utils.TestCaseUtils;
 import com.hotels.heat.core.utils.TestRequest;
@@ -204,7 +204,7 @@ public class BasicMultipleChecks {
         TestRequest testRequest = restAssuredMsg.buildRequestByParams(webappHttpMethod, singleInputJsonObj);
 
         testRequest.getHeadersParams().put("X-Heat-Test-Id", context.getName() + "." + context.getAttribute(TestBaseRunner.ATTR_TESTCASE_ID));
-        MapUtils.get((Map<String, Object>) singleInputJsonObj, TestCaseUtils.JSON_FIELD_STEP_NUMBER)
+        Optional.ofNullable(singleInputJsonObj.get(TestCaseUtils.JSON_FIELD_STEP_NUMBER))
             .map(Object::toString)
             .ifPresent(step -> testRequest.getHeadersParams().put("X-Heat-Test-Step", step));
 
