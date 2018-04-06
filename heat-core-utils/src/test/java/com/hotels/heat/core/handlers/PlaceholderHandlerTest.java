@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2015-2017 Expedia Inc.
+ * Copyright (C) 2015-2018 Expedia Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -196,8 +196,9 @@ public class PlaceholderHandlerTest {
         Assert.assertEquals(processedStr, "{\"field_path\":\"field_value\",\"array1\":[{\"array_field1\":\"array_field_value1\"}]}");
     }
 
-    @Test(enabled = true, expectedExceptions = { HeatException.class },
-            expectedExceptionsMessageRegExp = ".* It is not possible to retrieve the jsonPath (.*) from the current response. --> response: .*")
+//    @Test(enabled = true, expectedExceptions = { HeatException.class },
+//            expectedExceptionsMessageRegExp = ".* It is not possible to retrieve the jsonPath (.*) from the current response. --> response: .*")
+    @Test
     public void testPathPlaceholderNotExistentString() throws Exception {
         underTest = new PlaceholderHandler();
         underTest.setResponse(buildResponse());

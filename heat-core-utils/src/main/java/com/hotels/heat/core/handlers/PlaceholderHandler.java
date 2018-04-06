@@ -157,22 +157,30 @@ public class PlaceholderHandler {
         return outputObj;
     }
 
-    private String getPathVar(Object inputObj) {
+    public String getPathVar(String inputObj) {
         TestCaseUtils testCaseUtils = TestSuiteHandler.getInstance().getTestCaseUtils();
-        String jsonPathToRetrieve = testCaseUtils.regexpExtractor(inputObj.toString(), PATH_JSONPATH_REGEXP, 1);
-        String[] arguments = jsonPathToRetrieve.split(";");
+        String getPathArg = testCaseUtils.regexpExtractor(inputObj, PATH_JSONPATH_REGEXP, 1);
+        int separatorIndex = getPathArg.lastIndexOf(",");
         String result = null;
-        if (arguments.length == 1) {
-            result = retriveStringFromPath(response, jsonPathToRetrieve);
-        } else {
-            String resolvedPreloaded = arguments[0];
-            if (arguments[0].contains("${preload(")) {
-                resolvedPreloaded = processPreloadPlaceholders(arguments[0]); //assuming that the first argument is a ${preload(WM_REQUESTS).get(response)}
+        try {
+            if (separatorIndex == -1) {
+                //we apply the JSON Path on the test response
+                result = retriveStringFromPath(response, getPathArg);
+            } else {
+                String jsonString = getPathArg.substring(0, separatorIndex);
+                String jsonPath = getPathArg.substring(separatorIndex + 1);
+                if (jsonString.contains("${preload(")) {
+                    jsonString = processPreloadPlaceholders(jsonString); //assuming that the first argument is a ${preload(WM_REQUESTS).get(response)}
+                }
+                JsonPath jsPath = new JsonPath(jsonString);
+                result = jsPath.get(jsonPath);
+                if (result == null) {
+                    logUtils.warning("It is not possible to retrieve the jsonPath '{}'", jsonPath);
+                }
             }
-            JsonPath jsPath = new JsonPath(resolvedPreloaded);
-            result = jsPath.get(arguments[1]);
+        } catch (Exception oEx) {
+            logUtils.error("It is not possible to retrieve the jsonPath '{}'", getPathArg);
         }
-
         return result;
     }
 
@@ -286,7 +294,8 @@ public class PlaceholderHandler {
                 if (stringComponent.equals(placeholder)) {
                     logUtils.debug("substitution '{}'", placeholder);
                     //modifiedString += getPreloadedVariable(placeholder);
-                    modifiedString += substituctionFunct.apply(placeholder);
+                    String applied = substituctionFunct.apply(placeholder);
+                    modifiedString += applied == null ? "" : applied;
                 } else {
                     modifiedString += stringComponent;
                 }
@@ -339,19 +348,22 @@ public class PlaceholderHandler {
      * @return the string retrieved
      */
     private String retriveStringFromPath(Response rsp, String path) {
-        String output;
+        String output = null;
         try {
             if (JSONPATH_COMPLETE.equals(path)) {
                 output = rsp.asString().trim();
             } else {
                 JsonPathConfig config = new JsonPathConfig(JsonPathConfig.NumberReturnType.BIG_DECIMAL);
-                output = rsp.jsonPath(config).get(path).toString();
+                output = rsp.jsonPath(config).get(path);
+                if (output == null) {
+                    logUtils.warning("It is not possible to retrieve the jsonPath '{}'", path);
+                }
             }
         } catch (Exception oEx) {
             logUtils.error("It is not possible to retrieve the jsonPath "
                     + "('{}') from the current response. --> response: {}", path, rsp.asString());
-            throw new HeatException(logUtils.getExceptionDetails() + "It is not possible to retrieve the jsonPath (" + path
-                    + ") from the current response. --> response: " + rsp.asString());
+//            throw new HeatException(logUtils.getExceptionDetails() + "It is not possible to retrieve the jsonPath (" + path
+//                    + ") from the current response. --> response: " + rsp.asString());
         }
         return output;
     }

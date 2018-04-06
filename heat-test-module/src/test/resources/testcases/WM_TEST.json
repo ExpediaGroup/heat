@@ -29,16 +29,46 @@
             },
             "webappName": "GMAPS_GEOCODE",
             "httpMethod": "GET",
-            "url": "/pippo",
+            "url": "/json",
             "queryParameters": {},
             "headers": {},
             "expects": {
-              "responseCode": "404",
+              "responseCode": "400",
               "fieldCheck": [
                 {
-                  "description": "Verify path with 2 parameters",
-                  "actualValue": "${path[${preload[WM_REQUESTS]};requests[0].request.headers.User-Agent]}",
+                  "description": "Verify $path  Not Found with 2 parameters",
+                  "actualValue": "${path[${preload[WM_REQUESTS]},requests[0].request.headers.PIPPO]}",
                   "expectedValue": "curl/7.54.0"
+                },
+                {
+                  "description": "Verify $path with 2 parameters",
+                  "actualValue": "${path[${preload[WM_REQUESTS]},requests[0].request.headers.User-Agent]}",
+                  "expectedValue": "curl/7.54.0"
+                },
+                {
+                  "description": "Verify $path with 1 parameter with $Present",
+                  "actualValue": "${path[error_message]}",
+                  "expectedValue": "${Present}"
+                },
+                {
+                  "description": "Verify $path with 2 parameter with $Present",
+                  "actualValue": "${path[${preload[WM_REQUESTS]},requests[0].request.headers.User-Agent]}",
+                  "expectedValue": "${Present}"
+                },
+                {
+                  "description": "Verify $path with 1 parameter with $NotPresent",
+                  "actualValue": "${path[pippo]}",
+                  "expectedValue": "${NotPresent}"
+                },
+                {
+                  "description": "Verify $path with 2 parameter with $NotPresent",
+                  "actualValue": "${path[${preload[WM_REQUESTS]},pippo]}",
+                  "expectedValue": "${NotPresent}"
+                },
+                {
+                  "description": "Verify $path with 1 parameter with wrong json path",
+                  "actualValue": "${path[pippo]}",
+                  "expectedValue": "${Present}"
                 }
               ]
             }

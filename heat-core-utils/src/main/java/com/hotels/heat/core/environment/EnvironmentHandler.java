@@ -183,4 +183,7 @@ public final class EnvironmentHandler {
         return this.webappUnderTest;
     }
 
+    public PlaceholderHandler getPlaceholderHandler() {
+        return placeholderHandler;
+    }
 }
