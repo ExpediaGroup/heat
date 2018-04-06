@@ -5,13 +5,6 @@
       "flowMode": "true"
     },
     "beforeTestSuite": {
-      "CHECK_IN":"${TODAY+100_YYYY-MM-dd}",
-      "CHECK_OUT":"${TODAY+101_YYYY-MM-dd}",
-      "PIPPO":"PIPPO",
-      "OK":"OK",
-      "STRING_TO_PARSE":"_PIPPO_OK_PAPERINO",
-      "outputRspFormat":"json",
-      "DISTANCE_API_KEY":"AIzaSyDuJvGUBixcL3uzS4dDVtDE-jex24F0BFk",
       "GEOCODE_API_KEY":"AIzaSyBHOMI_1PF4ag943jCgIavFtGYN5lJn61I",
       "WM_REQUESTS" : "{  \"requests\" : [ {    \"id\" : \"e50ec3d9-b9bc-48b1-a82f-c44f45d80552\",    \"request\" : {      \"url\" : \"/pippo\",      \"absoluteUrl\" : \"http://localhost:30002/pippo\",      \"method\" : \"GET\",      \"clientIp\" : \"127.0.0.1\",      \"headers\" : {        \"User-Agent\" : \"curl/7.54.0\",        \"Accept\" : \"*/*\",        \"Host\" : \"localhost:30002\"      },      \"cookies\" : { },      \"browserProxyRequest\" : false,      \"loggedDate\" : 1521816516086,      \"bodyAsBase64\" : \"\",      \"body\" : \"\",      \"loggedDateString\" : \"2018-03-23T14:48:36Z\",      \"queryParams\" : { }    },    \"responseDefinition\" : {      \"status\" : 404,      \"fromConfiguredStub\" : false    },    \"response\" : {      \"status\" : 404,      \"body\" : \"\"    },    \"wasMatched\" : false,    \"stubMapping\" : {      \"id\" : \"d294a285-6a81-459c-a5a5-9645ce720abb\",      \"request\" : {        \"method\" : \"ANY\"      },      \"response\" : {        \"status\" : 404,        \"fromConfiguredStub\" : false      },      \"uuid\" : \"d294a285-6a81-459c-a5a5-9645ce720abb\"    }  } ],  \"meta\" : {    \"total\" : 1  },  \"requestJournalDisabled\" : false}"
     },

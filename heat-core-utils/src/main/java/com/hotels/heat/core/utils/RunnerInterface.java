@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2015-2017 Expedia Inc.
+ * Copyright (C) 2015-2018 Expedia Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,6 +16,7 @@
 package com.hotels.heat.core.utils;
 
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 import org.testng.ITestContext;
@@ -37,6 +38,8 @@ public interface RunnerInterface {
             ITestContext context);
 
     Iterator<Object[]> providerJson();
+
+    Map resolvePlaceholdersInTcParams(Map<String, Object> testCaseParams, List<String> paramsToSkip);
 
     Map resolvePlaceholdersInTcParams(Map<String, Object> testCaseParams);
 

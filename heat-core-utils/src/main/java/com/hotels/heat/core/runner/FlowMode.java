@@ -15,6 +15,7 @@
  */
 package com.hotels.heat.core.runner;
 
+import java.util.Arrays;
 import java.util.Map;
 
 import org.testng.annotations.Test;
@@ -45,7 +46,7 @@ public class FlowMode extends TestBaseRunner {
         getTestContext().setAttribute(TestBaseRunner.ATTR_TESTCASE_ID, testCaseId);
 
         if (!super.isTestCaseSkippable(testSuiteName, testCaseId, "", "")) {
-            Map  testCaseParamsElaborated = super.resolvePlaceholdersInTcParams(testCaseParams);
+            Map  testCaseParamsElaborated = super.resolvePlaceholdersInTcParams(testCaseParams, Arrays.asList("beforeStep"));
             getLogUtils().debug("test not skippable");
             RestAssuredRequestMaker restAssuredRequestMaker = new RestAssuredRequestMaker();
             getLogUtils().debug("I'm going to execute 'retrieveInfo'");
@@ -53,7 +54,7 @@ public class FlowMode extends TestBaseRunner {
             flowChecks.setRestAssuredRequestMaker(restAssuredRequestMaker);
 
             TestCaseMapHandler tcMapHandler = new TestCaseMapHandler(testCaseParamsElaborated, getPlaceholderHandler());
-            Map<String, Object> elaboratedTestCaseParams = tcMapHandler.retriveProcessedMap();
+            Map<String, Object> elaboratedTestCaseParams = tcMapHandler.retrieveProcessedMap();
             Map<String, Response> rspRetrieved = flowChecks.retrieveInfo(elaboratedTestCaseParams);
 
             super.specificChecks(testCaseParamsElaborated, rspRetrieved, testSuiteHandler.getEnvironmentHandler().getEnvironmentUnderTest());

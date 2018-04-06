@@ -12,7 +12,7 @@
     <!-- Please do not touch this section: END -->
 
     <test name="FIRST_SUITE" enabled="false">
-        <parameter name="inputJsonPath" value="/testCases/ExampleSingleModeTestCases.json"/>
+        <parameter name="inputJsonPath" value="/testcases/ExampleSingleModeTestCases.json"/>
         <parameter name="enabledEnvironments" value="environment1,environment2"/>
         <classes>
             <class name="com.hotels.heat.core.runner.SingleMode"/>
@@ -20,7 +20,7 @@
     </test>
 
     <test name="GOOGLE_MAPS_ENV1" enabled="true">
-        <parameter name="inputJsonPath" value="/testCases/GmapsSingleModeTestCases.json"/>
+        <parameter name="inputJsonPath" value="/testcases/GmapsSingleModeTestCases.json"/>
         <parameter name="enabledEnvironments" value="environment1"/>
         <classes>
             <class name="com.hotels.heat.core.runner.SingleMode"/>
@@ -28,7 +28,7 @@
     </test>
 
     <test name="GOOGLE_MAPS_ENV2" enabled="true">
-        <parameter name="inputJsonPath" value="/testCases/GmapsSingleModeTestCases.json"/>
+        <parameter name="inputJsonPath" value="/testcases/GmapsSingleModeTestCases.json"/>
         <parameter name="enabledEnvironments" value="environment2"/>
         <classes>
             <class name="com.hotels.heat.core.runner.SingleMode"/>
@@ -36,7 +36,7 @@
     </test>
 
     <test name="POST_TESTS_ENV3" enabled="true">
-        <parameter name="inputJsonPath" value="/testCases/GmapsSingleModePostTestCases.json"/>
+        <parameter name="inputJsonPath" value="/testcases/GmapsSingleModePostTestCases.json"/>
         <parameter name="enabledEnvironments" value="environment3"/>
         <classes>
             <class name="com.hotels.heat.core.runner.SingleMode"/>
@@ -44,7 +44,7 @@
     </test>
 
     <test name="GOOGLE_FLOW_ENV1" enabled="true">
-        <parameter name="inputJsonPath" value="/testCases/GmapFlowModeTestCases.json"/>
+        <parameter name="inputJsonPath" value="/testcases/GmapFlowModeTestCases.json"/>
         <parameter name="enabledEnvironments" value="environment1"/>
         <classes>
             <class name="com.hotels.heat.core.runner.FlowMode"/>
@@ -52,7 +52,7 @@
     </test>
 
     <test name="GOOGLE_COMPARE_ENV1" enabled="true">
-        <parameter name="inputJsonPath" value="/testCases/GmapsCompareModeTestCases.json"/>
+        <parameter name="inputJsonPath" value="/testcases/GmapsCompareModeTestCases.json"/>
         <parameter name="enabledEnvironments" value="environment1"/>
         <classes>
             <class name="com.hotels.heat.core.runner.CompareMode"/>
@@ -60,7 +60,7 @@
     </test>
 
     <test name="WM_TEST" enabled="true">
-        <parameter name="inputJsonPath" value="/testCases/WM_TEST.json"/>
+        <parameter name="inputJsonPath" value="/testcases/WM_TEST.json"/>
         <parameter name="enabledEnvironments" value="environment1"/>
         <classes>
             <class name="com.hotels.heat.core.runner.FlowMode"/>

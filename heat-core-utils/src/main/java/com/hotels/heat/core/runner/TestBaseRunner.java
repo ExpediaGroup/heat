@@ -15,6 +15,7 @@
  */
 package com.hotels.heat.core.runner;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -144,7 +145,7 @@ public class TestBaseRunner implements RunnerInterface {
      * @return the same structure as the input parameters but with placeholders resolved
      */
     @Override
-    public Map resolvePlaceholdersInTcParams(Map<String, Object> testCaseParams) {
+    public Map resolvePlaceholdersInTcParams(Map<String, Object> testCaseParams, List<String> paramsToSkip) {
         TestSuiteHandler testSuiteHandler = TestSuiteHandler.getInstance();
         testSuiteHandler.getLogUtils().setTestCaseId(testContext.getAttribute(ATTR_TESTCASE_ID).toString());
 
@@ -152,9 +153,13 @@ public class TestBaseRunner implements RunnerInterface {
         placeholderHandler = new PlaceholderHandler();
         placeholderHandler.setPreloadedVariables(testSuiteHandler.getTestCaseUtils().getBeforeSuiteVariables());
 
-        TestCaseMapHandler tcMapHandler = new TestCaseMapHandler(testCaseParams, placeholderHandler);
+        TestCaseMapHandler tcMapHandler = new TestCaseMapHandler(testCaseParams, placeholderHandler, paramsToSkip);
 
-        return tcMapHandler.retriveProcessedMap();
+        return tcMapHandler.retrieveProcessedMap();
+    }
+
+    public Map resolvePlaceholdersInTcParams(Map<String, Object> testCaseParams) {
+        return resolvePlaceholdersInTcParams(testCaseParams, new ArrayList<>());
     }
 
     /**
