@@ -348,14 +348,16 @@ public class PlaceholderHandler {
      * @return the string retrieved
      */
     private String retriveStringFromPath(Response rsp, String path) {
-        String output = null;
+        String output = "";
         try {
             if (JSONPATH_COMPLETE.equals(path)) {
                 output = rsp.asString().trim();
             } else {
                 JsonPathConfig config = new JsonPathConfig(JsonPathConfig.NumberReturnType.BIG_DECIMAL);
-                output = String.valueOf((Object) rsp.jsonPath(config).get(path));
-                if (output == null) {
+                Object jpathResp = rsp.jsonPath(config).get(path);
+                if (jpathResp != null) {
+                    output = String.valueOf(jpathResp);
+                } else {
                     logUtils.warning("It is not possible to retrieve the jsonPath '{}'", path);
                 }
             }
