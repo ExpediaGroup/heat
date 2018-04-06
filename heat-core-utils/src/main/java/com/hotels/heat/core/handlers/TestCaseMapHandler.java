@@ -77,7 +77,7 @@ public class TestCaseMapHandler {
         ((Map<String, Object>) input).entrySet().stream()
                 .filter(map -> !paramsToSkip.contains(map.getKey()))
                 .forEach(entry -> {
-                    logUtils.info("key:'{}' / OLD value: '{}'", entry.getKey(), entry.getValue());
+                    logUtils.trace("key:'{}' / OLD value: '{}'", entry.getKey(), entry.getValue());
                     Object value;
                     if (entry.getValue().getClass().equals(String.class)) {
                         value = processString(entry.getValue());
@@ -85,7 +85,7 @@ public class TestCaseMapHandler {
                         value = process(entry.getValue());
                     }
                     ((Map<String, Object>) output).put(entry.getKey(), value);
-                    logUtils.info("key:'{}' / NEW value: '{}'", entry.getKey(), value);
+                    logUtils.trace("key:'{}' / NEW value: '{}'", entry.getKey(), value);
                 });
 
         return output;
