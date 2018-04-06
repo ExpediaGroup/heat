@@ -354,7 +354,7 @@ public class PlaceholderHandler {
                 output = rsp.asString().trim();
             } else {
                 JsonPathConfig config = new JsonPathConfig(JsonPathConfig.NumberReturnType.BIG_DECIMAL);
-                output = rsp.jsonPath(config).get(path);
+                output = String.valueOf((Object) rsp.jsonPath(config).get(path));
                 if (output == null) {
                     logUtils.warning("It is not possible to retrieve the jsonPath '{}'", path);
                 }
