@@ -32,9 +32,9 @@ import com.jayway.restassured.response.Response;
  */
 public class BasicFlowChecks extends BasicMultipleChecks {
 
+    public static final String OUTPUT_PARAMS_JSON_ELEMENT = "outputParams";
     private static final String FIELD_DELAY_BEFORE = "delayBefore";
     private static final String FIELD_DELAY_AFTER = "delayAfter";
-    private static final String OUTPUT_PARAMS_JSON_ELEMENT = "outputParams";
 
     private ITestContext context;
 

@@ -23,6 +23,7 @@
         <module>heat-core-utils</module>
         <module>heat-internal-modules</module>
         <module>heat-bundle</module>
+        <module>heat-test-module</module>
     </modules>
 
     <inceptionYear>2015</inceptionYear>

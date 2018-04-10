@@ -86,7 +86,7 @@ public class SingleMode extends TestBaseRunner {
      * @param testCaseParams Map containing test case parameters coming from the json input file
      */
     @Test(dataProvider = "provider")
-    public void runningTest(Map testCaseParams) {
+    public void runningTest(Map testCaseParams, ITestContext context) {
         setContextAttributes(testCaseParams);
         String testSuiteName = getTestContext().getName();
         String testCaseId = testCaseParams.get(TestBaseRunner.ATTR_TESTCASE_ID).toString();
@@ -95,7 +95,7 @@ public class SingleMode extends TestBaseRunner {
         if (!super.isTestCaseSkippable(testSuiteName, testCaseId, webappName, webappPath)) {
             Map  testCaseParamsElaborated = super.resolvePlaceholdersInTcParams(testCaseParams);
             getLogUtils().debug("test not skippable");
-            Response apiResponse = executeRequest(testCaseParamsElaborated);
+            Response apiResponse = executeRequest(testCaseParamsElaborated, context);
 
             BasicChecks basicChecks = new BasicChecks(testContext);
             basicChecks.setResponse(apiResponse);
@@ -113,7 +113,7 @@ public class SingleMode extends TestBaseRunner {
         }
     }
 
-    private Response executeRequest(Map testCaseParamsElaborated) {
+    private Response executeRequest(Map testCaseParamsElaborated, ITestContext context) {
         Response apiRsp;
         try {
             RestAssuredRequestMaker restAssuredRequestMaker = new RestAssuredRequestMaker();
@@ -121,6 +121,7 @@ public class SingleMode extends TestBaseRunner {
 
             restAssuredRequestMaker.setBasePath(webappPath);
             TestRequest tr = restAssuredRequestMaker.buildRequestByParams(testCaseUtils.getHttpMethod(), testCaseParamsElaborated);
+            tr.getHeadersParams().put("X-Heat-Test-Id", context.getName() + "." + testCaseParamsElaborated.get("testId"));
             apiRsp = restAssuredRequestMaker.executeTestRequest(tr);
             if (apiRsp == null) {
                 throw new HeatException(getLogUtils().getExceptionDetails() + "Exception: the service has provided a response null");
