@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2015-2017 Expedia Inc.
+ * Copyright (C) 2015-2018 Expedia Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,6 +20,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.TreeMap;
 
 import org.testng.ITestContext;
@@ -201,6 +202,12 @@ public class BasicMultipleChecks {
         }
         restAssuredMsg.setBasePath(eh.getEnvironmentUrl((String) singleInputJsonObj.get(WEBAPP_NAME_JSON_ELEMENT)));
         TestRequest testRequest = restAssuredMsg.buildRequestByParams(webappHttpMethod, singleInputJsonObj);
+
+        testRequest.getHeadersParams().put("X-Heat-Test-Id", context.getName() + "." + context.getAttribute(TestBaseRunner.ATTR_TESTCASE_ID));
+        Optional.ofNullable(singleInputJsonObj.get(TestCaseUtils.JSON_FIELD_STEP_NUMBER))
+            .map(Object::toString)
+            .ifPresent(step -> testRequest.getHeadersParams().put("X-Heat-Test-Step", step));
+
         Response rsp = restAssuredMsg.executeTestRequest(testRequest);
         return rsp;
     }
