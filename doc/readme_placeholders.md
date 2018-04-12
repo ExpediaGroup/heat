@@ -30,8 +30,27 @@ In order to make data dynamic and easier to use in the JSON input files, we intr
 <a name="path"></a>
 ## Path
 
-'Path' placeholder is used to retrieve a specific field from the JSON body of a response. The syntax is `${path[<PATH>]}` where `<PATH>` is a string describing the position of the field. To understand how we can use this important placeholder, let's have a look at how RestAssured treats a response and how we can navigate it.
+'Path' placeholder is used to execute a specific query over a JSON string using a JSONPath (GPATH) query.<br/>
+The syntax is:
 
+    `${path[<PATH>]}`
+
+or
+
+    `${path[<JSON_STRING>, <PATH>]}`
+
+**Description:**<br/>
+`<PATH>` is the GPath string describing the query <br/>
+`<JSON_STRING>` is the JSON which the `<PATH>` is applied
+
+NOTE 1: A common usage to pass `<JSON_STRING>` is using a `$preload` variable: <br/>
+```json
+"actualValue": "${path[${preload(MY_JSON)},my.path.to.field]}"
+```
+NOTE 2: **if `<JSON_STRING>` is not specified, the service response is used**<br/>
+
+**Additional information:**<br/>
+To understand how we can use this important placeholder, let's have a look at how RestAssured treats a response and how we can navigate it.
 A JSON response is treated as a `com.jayway.restassured.response.Response` object (official documentation [here](https://static.javadoc.io/com.jayway.restassured/rest-assured/2.4.0/com/jayway/restassured/response/Response.html)) so, in order to navigate the body of a response we use the following code:
 
 ```java
