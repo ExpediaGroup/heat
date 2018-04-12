@@ -61,6 +61,9 @@ For this reason the structure of **"testCases"** attribute changes, as shown in 
           {
             "objectName": "Find_Geocode", 
             "stepNumber": "2",
+            "beforeStep" : {
+                "MY_VAR" : "${wiremock[WM_INSTANCE].reset}"
+             }
             "webappName": "GMAPS_GEOCODE",
             "httpMethod": "GET",
             "url": "/json",
@@ -95,6 +98,13 @@ After each request, you can add an optional **"outputParams"** attribute in orde
 To retrieve these variable values in next steps, we can use the placeholder **"getStep(n).getOutputParam(param_name)"** ([placeholder section](readme_placeholders.md))
 
 In the example above, we are using the "origin_addresses" output parameter, defined in the first step, as query parameter for the request in the second step.
+
+[![Back to the Top Of Page][upArrow]](#flow-mode)
+
+### Before step
+The **"beforeStep"** property could contain some properties which value will be resolved only before the execution (the call to "webappName") of the current step.
+
+This is very useful used in combination with the [wiremock placeholder](readme_placeholders.md) because it's possible to reset the wiremock "cache" before the call the system under test, avoiding to add a previous dedicated step for it.  
 
 [![Back to the Top Of Page][upArrow]](#flow-mode)
 

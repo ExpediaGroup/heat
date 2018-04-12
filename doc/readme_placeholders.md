@@ -11,6 +11,7 @@
   * [SysProp](#sysprop)
   * [Present / NotPresent](#present)
   * [Today](#today)
+  * [Wiremock](#wiremock)
 
 In order to make data dynamic and easier to use in the JSON input files, we introduced some placeholders
 
@@ -369,6 +370,12 @@ Another possibility is to add a specific number of days to the current one, for 
 ```
 ${TODAY+100_YYYY:MM:dd}
 ```
+
+[![Back to the Top Of Page][upArrow]](#placeholders)
+
+<a name="wiremock"></a>
+## Wiremock
+
 
 [![Back to the Top Of Page][upArrow]](#placeholders)
 
