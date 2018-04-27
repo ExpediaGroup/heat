@@ -30,7 +30,7 @@
               "fieldCheck": [
                 {
                   "description": "Verify $path with 1 parameter with $NotPresent",
-                  "actualValue": "${path[pippo]}",
+                  "actualValue": "${preload[WM_REQUESTS].get(response)}",
                   "expectedValue": "${NotPresent}"
                 }
               ]

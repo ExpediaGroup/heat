@@ -69,6 +69,9 @@ public class BasicFlowChecks extends BasicMultipleChecks {
 
                     addDelayOnStep(singleBlockObj, FIELD_DELAY_BEFORE);
 
+                    Map<String, Object> suiteVariables = new HashMap<>();
+                    suiteVariables.put("WM_REQUESTS",new HashMap<>());
+
                     Response rspStep = retrieveSingleBlockRsp(singleBlockName, singleBlockObj);
                     respRetrieved.put(singleBlockName, rspStep);
                     Map<String, Object> inputJsonBlock = (Map<String, Object>) getInputJsonObjs().get(singleBlockName);
