@@ -64,13 +64,17 @@ public class BasicFlowChecks extends BasicMultipleChecks {
                     Map singleBlockObj = (Map) singleObjecs.get(singleBlockName);
 
                     if (!retrievedParameters.isEmpty()) {
+                        // this retrieves parameters exposed with 'output' from previous steps, if present.
                         singleBlockObj = processJsonBlockWithPreviousStepsParameters(singleBlockObj);
                     }
 
                     addDelayOnStep(singleBlockObj, FIELD_DELAY_BEFORE);
 
-                    Map<String, Object> suiteVariables = new HashMap<>();
-                    suiteVariables.put("WM_REQUESTS",new HashMap<>());
+                    //this map has to be taken from the "beforeStep" section
+                    Map<String, Object> stepPreloadedVariables = loadMapFromTestStep("beforeStep", singleBlockObj);
+
+                    //this is a mock version:
+                    //stepPreloadedVariables.put("WM_REQUESTS",new HashMap<>());
 
                     Response rspStep = retrieveSingleBlockRsp(singleBlockName, singleBlockObj);
                     respRetrieved.put(singleBlockName, rspStep);
@@ -94,6 +98,17 @@ public class BasicFlowChecks extends BasicMultipleChecks {
                     + " / cause: " + oEx.getCause() + " / message: " + oEx.getLocalizedMessage());
         }
         return respRetrieved;
+    }
+
+    private Map<String,Object> loadMapFromTestStep(String elementName, Map testStep) {
+        Map<String, Object> loadedMap = new HashMap<>();
+        if (testStep.containsKey(elementName) && testStep.get(elementName) != null) {
+            Map<String, Object> elementMap = (Map<String, Object>) testStep.get(elementName);
+            elementMap.forEach((key, value) -> {
+                loadedMap.put(key, value);
+            });
+        }
+        return loadedMap;
     }
 
     private Map processJsonBlockWithPreviousStepsParameters(Map singleBlockObj) {
