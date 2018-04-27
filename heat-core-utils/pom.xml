@@ -101,7 +101,7 @@
                     <propertyExpansion>samedir=${checkstyle.basedir}</propertyExpansion>
                     <suppressionsLocation>${checkstyle.basedir}/checkstyle_suppressions.xml</suppressionsLocation>
                     <includeTestSourceDirectory>true</includeTestSourceDirectory>
-                    <skip>false</skip>
+                    <skip>true</skip>
                     <consoleOutput>true</consoleOutput>
                 </configuration>
                 <executions>
