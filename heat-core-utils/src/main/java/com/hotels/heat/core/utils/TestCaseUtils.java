@@ -19,6 +19,7 @@ import static com.jayway.restassured.path.json.JsonPath.with;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -72,6 +73,7 @@ public class TestCaseUtils {
     private Iterator<Object[]> tcArrayIterator;
     private PlaceholderHandler placeholderHandler;
     private Map<String, Object> beforeSuiteVariables;
+    private Map<String, Object> beforeStepVariables;
 
     private LoggingUtils logUtils;
 
@@ -82,6 +84,7 @@ public class TestCaseUtils {
      * inside the suite.
      */
     public TestCaseUtils() {
+        this.beforeStepVariables = new HashMap<>();
         this.httpMethod = Method.GET;
         this.suiteDescription = SUITE_DESCRIPTION_DEFAULT;
     }
@@ -314,4 +317,11 @@ public class TestCaseUtils {
         return isValid;
     }
 
+    public void setBeforeStepVariables(Map<String,Object> beforeStepVariables) {
+        this.beforeStepVariables = beforeStepVariables;
+    }
+
+    public Map<String,Object> getBeforeStepVariables() {
+        return this.beforeStepVariables;
+    }
 }

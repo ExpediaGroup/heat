@@ -46,7 +46,7 @@ public class FlowMode extends TestBaseRunner {
         getTestContext().setAttribute(TestBaseRunner.ATTR_TESTCASE_ID, testCaseId);
 
         if (!super.isTestCaseSkippable(testSuiteName, testCaseId, "", "")) {
-            Map  testCaseParamsElaborated = super.resolvePlaceholdersInTcParams(testCaseParams, Arrays.asList("beforeStep"));
+            Map  testCaseParamsElaborated = super.resolvePlaceholdersInTcParams(testCaseParams, Arrays.asList("beforeStep", "fieldCheck"));
             getLogUtils().debug("test not skippable");
             RestAssuredRequestMaker restAssuredRequestMaker = new RestAssuredRequestMaker();
             getLogUtils().debug("I'm going to execute 'retrieveInfo'");
@@ -54,8 +54,8 @@ public class FlowMode extends TestBaseRunner {
             flowChecks.setRestAssuredRequestMaker(restAssuredRequestMaker);
 
             TestCaseMapHandler tcMapHandler = new TestCaseMapHandler(testCaseParamsElaborated, getPlaceholderHandler());
-            Map<String, Object> elaboratedTestCaseParams = tcMapHandler.retrieveProcessedMap(); //TODO here there is the placeholder handling before test step execution
-            Map<String, Response> rspRetrieved = flowChecks.retrieveInfo(elaboratedTestCaseParams);
+//            Map<String, Object> elaboratedTestCaseParams = tcMapHandler.retrieveProcessedMap(); //TODO here there is the placeholder handling before test step execution
+            Map<String, Response> rspRetrieved = flowChecks.retrieveInfo(testCaseParamsElaborated);
 
             super.specificChecks(testCaseParamsElaborated, rspRetrieved, testSuiteHandler.getEnvironmentHandler().getEnvironmentUnderTest());
 

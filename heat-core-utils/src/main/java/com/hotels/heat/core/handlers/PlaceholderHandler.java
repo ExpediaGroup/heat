@@ -417,11 +417,16 @@ public class PlaceholderHandler {
     private String getPreloadedVariable(String stringInput) {
         String outputStr = stringInput;
         preloadedVariables = getPreloadedVariables();
-        if (!preloadedVariables.isEmpty()) {
+        Map<String, Object> stepVariables = TestSuiteHandler.getInstance().getTestCaseUtils().getBeforeStepVariables();
+
+        Map<String, Object> stepAndSuitePreloadVariables = new HashMap<>(preloadedVariables);
+        stepAndSuitePreloadVariables.putAll(stepVariables);
+
+        if (!stepAndSuitePreloadVariables.isEmpty()) {
             outputStr = TestSuiteHandler.getInstance().getTestCaseUtils().regexpExtractor(stringInput, REGEXP_PRELOAD_VAR_NAME_PLACEHOLDER, 1);
-            if (preloadedVariables.containsKey(outputStr)) {
+            if (stepAndSuitePreloadVariables.containsKey(outputStr)) {
                 // if there is not any specific variable to get
-                Object objectPreloaded = preloadedVariables.get(outputStr);
+                Object objectPreloaded = stepAndSuitePreloadVariables.get(outputStr);
                 if (objectPreloaded.getClass().equals(String.class)) {
                     outputStr = objectPreloaded.toString();
                 } else {

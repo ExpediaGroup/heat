@@ -21,6 +21,7 @@ import java.util.Map;
 import org.testng.ITestContext;
 
 import com.hotels.heat.core.handlers.PlaceholderHandler;
+import com.hotels.heat.core.handlers.TestSuiteHandler;
 import com.hotels.heat.core.specificexception.HeatException;
 import com.hotels.heat.core.utils.TestCaseUtils;
 import com.hotels.heat.core.utils.log.LoggingUtils;
@@ -72,6 +73,7 @@ public class BasicFlowChecks extends BasicMultipleChecks {
 
                     //this map has to be taken from the "beforeStep" section
                     Map<String, Object> stepPreloadedVariables = loadMapFromTestStep("beforeStep", singleBlockObj);
+                    TestSuiteHandler.getInstance().getTestCaseUtils().setBeforeStepVariables(stepPreloadedVariables); //add before Step variables
 
                     //this is a mock version:
                     //stepPreloadedVariables.put("WM_REQUESTS",new HashMap<>());
@@ -88,7 +90,7 @@ public class BasicFlowChecks extends BasicMultipleChecks {
                     }
 
                     addDelayOnStep(singleBlockObj, FIELD_DELAY_AFTER);
-
+                    TestSuiteHandler.getInstance().getTestCaseUtils().getBeforeStepVariables().clear();  //reset before Step variables
                 });
 
             }
@@ -105,7 +107,8 @@ public class BasicFlowChecks extends BasicMultipleChecks {
         if (testStep.containsKey(elementName) && testStep.get(elementName) != null) {
             Map<String, Object> elementMap = (Map<String, Object>) testStep.get(elementName);
             elementMap.forEach((key, value) -> {
-                loadedMap.put(key, value);
+                Object resolvedValue = TestSuiteHandler.getInstance().getEnvironmentHandler().getPlaceholderHandler().placeholderProcessString((String) value);
+                loadedMap.put(key, resolvedValue);
             });
         }
         return loadedMap;
