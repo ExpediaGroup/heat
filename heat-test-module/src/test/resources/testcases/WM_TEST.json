@@ -5,7 +5,7 @@
       "flowMode": "true"
     },
     "beforeTestSuite": {
-      "PIPPO" : "Pluto"
+      "WM_REQUESTS" : "beforeTestSuite_value"
     },
     "testCases": [
       {
@@ -16,6 +16,7 @@
             "objectName": "Test that __admin/requests returns 0",
             "stepNumber": "1",
             "beforeStep" : {
+              "WM_RESET" : "${wiremock[WM_INSTANCE].reset}",
               "WM_REQUESTS" : "${wiremock[WM_INSTANCE].requests}"
             },
             "webappName": "WM_INSTANCE",
@@ -52,9 +53,9 @@
               "responseCode": "404",
               "fieldCheck": [
                 {
-                  "description": "Check that PIPPO variable is correctly preloaded",
-                  "actualValue": "${preload[PIPPO]}",
-                  "expectedValue": "Pluto"
+                  "description": "Preload test Suite variable is not overrided",
+                  "actualValue": "${preload[WM_REQUESTS]}",
+                  "expectedValue": "beforeTestSuite_value"
                 }
               ]
             }
@@ -63,12 +64,82 @@
       },
       {
         "testId": "003",
-        "testName": "Test behaviour of ${path and ${path[$preload",
+        "testName": "Test that beforeStep is executed after previous step",
+        "e2eFlowSteps": [
+          {
+            "objectName": "set beforeStep var = 1",
+            "stepNumber": "1",
+            "beforeStep" : {
+              "WM_REQUESTS" : "1"
+            },
+            "webappName": "WM_INSTANCE",
+            "httpMethod": "GET",
+            "url": "/pippo",
+            "queryParameters": {},
+            "headers": {},
+            "expects": {
+              "responseCode": "404",
+              "fieldCheck": [
+                {
+                  "description": "Check beforeStep var",
+                  "actualValue": "${preload[WM_REQUESTS]}",
+                  "expectedValue": "1"
+                }
+              ]
+            }
+          },
+          {
+            "objectName": "set beforeStep var = 2",
+            "stepNumber": "2",
+            "beforeStep" : {
+              "WM_REQUESTS" : "2"
+            },
+            "webappName": "WM_INSTANCE",
+            "httpMethod": "GET",
+            "url": "/pippo",
+            "queryParameters": {},
+            "headers": {},
+            "expects": {
+              "responseCode": "404",
+              "fieldCheck": [
+                {
+                  "description": "Check beforeStep var",
+                  "actualValue": "${preload[WM_REQUESTS]}",
+                  "expectedValue": "2"
+                }
+              ]
+            }
+          },
+          {
+            "objectName": "NO set beforeStep, using the default in before test suite",
+            "stepNumber": "3",
+            "webappName": "WM_INSTANCE",
+            "httpMethod": "GET",
+            "url": "/pippo",
+            "queryParameters": {},
+            "headers": {},
+            "expects": {
+              "responseCode": "404",
+              "fieldCheck": [
+                {
+                  "description": "Check beforeStep var",
+                  "actualValue": "${preload[WM_REQUESTS]}",
+                  "expectedValue": "beforeTestSuite_value"
+                }
+              ]
+            }
+          }
+        ]
+      },
+      {
+        "testId": "004",
+        "testName": "Test behaviour of ${path and ${path[$preload with 1 param",
         "e2eFlowSteps": [
           {
             "objectName": "Test behaviour of ${path and ${path[$preload",
             "stepNumber": "1",
             "beforeStep" : {
+              "WM_RESET" : "${wiremock[WM_INSTANCE].reset}",
               "WM_REQUESTS" : "${wiremock[WM_INSTANCE].requests}"
             },
             "webappName": "WM_INSTANCE",
@@ -77,7 +148,7 @@
             "queryParameters": {},
             "headers": {},
             "expects": {
-              "responseCode": "404",
+              "responseCode": "200",
               "fieldCheck": [
                 {
                   "description": "Check ${path[requestJournalDisabled]}",
@@ -88,6 +159,35 @@
                   "description": "Check that WM_REQUESTS.get(total) returns",
                   "actualValue": "${path[${preload(WM_REQUESTS).get(total)]}",
                   "expectedValue": "0"
+                }
+              ]
+            }
+          }
+        ]
+      },
+      {
+        "testId": "005",
+        "testName": "Test behaviour of ${path with 2 param",
+        "e2eFlowSteps": [
+          {
+            "objectName": "Test behaviour of ${path and ${path[$preload",
+            "stepNumber": "1",
+            "beforeStep" : {
+              "WM_RESET" : "${wiremock[WM_INSTANCE].reset}",
+              "WM_REQUESTS" : "${wiremock[WM_INSTANCE].requests}"
+            },
+            "webappName": "WM_INSTANCE",
+            "httpMethod": "GET",
+            "url": "/pippo",
+            "queryParameters": {},
+            "headers": {},
+            "expects": {
+              "responseCode": "404",
+              "fieldCheck": [
+                {
+                  "description": "Check that WM_REQUESTS.get(total) returns",
+                  "actualValue": "${path[${preload(WM_REQUESTS)},requestJournalDisabled]}",
+                  "expectedValue": "false"
                 }
               ]
             }
