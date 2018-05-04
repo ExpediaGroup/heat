@@ -54,7 +54,6 @@ public class FlowMode extends TestBaseRunner {
             flowChecks.setRestAssuredRequestMaker(restAssuredRequestMaker);
 
             TestCaseMapHandler tcMapHandler = new TestCaseMapHandler(testCaseParamsElaborated, getPlaceholderHandler());
-//            Map<String, Object> elaboratedTestCaseParams = tcMapHandler.retrieveProcessedMap(); //TODO here there is the placeholder handling before test step execution
             Map<String, Response> rspRetrieved = flowChecks.retrieveInfo(testCaseParamsElaborated);
 
             super.specificChecks(testCaseParamsElaborated, rspRetrieved, testSuiteHandler.getEnvironmentHandler().getEnvironmentUnderTest());
