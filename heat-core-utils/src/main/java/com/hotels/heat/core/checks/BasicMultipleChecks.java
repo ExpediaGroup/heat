@@ -155,7 +155,7 @@ public class BasicMultipleChecks {
      * @param testCaseParamsInput the input parameters to define a test case
      * @return Map webapp name, response from the specified webapp
      */
-    public Map<String, Response> retrieveInfo(Map testCaseParamsInput) {
+    public Map<String, Response> retrieveInfo(Map<String, Object> testCaseParamsInput) {
         Map<String, Response> respRetrieved = new HashMap<>();
         try {
             compactInfoToCompare(testCaseParamsInput);

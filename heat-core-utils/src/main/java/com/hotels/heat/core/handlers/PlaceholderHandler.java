@@ -122,7 +122,7 @@ public class PlaceholderHandler {
      * - preload placeholder
      * - path placeholder
      * - placeholders coming from external heat modules and present in the provider map
-     * @param inputStr string to placeholderProcessString. It can contain more than one placeholders, but it does not manage innested ones.
+     * @param inputStr string to placeholderProcessString. It can contain more than one placeholders, but it does not manage nested ones.
      * @return the processed string
      */
     public Object placeholderProcessString(String inputStr) {

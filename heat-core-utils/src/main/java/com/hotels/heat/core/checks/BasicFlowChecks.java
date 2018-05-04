@@ -52,17 +52,16 @@ public class BasicFlowChecks extends BasicMultipleChecks {
      * @return Map webapp name, response from the specified webapp
      */
     @Override
-    public Map<String, Response> retrieveInfo(Map testCaseParamsInput) {
+    public Map<String, Response> retrieveInfo(Map<String, Object> testCaseParamsInput) {
         Map<String, Response> respRetrieved = new HashMap<>();
         try {
             compactInfoToCompare(testCaseParamsInput);
             if (getIsRunnable()) {
-                int numberOfBlocks = getHttpMethods().size();
-                getLogUtils().trace("number of blocks to load: {}", numberOfBlocks);
-                Map<String, Object> singleObjecs = getInputJsonObjs();
+                getLogUtils().trace("number of blocks to load: {}", getHttpMethods().size());
+                Map<String, Object> singleObjects = getInputJsonObjs();
                 getSteps().forEach((blockID, singleBlockName) -> {
                     getLogUtils().debug("loading the block id {}: '{}'", blockID, singleBlockName);
-                    Map singleBlockObj = (Map) singleObjecs.get(singleBlockName);
+                    Map singleBlockObj = (Map) singleObjects.get(singleBlockName);
 
                     if (!retrievedParameters.isEmpty()) {
                         // this retrieves parameters exposed with 'output' from previous steps, if present.
