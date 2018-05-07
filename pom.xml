@@ -59,7 +59,7 @@
     <properties>
 
         <!-- Rest Assured-->
-        <rest-assured.version>3.0.7</rest-assured.version>
+        <rest-assured.version>3.1.0</rest-assured.version>
 
         <!-- Maven PMD Plugin -->
         <maven-pmd-plugin.version>3.1</maven-pmd-plugin.version>
