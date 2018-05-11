@@ -416,7 +416,7 @@ public class PlaceholderHandler {
      */
     private String getPreloadedVariable(String stringInput) {
         String outputStr = stringInput;
-        preloadedVariables = getPreloadedVariables();
+        preloadedVariables = TestSuiteHandler.getInstance().getTestCaseUtils().getBeforeSuiteVariables();
         Map<String, Object> stepVariables = TestSuiteHandler.getInstance().getTestCaseUtils().getBeforeStepVariables();
 
         Map<String, Object> stepAndSuitePreloadVariables = new HashMap<>(preloadedVariables);
