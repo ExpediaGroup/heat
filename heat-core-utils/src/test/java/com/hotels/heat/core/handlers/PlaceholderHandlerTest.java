@@ -88,9 +88,9 @@ public class PlaceholderHandlerTest {
     @Test (enabled = true)
     public void testGetPreloadSimpleString() {
         underTest = new PlaceholderHandler();
-        Map<String, Object> preloadedVariables = new HashMap<>();
-        preloadedVariables.put("preloadedVarName", "preloadedVarValue");
-        underTest.setPreloadedVariables(preloadedVariables);
+        Map<String, Object> beforeSuiteVariables = new HashMap<>();
+        beforeSuiteVariables.put("preloadedVarName", "preloadedVarValue");
+        TestSuiteHandler.getInstance().getTestCaseUtils().setBeforeSuiteVariables(beforeSuiteVariables);
         String stringToProcess = "${preload[preloadedVarName]}";
         String processedStr = (String) underTest.placeholderProcessString(stringToProcess);
         Assert.assertEquals(processedStr, "preloadedVarValue");
@@ -99,13 +99,14 @@ public class PlaceholderHandlerTest {
     @Test (enabled = true)
     public void testGetPreloadComplexDefaultString() {
         underTest = new PlaceholderHandler();
-        Map<String, Object> preloadedVariables = new HashMap<>();
+        Map<String, Object> beforeSuiteVariables = new HashMap<>();
         Map<String, String> complexStructure = new HashMap<>();
         complexStructure.put("DEFAULT", "default_value");
         complexStructure.put("param1", "param1_value");
         complexStructure.put("param2", "param2_value");
-        preloadedVariables.put("preloadedVarName", complexStructure);
-        underTest.setPreloadedVariables(preloadedVariables);
+        beforeSuiteVariables.put("preloadedVarName", complexStructure);
+        TestSuiteHandler.getInstance().getTestCaseUtils().setBeforeSuiteVariables(beforeSuiteVariables);
+
 
         String stringToProcess = "${preload[preloadedVarName]}";
         String processedStr = (String) underTest.placeholderProcessString(stringToProcess);
@@ -137,9 +138,9 @@ public class PlaceholderHandlerTest {
             expectedExceptionsMessageRegExp = ".* variable '.*' not correctly preloaded")
     public void testGetPreloadNotExistentString() throws Exception {
         underTest = new PlaceholderHandler();
-        Map<String, Object> preloadedVariables = new HashMap<>();
-        preloadedVariables.put("preloadedVarName", "preloadedVarValue");
-        underTest.setPreloadedVariables(preloadedVariables);
+        Map<String, Object> beforeSuiteVariables = new HashMap<>();
+        beforeSuiteVariables.put("preloadedVarName", "preloadedVarValue");
+        TestSuiteHandler.getInstance().getTestCaseUtils().setBeforeSuiteVariables(beforeSuiteVariables);
         String stringToProcess = "${preload[NotpreloadedVarName]}";
         underTest.placeholderProcessString(stringToProcess);
     }
@@ -311,11 +312,11 @@ public class PlaceholderHandlerTest {
     @Test (enabled = true)
     public void testProcessPlaceholders() {
         underTest = new PlaceholderHandler();
-        Map<String, Object> preloadedVariables = new HashMap<>();
-        preloadedVariables.put("preloadedVarName1", "preloadedVarValue1");
-        preloadedVariables.put("preloadedVarName2", "preloadedVarValue2");
-        preloadedVariables.put("preloadedVarName3", "preloadedVarValue3");
-        underTest.setPreloadedVariables(preloadedVariables);
+        Map<String, Object> beforeSuiteVariables = new HashMap<>();
+        beforeSuiteVariables.put("preloadedVarName1", "preloadedVarValue1");
+        beforeSuiteVariables.put("preloadedVarName2", "preloadedVarValue2");
+        beforeSuiteVariables.put("preloadedVarName3", "preloadedVarValue3");
+        TestSuiteHandler.getInstance().getTestCaseUtils().setBeforeSuiteVariables(beforeSuiteVariables);
 
         Map<String, Object> mapToProcess = new HashMap<>();
         mapToProcess.put("field1", "{\"custname\":\"pippo\",\"custemail\":\"pippo@test.test\",\"delivery\":\"${preload[preloadedVarName1]}\""
