@@ -49,14 +49,14 @@ public class PlaceholderHandler {
     public static final String PATH_PLACEHOLDER = PLACEHOLDER_SYMBOL_BEGIN + "path";
     public static final String PLACEHOLDER_NOT_PRESENT = PLACEHOLDER_SYMBOL_BEGIN + "NotPresent" + PLACEHOLDER_SYMBOL_END;
     public static final String PLACEHOLDER_PRESENT = PLACEHOLDER_SYMBOL_BEGIN + "Present" + PLACEHOLDER_SYMBOL_END;
-    public static final String PATH_JSONPATH_REGEXP = ".*?\\$\\{path\\[(.*?)\\]\\}.*?";
+    public static final String PATH_JSONPATH_REGEXP = ".*?\\$\\{path\\[(.*?)\\]\\}$";
 
     private static final String DEFAULT_VALUE_NOT_FOUND_MSG = "DEFAULT VALUE NOT FOUND!!!";
 
     private static final String JSONPATH_COMPLETE = ".";
 
     private static final String REGEXP_PRELOAD_PLACEHOLDER = "((?:\\$\\{preload\\[[^\\]\\}]*\\]\\})|(?:\\$\\{preload\\[[^\\]\\}]*\\]\\.get\\(.*?\\)\\}))";
-    private static final String REGEXP_PATH_PLACEHOLDER = "(?:\\$\\{path\\[.*?\\]\\})"; //"(?:\\$\\{path\\[[^\\}]*\\]\\})";
+    private static final String REGEXP_PATH_PLACEHOLDER = "(?:\\$\\{path\\[.*\\]\\})"; //"(?:\\$\\{path\\[[^\\}]*\\]\\})";
     private static final String REGEXP_COOKIE_PLACEHOLDER = "(?:\\$\\{cookie\\[[^\\]\\}]*\\]\\})";
     private static final String REGEXP_COOKIE_JSONPATH = ".*?\\$\\{cookie\\[(.*?)\\]\\}.*?";
     private static final String REGEXP_HEADER_PLACEHOLDER = "(?:\\$\\{header\\[[^\\]\\}]*\\]\\})";
@@ -169,11 +169,13 @@ public class PlaceholderHandler {
             } else {
                 String jsonString = getPathArg.substring(0, separatorIndex);
                 String jsonPath = getPathArg.substring(separatorIndex + 1);
-                if (jsonString.contains("${preload(")) {
+                if (jsonString.contains("${preload[")) {
                     jsonString = processPreloadPlaceholders(jsonString); //assuming that the first argument is a ${preload(WM_REQUESTS).get(response)}
                 }
                 JsonPath jsPath = new JsonPath(jsonString);
-                result = jsPath.get(jsonPath);
+
+                Object data = jsPath.get(jsonPath);
+                result = String.valueOf(data);
                 if (result == null) {
                     logUtils.warning("It is not possible to retrieve the jsonPath '{}'", jsonPath);
                 }
