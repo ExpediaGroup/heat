@@ -288,9 +288,9 @@ public class PlaceholderHandlerTest {
     public void testGeneralMapAsInput() {
         underTest = new PlaceholderHandler();
 
-        Map<String, Object> preloadedVariables = new HashMap<>();
-        preloadedVariables.put("preloadedVarName", "preloadedVarValue");
-        underTest.setPreloadedVariables(preloadedVariables);
+        Map<String, Object> beforeSuiteVariables = new HashMap<>();
+        beforeSuiteVariables.put("preloadedVarName", "preloadedVarValue");
+        TestSuiteHandler.getInstance().getTestCaseUtils().setBeforeSuiteVariables(beforeSuiteVariables);
 
         Map<String, Object> mapToProcess = new HashMap<>();
         mapToProcess.put("field1", "field1_value");

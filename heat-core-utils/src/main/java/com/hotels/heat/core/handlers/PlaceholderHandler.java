@@ -480,7 +480,7 @@ public class PlaceholderHandler {
     }
 
     public Map<String, Object> getPreloadedVariables() {
-        return preloadedVariables;
+        return TestSuiteHandler.getInstance().getTestCaseUtils().getBeforeSuiteVariables();
     }
 
     public void setFlowVariables(Map<Integer, Map<String, String>> flowPreloadedVariables) {

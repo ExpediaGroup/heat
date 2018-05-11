@@ -324,4 +324,8 @@ public class TestCaseUtils {
     public Map<String,Object> getBeforeStepVariables() {
         return this.beforeStepVariables;
     }
+
+    public void setBeforeSuiteVariables(Map<String, Object> beforeSuiteVariables) {
+        this.beforeSuiteVariables = beforeSuiteVariables;
+    }
 }
