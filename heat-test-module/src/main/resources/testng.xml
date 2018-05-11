@@ -67,4 +67,12 @@
         </classes>
     </test>
 
+    <test name="PATH_TEST" enabled="true">
+        <parameter name="inputJsonPath" value="/testcases/PATH_TEST.json"/>
+        <parameter name="enabledEnvironments" value="environment1"/>
+        <classes>
+            <class name="com.hotels.heat.core.runner.FlowMode"/>
+        </classes>
+    </test>
+
 </suite>
