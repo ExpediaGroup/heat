@@ -104,7 +104,7 @@ In the example above, we are using the "origin_addresses" output parameter, defi
 ### Before step
 The **"beforeStep"** property could contain some properties which value will be resolved only before the execution (the call to "webappName") of the current step.
 
-The actions will be executed in the order of appaerance.
+It is not guaranteed that the actions will be executed in the order of appearance.
 This is very useful used in combination with the [wiremock placeholder](readme_placeholders.md) because it's possible to reset the wiremock "cache" before the call the system under test, avoiding to add a previous dedicated step for it.  
 
 [![Back to the Top Of Page][upArrow]](#flow-mode)

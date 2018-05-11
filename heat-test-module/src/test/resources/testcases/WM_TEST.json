@@ -165,80 +165,12 @@
       },
       {
         "testId": "004",
-        "testName": "Test beforeStep actions order",
-        "e2eFlowSteps": [
-          {
-            "stepNumber": "1",
-            "objectName": "/reset then call to unexisting resource in wiremock",
-            "beforeStep" : {
-              "WM_RESET" : "${wiremock[WM_INSTANCE].reset}"
-            },
-            "webappName": "WM_INSTANCE",
-            "httpMethod": "GET",
-            "url": "/pippo",
-            "queryParameters": {},
-            "headers": {},
-            "expects": {
-              "responseCode": "404"
-            }
-          },
-          {
-            "stepNumber": "2",
-            "objectName": "'/requests' then '/reset'",
-            "beforeStep" : {
-              "WM_REQUESTS" : "${wiremock[WM_INSTANCE].requests}",
-              "WM_RESET" : "${wiremock[WM_INSTANCE].reset}"
-            },
-            "webappName": "WM_INSTANCE",
-            "httpMethod": "GET",
-            "url": "/pippo",
-            "queryParameters": {},
-            "headers": {},
-            "expects": {
-              "responseCode": "404",
-              "fieldCheck": [
-                {
-                  "description": "/requests should have the request made in previous step",
-                  "actualValue": "${preload[WM_REQUESTS].get(total)}",
-                  "expectedValue": "1"
-                }
-              ]
-            }
-          },
-          {
-            "stepNumber": "3",
-            "objectName": "'/reset' then '/requests'",
-            "beforeStep" : {
-              "WM_RESET" : "${wiremock[WM_INSTANCE].reset}",
-              "WM_REQUESTS" : "${wiremock[WM_INSTANCE].requests}"
-            },
-            "webappName": "WM_INSTANCE",
-            "httpMethod": "GET",
-            "url": "/pippo",
-            "queryParameters": {},
-            "headers": {},
-            "expects": {
-              "responseCode": "404",
-              "fieldCheck": [
-                {
-                  "description": "/requests should have zero requests due to /reset and it is performed beforeStep",
-                  "actualValue": "${preload[WM_REQUESTS].get(total)}",
-                  "expectedValue": "0"
-                }
-              ]
-            }
-          }
-        ]
-      },
-      {
-        "testId": "005",
         "testName": "Test behaviour of ${path with 2 param",
         "e2eFlowSteps": [
           {
             "objectName": "Test behaviour of ${path with WIREMOCK $preload",
             "stepNumber": "1",
             "beforeStep" : {
-              "WM_RESET" : "${wiremock[WM_INSTANCE].reset}",
               "WM_REQUESTS" : "${wiremock[WM_INSTANCE].requests}"
             },
             "webappName": "WM_INSTANCE",

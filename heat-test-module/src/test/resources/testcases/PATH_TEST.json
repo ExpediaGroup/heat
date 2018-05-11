@@ -47,18 +47,8 @@
             "queryParameters": {},
             "headers": {},
             "expects": {
-              "responseCode": "404",
+              "responseCode": "200",
               "fieldCheck": [
-                {
-                  "description": "Check ${path with 2 parameters on hard-coded content",
-                  "actualValue": "${path[{\"userId\":1,\"id\":1,\"title\":\"mytitle\",\"body\":\"mybody\"},title]}",
-                  "expectedValue": "mytitle"
-                },
-                {
-                  "description": "Check ${path with 2 parameters on hard-coded content",
-                  "actualValue": "${path[[{\"userId\":1,\"id\":1,\"title\":\"title1\",\"body\":\"pippo1\"},{\"userId\":10,\"id\":100,\"title\":\"title2\",\"body\":\"pippo2\"}],[0].userId}",
-                  "expectedValue": "1"
-                },
                 {
                   "description": "Check ${path with 2 parameters on variable",
                   "actualValue": "${path[${preload[MYJSON_1]},title]}",
@@ -67,6 +57,16 @@
                 {
                   "description": "Check ${path with 2 parameters on variable",
                   "actualValue": "${path[${preload[MYJSON_2]},[0].userId]}",
+                  "expectedValue": "1"
+                },
+                {
+                  "description": "Check ${path with 2 parameters on hard-coded content",
+                  "actualValue": "${path[{\"userId\":1,\"id\":1,\"title\":\"mytitle\",\"body\":\"mybody\"},title]}",
+                  "expectedValue": "mytitle"
+                },
+                {
+                  "description": "Check ${path with 2 parameters on hard-coded content",
+                  "actualValue": "${path[[{\"userId\":1,\"id\":1,\"title\":\"title1\",\"body\":\"pippo1\"},{\"userId\":10,\"id\":100,\"title\":\"title2\",\"body\":\"pippo2\"}],[0].userId]}",
                   "expectedValue": "1"
                 }
               ]
