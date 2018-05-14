@@ -6,6 +6,9 @@
     <listeners>
         <listener class-name="com.hotels.heat.core.listeners.CustomTestNgListener"/>
         <listener class-name="com.hotels.heat.core.listeners.CustomJUnitReportListener" />
+        <listener class-name="com.hotels.heat.dummypackage.listeners.SetupTestsListener">
+            <parameter name="wmTests" value="WM_TEST"/>
+        </listener>
     </listeners>
 
     <parameter name="envPropFilePath" value="environment.properties"/>
@@ -62,6 +65,9 @@
     <test name="WM_TEST" enabled="true">
         <parameter name="inputJsonPath" value="/testcases/WM_TEST.json"/>
         <parameter name="enabledEnvironments" value="environment1"/>
+        <parameter name="wmBindAddress" value="localhost"/>
+        <parameter name="wmRoot" value="."/>
+        <parameter name="wmPort" value="30002"/>
         <classes>
             <class name="com.hotels.heat.core.runner.FlowMode"/>
         </classes>
