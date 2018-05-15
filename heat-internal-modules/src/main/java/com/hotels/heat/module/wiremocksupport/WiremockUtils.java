@@ -31,12 +31,11 @@ public class WiremockUtils {
 
     private static WiremockUtils instance;
     private LoggingUtils logUtils;
-    private Properties properties;
+    private PropertyHandler ph;
 
 
     private WiremockUtils() {
         this.logUtils = TestSuiteHandler.getInstance().getLogUtils();
-        this.properties = new Properties();
     }
 
     public static WiremockUtils getInstance() {
@@ -51,20 +50,20 @@ public class WiremockUtils {
      * Loads and cache the environment properties from file system.
      */
     private void loadEnvironmentProperties(String propFile) {
-        PropertyHandler ph = new PropertyHandler(propFile, new PlaceholderHandler());
+        ph = new PropertyHandler(propFile, new PlaceholderHandler());
         ph.loadFromPropertyFile();
-        properties = ph.getProperties();
     }
 
 
     public String getEnvironmentProperty(String propFile, String propertyName) {
+        String basePath = null;
         loadEnvironmentProperties(propFile);
+
         String environment = TestSuiteHandler.getInstance().getEnvironmentHandler().getEnvironmentUnderTest();
         if (environment == null) {
             environment = System.getProperty("environment");
         }
-        String basePath = this.properties.getProperty(propertyName + "." + environment + ".path");
-
+        basePath = ph.getProperty(propertyName + "." + environment + ".path");
         return basePath;
     }
 
