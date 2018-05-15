@@ -126,8 +126,10 @@ public class BasicFlowChecks extends BasicMultipleChecks {
         if (stepObject.containsKey(fieldName)) {
             int delayMs = Integer.valueOf(stepObject.get(fieldName).toString());
             try {
-                getLogUtils().info("Delay of {} ms", delayMs);
-                Thread.sleep(delayMs);
+                if (delayMs > 0) {
+                    getLogUtils().debug("Delay of {} ms", delayMs);
+                    Thread.sleep(delayMs);
+                }
             } catch (InterruptedException ex) {
                 getLogUtils().error("Interrupted Exception during '{}' phase", fieldName);
             }
