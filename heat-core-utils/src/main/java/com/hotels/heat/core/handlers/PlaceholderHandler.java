@@ -461,7 +461,7 @@ public class PlaceholderHandler {
                     outputStr = ((Map<String, String>) loadedObject).get(specificFieldReq);
                 } else {
                     outputStr = ((Map<String, String>) loadedObject).getOrDefault(DEFAULT_PRELOADED_VALUE, DEFAULT_VALUE_NOT_FOUND_MSG);
-                    logUtils.warning("Requested key '{}' not found: DEFAULT value will be used", specificFieldReq);
+                    logUtils.trace("Requested key '{}': DEFAULT value will be used", specificFieldReq);
                 }
             }
         } catch (Exception oEx) {
