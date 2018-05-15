@@ -18,6 +18,8 @@ package com.hotels.heat.core.utils;
 import static com.jayway.restassured.path.json.JsonPath.with;
 
 import java.io.File;
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -66,6 +68,9 @@ public class TestCaseUtils {
     private static final String JSONPATH_TEST_CASES = "testSuite.testCases";
     private static final String SUITE_DESCRIPTION_DEFAULT = "TEST SUITE";
     private static final String SUITE_DESCRIPTION_PATH = "suiteDesc";
+    public static final String CUSTOM_FIELDS        = "customFields";
+    public static final String FLOW_STEPS_OBJ       = "e2eFlowSteps";
+    public static final String OBJECTNAME_OBJ       = "objectName";
 
     private Method httpMethod;
     private String suiteDescription;
@@ -327,5 +332,118 @@ public class TestCaseUtils {
 
     public void setBeforeSuiteVariables(Map<String, Object> beforeSuiteVariables) {
         this.beforeSuiteVariables = beforeSuiteVariables;
+    }
+
+
+    /**
+     * Given testCaseParameter and object name in input, it retrieves the query params related to the object name.
+     * @param testCaseParameter test case parameters in json input file
+     * @param objectName object name to retrieve
+     * @return query parameters map
+     */
+    public static Map<String, String> getQueryParametersByFlowObjectName(Map testCaseParameter, String objectName) {
+        return getSectionByFlowObjectName(testCaseParameter, objectName, JSON_FIELD_QUERY_PARAMETERS);
+    }
+
+    /**
+     * Given testCaseParameter and object name in input, it retrieves the 'customFields' section related to the object name.
+     * @param testCaseParameter test case parameters in json input file
+     * @param objectName object name to retrieve
+     * @return customFields map
+     */
+    public static Map<String, String> getCustomFieldsByFlowObjectName(Map testCaseParameter, String objectName) {
+        return getSectionByFlowObjectName(testCaseParameter, objectName, CUSTOM_FIELDS);
+    }
+
+    /**
+     * Given testCaseParameter in input, it retrieves the 'customFields' section for the SingleMode.
+     * @param testCaseParameter test case parameters in json input file
+     * @return customFields map
+     */
+    public static Map<String, String> getCustomFields(Map testCaseParameter) {
+        return getSection(testCaseParameter, CUSTOM_FIELDS);
+    }
+
+    private static Map<String,String> getSection(Map testCaseParameter, String sectionName) {
+        Map<String, String> section = new HashMap<>();
+        if (testCaseParameter.containsKey(sectionName)) {
+            section = (Map<String, String>) testCaseParameter.get(sectionName);
+        }
+        return section;
+    }
+
+    /**
+     * Given testCaseParameter and object name in input, it retrieves the requested section related to the object name.
+     * @param testCaseParameter test case parameters in json input file
+     * @param objectName object name to retrieve
+     * @param sectionName the name of the requested section
+     * @return the requested section map
+     */
+    public static Map<String, String> getSectionByFlowObjectName(Map testCaseParameter, String objectName, String sectionName) {
+        Map<String, String> section = new HashMap<>();
+
+        List<Map<String, Object>> e2eFlowSteps = (List) testCaseParameter.get(FLOW_STEPS_OBJ);
+        for (Map<String, Object> step: e2eFlowSteps) {
+            if (step.containsKey(OBJECTNAME_OBJ) && step.containsKey(sectionName) && objectName.equals(step.get(OBJECTNAME_OBJ))) {
+                section = (Map<String, String>) step.get(sectionName);
+            }
+        }
+
+        return section;
+    }
+
+    /**
+     * Given a query parameters array and a name of parameter, it retrieves the value of this parameter.
+     * @param queryParameters query parameters array
+     * @param queryParamName parameter name to retrieve
+     * @return queryParamValue parameter value retrieved
+     */
+    public String getQueryParamValue(String[] queryParameters, String queryParamName) {
+        String queryParamValue = "";
+        for (int i = 0; i < queryParameters.length; ++i) {
+            if (queryParameters[i].startsWith(queryParamName + "=")) {
+                queryParamValue = queryParameters[i].split("=")[1];
+                break;
+            }
+        }
+        return queryParamValue;
+    }
+
+    /**
+     * Given a query parameters String and a name of parameter, it retrieves the value of this parameter.
+     * @param queryParametersString query parameters as URL String
+     * @param queryParamName parameter name to retrieve
+     * @return queryParamValue parameter value retrieved
+     */
+    public String getQueryParamValue(String queryParametersString, String queryParamName) {
+        return getQueryParamValue(queryParametersString, queryParamName, false);
+    }
+
+    /**
+     * Given a query parameters String and a name of parameter, it retrieves the value of this parameter.
+     * @param queryParametersString query parameters as URL String
+     * @param queryParamName parameter name to retrieve
+     * @param urlDecode true if want to decode the query parameter value
+     * @return queryParamValue parameter value retrieved
+     */
+    public String getQueryParamValue(String queryParametersString, String queryParamName, boolean urlDecode) {
+        String queryParametersStringProcessed = queryParametersString;
+        String paramValue = "";
+        if (queryParametersStringProcessed != null) {
+            if (queryParametersStringProcessed.charAt(0) == '?') {
+                queryParametersStringProcessed = queryParametersStringProcessed.substring(1);
+            }
+            String[] queryParametersArray = queryParametersStringProcessed.split("&");
+            paramValue = getQueryParamValue(queryParametersArray, queryParamName);
+
+            if (urlDecode) {
+                try {
+                    paramValue = URLDecoder.decode(paramValue, "UTF-8");
+                } catch (UnsupportedEncodingException e) {
+                    logUtils.error("Error during paramValue '{}' decoding: {}", paramValue, e.getMessage());
+                }
+            }
+        }
+        return paramValue;
     }
 }

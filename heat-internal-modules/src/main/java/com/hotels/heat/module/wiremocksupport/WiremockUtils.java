@@ -15,14 +15,20 @@
  */
 package com.hotels.heat.module.wiremocksupport;
 
+import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 
 import com.hotels.heat.core.handlers.PlaceholderHandler;
 import com.hotels.heat.core.handlers.PropertyHandler;
 import com.hotels.heat.core.handlers.TestSuiteHandler;
 import com.hotels.heat.core.utils.log.LoggingUtils;
+import com.jayway.restassured.path.json.config.JsonPathConfig;
+import com.jayway.restassured.response.Response;
 
 public class WiremockUtils {
+    public static final JsonPathConfig JSON_CONFIG = new JsonPathConfig(JsonPathConfig.NumberReturnType.BIG_DECIMAL);
+
     private static WiremockUtils instance;
     private LoggingUtils logUtils;
     private Properties properties;
@@ -62,5 +68,79 @@ public class WiremockUtils {
         return basePath;
     }
 
+
+    /**
+     * Extract all wiremock requests by REST subpath.
+     * @param wiremockAdminRequests JSON Response of the service, represents the Wiremock admin requests
+     * @param urlSubPath Subpath to use in order to individuate the needed requests
+     * @return list of the wiremock requests
+     */
+    public static List<Map<String, Object>> getWiremockRequestsByRequestSubpath(Response wiremockAdminRequests, String urlSubPath) {
+        String jsonPath = "requests.request.findAll{request -> request.url == '" + urlSubPath + "'}";
+        List<Map<String, Object>> wmRequests = wiremockAdminRequests.jsonPath(JSON_CONFIG).get(jsonPath);
+        return wmRequests;
+    }
+
+    /**
+     * Extract the first wiremock request by REST subpath.
+     * @param wiremockAdminRequests JSON Response of the service, represents the Wiremock admin requests
+     * @param urlSubPath Subpath to use in order to individuate the needed request
+     * @return first of the found wiremock requests
+     */
+    public static Map<String, Object> getWiremockFirstRequestBySubpath(Response wiremockAdminRequests, String urlSubPath) {
+        List<Map<String, Object>> wmRequests = getWiremockRequestsByRequestSubpath(wiremockAdminRequests, urlSubPath);
+        Map<String, Object> wmRequest = wmRequests.get(0);
+        return wmRequest;
+    }
+
+    /**
+     * Extract all wiremock  request-response blocks by REST request subpath.
+     * @param wiremockAdminRequests JSON Response of the service, represents the Wiremock admin requests
+     * @param urlSubPath Subpath to use in order to individuate the needed block request-response
+     * @return list of the wiremock resppnses
+     */
+    public static List<Map<String, Object>> getWiremockReqRespByRequestSubpath(Response wiremockAdminRequests, String urlSubPath) {
+        String jsonPath = "requests.findAll{requests -> requests.request.url == '" + urlSubPath + "'}";
+        List<Map<String, Object>> wmResponses = wiremockAdminRequests.jsonPath(JSON_CONFIG).get(jsonPath);
+        return wmResponses;
+    }
+
+    /**
+     * Extract the first wiremock request-response block by REST request subpath.
+     * @param wiremockAdminRequests JSON Response of the service, represents the Wiremock admin requests
+     * @param urlSubPath Subpath to use in order to individuate the needed request
+     * @return first of the found wiremock responses
+     */
+    public static Map<String, Object> getWiremockFirstReqRespByRequestSubpath(Response wiremockAdminRequests, String urlSubPath) {
+        List<Map<String, Object>> wmResponses = getWiremockReqRespByRequestSubpath(wiremockAdminRequests, urlSubPath);
+        Map<String, Object> wmResponse = wmResponses.get(0);
+        return wmResponse;
+    }
+
+
+
+    /**
+     * Extract the body of wiremock response.
+     * @param wiremockAdminRequests JSON Response of the service, represents the Wiremock admin requests
+     * @param urlSubPath Subpath to use in order to individuate the needed request-response
+     * @return response body as String
+     */
+    public static String getWiremockBodyResponseByRequestSubpath(Response wiremockAdminRequests, String urlSubPath) {
+        Map<String, Object> wmResponse = getWiremockFirstReqRespByRequestSubpath(wiremockAdminRequests, urlSubPath);
+        String wmBodyResponse = ((Map<String, String>) wmResponse.get("response")).get("body");
+        return wmBodyResponse;
+    }
+
+    /**
+     * Extract the body of wiremock request.
+     * @param wiremockAdminRequests JSON Response of the service, represents the Wiremock admin requests
+     * @param urlSubPath Subpath to use in order to individuate the needed request-response
+     * @return request body as String
+     */
+    public static String getWiremockBodyRequestBySubpath(Response wiremockAdminRequests, String urlSubPath) {
+        Map<String, Object> wmRequest = getWiremockFirstRequestBySubpath(wiremockAdminRequests, urlSubPath);
+        String wmBodyResponse = (String) wmRequest.get("body");
+        return wmBodyResponse;
+    }
 
 }

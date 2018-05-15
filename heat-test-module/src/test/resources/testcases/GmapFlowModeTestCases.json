@@ -193,7 +193,7 @@
             "webappName": "GMAPS_GEOCODE",
             "httpMethod": "GET",
             "url": "/json",
-            "testName": "SRLE call channel ANDROID number 2",
+            "testName": "Call GMaps",
             "queryParameters": {
               "address": "${getStep(1).getOutputParam(origin_addresses)}",
               "key": "${preload[GEOCODE_API_KEY]}"
