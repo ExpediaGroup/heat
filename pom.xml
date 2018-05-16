@@ -15,7 +15,7 @@
         <connection>scm:git:git@github.com:HotelsDotCom/heat.git</connection>
         <developerConnection>scm:git:git@github.com:HotelsDotCom/heat.git</developerConnection>
         <url>https://github.com/HotelsDotCom/heat</url>
-        <tag>1.0.3</tag>
+        <tag>heat-1.0.3</tag>
     </scm>
 
     <modules>
