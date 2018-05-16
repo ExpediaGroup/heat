@@ -5,6 +5,12 @@
     <artifactId>heat-example-test-module</artifactId>
     <version>1.0.4-SNAPSHOT</version>
 
+    <parent>
+        <groupId>com.hotels</groupId>
+        <artifactId>heat-core</artifactId>
+        <version>1.0.4-SNAPSHOT</version>
+    </parent>
+
     <dependencies>
         <dependency>
             <groupId>com.hotels</groupId>
