@@ -64,9 +64,9 @@ public class WiremockSupportHandler {
             rsp.put("status", String.valueOf(httpResp.statusCode()));
             rsp.put("total", String.valueOf(total));
             break;
-        case RESET:
-            urlOperation = wmPath + WiremockAction.RESET.getActionSubpath();
-            httpMethod = WiremockAction.RESET.getActionHttpMethod();
+        case RESETREQUESTS:
+            urlOperation = wmPath + WiremockAction.RESETREQUESTS.getActionSubpath();
+            httpMethod = WiremockAction.RESETREQUESTS.getActionHttpMethod();
             httpResp = this.makeHttpCall(urlOperation, httpMethod);
 
             rsp.put("response", httpResp.asString());

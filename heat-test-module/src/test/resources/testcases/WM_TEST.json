@@ -69,13 +69,13 @@
       },
       {
         "testId": "002",
-        "testName": "Test $wiremock.reset feature - get(total) - get(response) - get(status) - default getter",
+        "testName": "Test $wiremock.resetRequests feature - get(total) - get(response) - get(status) - default getter",
         "e2eFlowSteps": [
           {
             "stepNumber": "1",
             "objectName": "Reset wiremock, then ask for total, response and default",
             "beforeStep" : {
-              "WM_RESET" : "${wiremock[WM_INSTANCE].reset}"
+              "WM_RESET" : "${wiremock[WM_INSTANCE].resetRequests}"
             },
             "webappName": "FAKEAPI",
             "httpMethod": "GET",
@@ -113,7 +113,7 @@
             "stepNumber": "1",
             "objectName": "Make a call to unexisting resource in wiremock",
             "beforeStep" : {
-              "WM_RESET" : "${wiremock[WM_INSTANCE].reset}"
+              "WM_RESET" : "${wiremock[WM_INSTANCE].resetRequests}"
             },
             "webappName": "WM_INSTANCE",
             "httpMethod": "GET",
@@ -199,7 +199,7 @@
             "stepNumber": "1",
             "objectName": "Make a call to unexisting resource in wiremock and save status on outputParams",
             "beforeStep" : {
-              "WM_RESET" : "${wiremock[WM_INSTANCE].reset}"
+              "WM_RESET" : "${wiremock[WM_INSTANCE].resetRequests}"
             },
             "webappName": "WM_INSTANCE",
             "httpMethod": "GET",

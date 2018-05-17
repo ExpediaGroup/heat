@@ -62,7 +62,7 @@ For this reason the structure of **"testCases"** attribute changes, as shown in 
             "objectName": "Find_Geocode", 
             "stepNumber": "2",
             "beforeStep" : {
-                "MY_VAR" : "${wiremock[WM_INSTANCE].reset}"
+                "MY_VAR" : "${wiremock[WM_INSTANCE].resetRequests}"
              }
             "webappName": "GMAPS_GEOCODE",
             "httpMethod": "GET",
