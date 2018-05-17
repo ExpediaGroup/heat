@@ -63,19 +63,16 @@ public class BasicFlowChecks extends BasicMultipleChecks {
                     getLogUtils().debug("loading the block id {}: '{}'", blockID, singleBlockName);
                     Map singleBlockObj = (Map) singleObjects.get(singleBlockName);
 
+                    //this map has to be taken from the "beforeStep" section
+                    Map<String, Object> stepPreloadedVariables = loadMapFromTestStep("beforeStep", singleBlockObj);
+                    TestSuiteHandler.getInstance().getTestCaseUtils().setBeforeStepVariables(stepPreloadedVariables); //add before Step variables
+
                     if (!retrievedParameters.isEmpty()) {
                         // this retrieves parameters exposed with 'output' from previous steps, if present.
                         singleBlockObj = processJsonBlockWithPreviousStepsParameters(singleBlockObj);
                     }
 
                     addDelayOnStep(singleBlockObj, FIELD_DELAY_BEFORE);
-
-                    //this map has to be taken from the "beforeStep" section
-                    Map<String, Object> stepPreloadedVariables = loadMapFromTestStep("beforeStep", singleBlockObj);
-                    TestSuiteHandler.getInstance().getTestCaseUtils().setBeforeStepVariables(stepPreloadedVariables); //add before Step variables
-
-                    //this is a mock version:
-                    //stepPreloadedVariables.put("WM_REQUESTS",new HashMap<>());
 
                     Response rspStep = retrieveSingleBlockRsp(singleBlockName, singleBlockObj);
                     respRetrieved.put(singleBlockName, rspStep);
@@ -172,6 +169,7 @@ public class BasicFlowChecks extends BasicMultipleChecks {
             updateParameters(blockID, paramName, (String) placeholderHandler.placeholderProcessString(paramValue));
 
         });
+
     }
 
 }

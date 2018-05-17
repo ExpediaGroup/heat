@@ -190,6 +190,57 @@
             }
           }
         ]
+      },
+      {
+        "testId": "005",
+        "testName": "Test $wiremock.requests feature together with outputParams feature",
+        "e2eFlowSteps": [
+          {
+            "stepNumber": "1",
+            "objectName": "Make a call to unexisting resource in wiremock and save status on outputParams",
+            "beforeStep" : {
+              "WM_RESET" : "${wiremock[WM_INSTANCE].reset}"
+            },
+            "webappName": "WM_INSTANCE",
+            "httpMethod": "GET",
+            "url": "/pippo",
+            "queryParameters": {},
+            "headers": {},
+            "expects": {
+              "responseCode": "404"
+            },
+            "outputParams": {
+              "wmStatus": "${preload[WM_RESET].get(status)}"
+            }
+          },
+          {
+            "stepNumber": "2",
+            "objectName": "Call using outputParams and beforeStep",
+            "beforeStep" : {
+              "WM_REQUESTS" : "${wiremock[WM_INSTANCE].requests}"
+            },
+            "webappName": "FAKEAPI",
+            "httpMethod": "GET",
+            "url": "/users",
+            "queryParameters": {},
+            "headers": {},
+            "expects": {
+              "responseCode": "200",
+              "fieldCheck": [
+                {
+                  "description": "Check that WM_REQUESTS meta.total has the correct result",
+                  "actualValue": "${preload[WM_REQUESTS].get(total)}",
+                  "expectedValue": "1"
+                },
+                {
+                  "description": "Check that outputParams of previous step is working",
+                  "actualValue": "${getStep(1).getOutputParam(wmStatus)}",
+                  "expectedValue": "200"
+                }
+              ]
+            }
+          }
+        ]
       }
     ]
   }

@@ -27,7 +27,6 @@ import org.powermock.modules.junit4.PowerMockRunner;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
-import com.hotels.heat.core.specificexception.HeatException;
 import com.jayway.restassured.builder.ResponseBuilder;
 import com.jayway.restassured.response.Cookie;
 import com.jayway.restassured.response.Cookies;
@@ -134,15 +133,15 @@ public class PlaceholderHandlerTest {
     }
 
 
-    @Test(enabled = true, expectedExceptions = { HeatException.class },
-            expectedExceptionsMessageRegExp = ".* variable '.*' not correctly preloaded")
-    public void testGetPreloadNotExistentString() throws Exception {
+    @Test(enabled = true)
+    public void testGetPreloadNotExistentString() {
         underTest = new PlaceholderHandler();
         Map<String, Object> beforeSuiteVariables = new HashMap<>();
         beforeSuiteVariables.put("preloadedVarName", "preloadedVarValue");
         TestSuiteHandler.getInstance().getTestCaseUtils().setBeforeSuiteVariables(beforeSuiteVariables);
         String stringToProcess = "${preload[NotpreloadedVarName]}";
-        underTest.placeholderProcessString(stringToProcess);
+        Object o = underTest.placeholderProcessString(stringToProcess);
+        Assert.assertEquals(stringToProcess, o, "When a preloaded variable is not found, the string should be unmodified");
     }
 
     @Test (enabled = true)
