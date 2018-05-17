@@ -72,6 +72,14 @@ public class WiremockSupportHandler {
             rsp.put("response", httpResp.asString());
             rsp.put("status", String.valueOf(httpResp.statusCode()));
             break;
+        case RESETSCENARIOS:
+            urlOperation = wmPath + WiremockAction.RESETSCENARIOS.getActionSubpath();
+            httpMethod = WiremockAction.RESETSCENARIOS.getActionHttpMethod();
+            httpResp = this.makeHttpCall(urlOperation, httpMethod);
+
+            rsp.put("response", httpResp.asString());
+            rsp.put("status", String.valueOf(httpResp.statusCode()));
+            break;
         case UNKNOWN:
         default:
             rsp.put("response" , DEFAULT_VALUE);
