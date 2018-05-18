@@ -272,7 +272,7 @@ public class OperationHandler {
 
             this.logUtils.debug("The output of jsonPath: '{}' is {}", actualValue, jsonPathResponse);
 
-            boolean isPathPresent = jsonPathResponse != null && !"".equals(jsonPathResponse);
+            boolean isPathPresent = jsonPathResponse != null && !jsonPathResponse.isEmpty();
 
             if (PlaceholderHandler.PLACEHOLDER_NOT_PRESENT.equals(expectedValue)) {
                 isExecutionOk = assertionHandler.assertion(isBlocking, "assertFalse",

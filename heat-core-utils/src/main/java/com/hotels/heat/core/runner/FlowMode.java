@@ -16,6 +16,7 @@
 package com.hotels.heat.core.runner;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 
 import org.testng.annotations.Test;
@@ -33,6 +34,8 @@ import com.jayway.restassured.response.Response;
  */
 public class FlowMode extends TestBaseRunner {
 
+    private static final List<String> PARAMS_TO_SKIP = Arrays.asList("beforeStep", "fieldCheck", "outputParams");
+
     /**
      * Method that manages the execution of a single test case.
      * @param testCaseParams Map containing test case parameters coming from the json input file
@@ -46,7 +49,7 @@ public class FlowMode extends TestBaseRunner {
         getTestContext().setAttribute(TestBaseRunner.ATTR_TESTCASE_ID, testCaseId);
 
         if (!super.isTestCaseSkippable(testSuiteName, testCaseId, "", "")) {
-            Map  testCaseParamsElaborated = super.resolvePlaceholdersInTcParams(testCaseParams, Arrays.asList("beforeStep", "fieldCheck"));
+            Map  testCaseParamsElaborated = super.resolvePlaceholdersInTcParams(testCaseParams, PARAMS_TO_SKIP);
             getLogUtils().debug("test not skippable");
             RestAssuredRequestMaker restAssuredRequestMaker = new RestAssuredRequestMaker();
             getLogUtils().debug("I'm going to execute 'retrieveInfo'");

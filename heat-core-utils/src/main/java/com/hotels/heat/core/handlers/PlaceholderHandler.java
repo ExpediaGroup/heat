@@ -174,8 +174,7 @@ public class PlaceholderHandler {
                 }
                 JsonPath jsPath = new JsonPath(jsonString);
 
-                Object data = jsPath.get(jsonPath);
-                result = String.valueOf(data);
+                result = String.valueOf((Object) jsPath.get(jsonPath));
                 if (result == null) {
                     logUtils.warning("It is not possible to retrieve the jsonPath '{}'", jsonPath);
                 }
