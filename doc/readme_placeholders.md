@@ -18,7 +18,7 @@ In order to make data dynamic and easier to use in the JSON input files, we intr
 |             Placeholder             |                                            Short Description                                            |
 |:-----------------------------------:|:-------------------------------------------------------------------------------------------------------:|
 | `${path[...]}`                       | retrieves the value of a specific field from a json response                                            |
-| `${preload[...]}`                     | retrieves the value of one of the elements present in the 'preloadVariables' section                    |
+| `${preload[...]}`                     | retrieves the value of one of the elements present in the 'beforeTestSuite' and 'beforeStep' sections                    |
 | `${cookie[...]}`                      | retrieves the value of a cookie from a json response                                                    |
 | `${header[...]}`                      | retrieves the value of a header from a json response                                                    |
 | `${getStep(...).getOutputParam(...)}` | in flow mode tests, it retrieves a specific output parameter coming from a specific step of the same tc |
@@ -125,39 +125,63 @@ Another feature of this placeholder is that, if you want to retrieve the entire 
 
 <a name="preload"></a>
 ## Preload
-Preload placeholder is used to refer to a variable declared in the 'preloadVariables' section of the JSON input file.
+Preload placeholder is used to refer to a variable declared in the 'beforeTestSuite' and 'beforeStep' sections of the JSON input file.
 
 For example, the json file can be written as follows:
 
 ```json
 {
-    "testSuite": {
-        "generalSettings": {
+  "testSuite": {
+    "generalSettings": {
+      "suiteDesc": "Example Flow Mode Tests",
+      "flowMode": "true"
+    },
+    "beforeTestSuite": {
+      "WM_REQUESTS" : "beforeTestSuite_value",
+      "MYVAR_1" : "valueSuite1",
+      "MYVAR_2" : "valueSuite2"
+    },
+    "testCases": [
+      {
+        "testId": "001",
+        "testName": "Test beforeTestSuite and beforeStep scopes",
+        "e2eFlowSteps": [
+          {
+            "stepNumber": "1",
+            "objectName": "beforeStep variable with the same name of beforeTestSuite variable",
+            "beforeStep" : {
+              "MYVAR_1" : "valueStep1"
+            },
+            "webappName": "FAKEAPI",
             "httpMethod": "GET",
-            "suiteDesc":"Example Single Mode Tests"
-        },
-        "preloadVariables": {
-            "CHECK_IN":"${TODAY+100_YYYY-MM-dd}",
-            "CHECK_OUT":"${TODAY+101_YYYY-MM-dd}",
-            "API_KEY":"AIzaSyDuJvGUBixcL3uzS4dDVtDE-jex24F0BFk"
-        },
-        .....
-        "testCases": [
-            {
-                "testId": "001",
-                "testName": "single mode test for new heat #1",
-                "url": "/json",
-                "queryParameters": {
-                    "units": "meters",
-                    "origins":"via Galileo Galilei 15, Taranto Italia",
-                    "destinations":"via dei Giuochi Istmici 40, Roma Italia",
-                    "key":"${preload[API_KEY]}"
-                },  
-                ....      
-```
-In this way we have declared the variable in the 'preloadVariables' section as `"API_KEY":"AIzaSyDuJvGUBixcL3uzS4dDVtDE-jex24F0BFk"` and we use it simply referring to its name `"key":"${preload[API_KEY]}"`.
+            "url": "/users",
+            "queryParameters": {},
+            "headers": {},
+            "expects": {
+              "responseCode": "200",
+              "fieldCheck": [
+                {
+                  "description": "Overwritten var",
+                  "actualValue": "${preload[MYVAR_1]}",
+                  "expectedValue": "valueStep1"
+                },
+                {
+                  "description": "Not Overwritten var",
+                  "actualValue": "${preload[MYVAR_2]}",
+                  "expectedValue": "valueSuite2"
+                }
+              ]
+            }
+          }
 
-There are two advantages coming from this approach. The first one is that we can avoid some typo in writing always the same string. The second one is a great performance advantage: if the preloadVariable contains some elaborations coming from a custom external module (see doc [here](externalModules.md)), we can do it only once and not each time we write the entire placeholder.
+```
+In this way we declared the variable in 'beforeTestSuite' section as `"MYVAR_2":"valueSuite2"` and we use it simply referring to its name `"key":"${preload[MYVAR_2]}"`
+
+At the same way we declared the variable in 'beforeStep' section as `"MYVAR_1":"valueStep1"` and we use it simply referring to its name `"key":"${preload[MYVAR_1]}"`
+
+Please notice that the value of MYVAR_1 in beforeStep overrides the one declared in beforeTestSuite
+
+There are two advantages coming from this approach. The first one is that we can avoid some typo in writing always the same string. The second one is a great performance advantage: if the beforeTestSuite contains some elaborations coming from a custom external module (see doc [here](externalModules.md)), we can do it only once and not each time we write the entire placeholder.
 
 [![Back to the Top Of Page][upArrow]](#placeholders)
 
@@ -174,7 +198,7 @@ For example:
       "suiteDesc": "Example Flow Mode Tests",
       "flowMode": "true"
     },
-        "preloadVariables": {
+        "beforeTestSuite": {
         "outputRspFormat":"json",
         "DISTANCE_API_KEY":"AIzaSyDuJvGUBixcL3uzS4dDVtDE-jex24F0BFk",
         "GEOCODE_API_KEY":"AIzaSyBHOMI_1PF4ag943jCgIavFtGYN5lJn61I" 
@@ -253,7 +277,7 @@ It can be useful, for example, in the flow mode, comparing two cookies coming fr
       "suiteDesc": "Example Flow Mode Tests",
       "flowMode": "true"
     },
-        "preloadVariables": {
+        "beforeTestSuite": {
         "outputRspFormat":"json",
         "DISTANCE_API_KEY":"AIzaSyDuJvGUBixcL3uzS4dDVtDE-jex24F0BFk",
         "GEOCODE_API_KEY":"AIzaSyBHOMI_1PF4ag943jCgIavFtGYN5lJn61I" 
@@ -333,7 +357,7 @@ and in the JSON input file we can find
       "suiteDesc": "Example Flow Mode Tests",
       "flowMode": "true"
     },
-        "preloadVariables": {
+        "beforeTestSuite": {
         "outputRspFormat":"json",
         "DISTANCE_API_KEY":"AIzaSyDuJvGUBixcL3uzS4dDVtDE-jex24F0BFk",
         "GEOCODE_API_KEY":"AIzaSyBHOMI_1PF4ag943jCgIavFtGYN5lJn61I",
@@ -375,6 +399,27 @@ ${TODAY+100_YYYY:MM:dd}
 
 <a name="wiremock"></a>
 ## Wiremock
+HEAT provides a set of utilities to easily use Wiremock in test cases (more info on Wiremock here: http://wiremock.org/).
+
+Here the exhaustive list:
+
+ * Reset utilities:
+
+Reset Wiremock cache, equivalent to perform a POST call to __admin/requests/reset Wiremock endpoint
+```
+${wiremock[WM_INSTANCE].resetRequests}
+```
+
+equivalent:
+```
+${preload[WM_RESET]}
+```
+
+Call status on reset
+```
+${wiremock[WM_INSTANCE].get(status)}
+```
+
 
 
 [![Back to the Top Of Page][upArrow]](#placeholders)
