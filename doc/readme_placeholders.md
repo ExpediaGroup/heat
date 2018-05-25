@@ -403,9 +403,9 @@ HEAT provides a set of utilities to easily use Wiremock in test cases (more info
 
 Here the exhaustive list:
 
- * Reset utilities:
+  **Reset utilities**:
 
-Reset Wiremock cache, equivalent to perform a POST call to __admin/requests/reset Wiremock endpoint
+ * Reset Wiremock cache, equivalent to perform a POST call to __admin/requests/reset endpoint
 ```
 ${wiremock[WM_INSTANCE].resetRequests}
 ```
@@ -415,11 +415,40 @@ equivalent:
 ${preload[WM_RESET]}
 ```
 
-Call status on reset
+* Call status on reset
 ```
 ${wiremock[WM_INSTANCE].get(status)}
 ```
 
+ **Requests utilities**:
+
+* Call wiremock cache, equivalent to perform a GET call to __admin/requests endpoint
+```
+${wiremock[WM_INSTANCE].requests}
+```
+
+* Get the total number of requests, equivalent to get the meta.total value
+```
+${preload[WM_REQUESTS].get(total)}
+```
+
+* Retrieve Wiremock response from cache:
+```
+${preload[WM_REQUESTS].get(response)}
+```
+Equivalent to:
+```
+${preload[WM_REQUESTS]}
+```
+Example of usage:
+
+```json
+    {
+        "description": "Check that WM_REQUESTS response has a JSON with not matched result",
+        "actualValue": "${preload[WM_REQUESTS].get(response)}",
+        "expectedValue": ["\"wasMatched\" : false"]
+    }
+```
 
 
 [![Back to the Top Of Page][upArrow]](#placeholders)

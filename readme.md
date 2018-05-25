@@ -36,6 +36,7 @@ Please, have a look here [code of conduct](code-of-conduct.md)
   * SysProp
   * Present / NotPresent
   * Today
+  * Wiremock
 * [Specific Checks](doc/readme_specificchecks.md)
   * Execution overview
   * Create and register your SpecificCheck
