@@ -95,4 +95,4 @@ Heat Test Framework makes everything very simple because you will be able to wri
 # Legal
 This project is available under the [Apache 2.0 License](http://www.apache.org/licenses/LICENSE-2.0.html).
 
-Copyright 2015-2017 Expedia Inc.
+Copyright 2015-2018 Expedia Inc.
