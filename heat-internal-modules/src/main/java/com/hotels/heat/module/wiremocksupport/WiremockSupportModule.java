@@ -57,7 +57,7 @@ public final class WiremockSupportModule implements HeatPlaceholderModule {
 
         try {
             String instanceName = getWmInstanceName(stringToProcess);
-            String basePath = getWmBasePath(TestSuiteHandler.getInstance().getEnvironmentHandler().getPh().getPropFile(), instanceName);
+            String basePath = getWmBasePath(TestSuiteHandler.getInstance().getEnvironmentHandler().getPropertyHandler().getPropFile(), instanceName);
             WiremockAction action = getActionToRun(stringToProcess);
 
             WiremockSupportHandler wmSupportHandler = new WiremockSupportHandler(instanceName, basePath, testDetails);
