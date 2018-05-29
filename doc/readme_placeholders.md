@@ -401,54 +401,146 @@ ${TODAY+100_YYYY:MM:dd}
 ## Wiremock
 HEAT provides a set of utilities to easily use Wiremock in test cases (more info on Wiremock here: http://wiremock.org/).
 
+- ${wiremock[WM_INSTANCE].resetRequests}
+- ${wiremock[WM_INSTANCE].resetScenarios}
+- ${wiremock[WM_INSTANCE].requests}
+
+
 Here the exhaustive list:
 
-  **Reset utilities**:
+  **Reset utilities**
 
- * Reset Wiremock cache, equivalent to perform a POST call to __admin/requests/reset endpoint
-```
-${wiremock[WM_INSTANCE].resetRequests}
+ * The following example shows how to reset Wiremock cache (equivalent to perform a POST call to __admin/requests/reset endpoint) 
+```json
+{
+        "testId": "002",
+        "testName": "Test $wiremock.resetRequests feature - get(total) - get(response) - get(status) - default getter",
+        "e2eFlowSteps": [
+          {
+            "stepNumber": "1",
+            "objectName": "Reset wiremock, then ask for total, response and default",
+            "beforeStep" : {
+              "WM_RESET" : "${wiremock[WM_INSTANCE].resetRequests}"
+            },
+            "webappName": "FAKEAPI",
+            "httpMethod": "GET",
+            "url": "/users",
+            "queryParameters": {},
+            "headers": {},
+            "expects": {
+              "responseCode": "200",
+              "fieldCheck": [
+                {
+                  "description": "Check that WM_RESET response has an empty string",
+                  "actualValue": "${preload[WM_RESET].get(response)}",
+                  "expectedValue": ""
+                },
+                {
+                  "description": "Check that WM_RESET default oject is the same of get(response)",
+                  "actualValue": "${preload[WM_RESET]}",
+                  "expectedValue": ""
+                },
+                {
+                  "description": "Check that WM_RESET status has HTTP status code returned of wiremock server",
+                  "actualValue": "${preload[WM_RESET].get(status)}",
+                  "expectedValue": "200"
+                }
+              ]
+            }
 ```
 
-equivalent:
-```
-${preload[WM_RESET]}
-```
+The value of **WM_RESET** is returned in beforeStep and we can perform the following operation on it:
+ ```
+ ${preload[WM_RESET].get(response)}
+ ```
+ In order to get the response. Please note that the above is equivalent to **${preload[WM_RESET]}** because *get(response)* method is the default one.
 
-* Call status on reset
-```
-${wiremock[WM_INSTANCE].get(status)}
-```
+The **get(status)** can be used to retrieve the http response status:
+ ```
+ ${preload[WM_RESET].get(status)}
+ ```
 
- **Requests utilities**:
+ **Requests utilities**
+ 
+ The following example shows hot to call Wiremock cache to retrieve response and http status:
+ 
+```json
+"beforeStep" : {
+              "WM_REQUESTS" : "${wiremock[WM_INSTANCE].requests}"
+            },
+            "webappName": "FAKEAPI",
+            "httpMethod": "GET",
+            "url": "/users",
+            "queryParameters": {},
+            "headers": {},
+            "expects": {
+              "responseCode": "200",
+              "fieldCheck": [
+                {
+                  "description": "Check that WM_REQUESTS meta.total has the correct result",
+                  "actualValue": "${preload[WM_REQUESTS].get(total)}",
+                  "expectedValue": "1"
+                },
+                {
+                  "description": "Check that WM_REQUESTS response has a JSON with not matched result",
+                  "actualValue": "${preload[WM_REQUESTS].get(response)}",
+                  "expectedValue": ["\"wasMatched\" : false"]
+                },
+                {
+                  "description": "Check that WM_REQUESTS default oject is the same of get(response)",
+                  "actualValue": "${preload[WM_REQUESTS]}",
+                  "expectedValue": ["\"wasMatched\" : false"]
+                },
+                {
+                  "description": "Check that WM_REQUESTS status has HTTP status code returned of wiremock server",
+                  "actualValue": "${preload[WM_REQUESTS].get(status)}",
+                  "expectedValue": "200"
+                }
+              ]
+```
+The value of **WM_REQUESTS** is returned in beforeStep and we can perform the following operation on it:
+ ```
+ ${preload[WM_REQUESTS].get(total)}
+ ```
+to get the number of request intercepted by Wiremock. This corresponds to the **meta.total** value returned when calling Wiremock __admin/requests endpoint
+ ```
+  ${preload[WM_REQUESTS].get(response)}
+  ```
+which returns the response body. This is the same as **${preload[WM_REQUESTS]}** because *get(response)* can be omitted.
 
-* Call wiremock cache, equivalent to perform a GET call to __admin/requests endpoint
+The **get(status)** can be used to retrieve the http response status:
+ ```
+ ${preload[WM_REQUESTS].get(status)}
+ ```
+ 
+ **Reset scenario**
+ 
+In order to reset Wiremock scenario the following command can be used:
 ```
-${wiremock[WM_INSTANCE].requests}
-```
-
-* Get the total number of requests, equivalent to get the meta.total value
-```
-${preload[WM_REQUESTS].get(total)}
-```
-
-* Retrieve Wiremock response from cache:
-```
-${preload[WM_REQUESTS].get(response)}
-```
-Equivalent to:
-```
-${preload[WM_REQUESTS]}
+"${wiremock[WIREMOCK_LOCALIZATION].resetScenarios}"
 ```
 Example of usage:
-
 ```json
-    {
-        "description": "Check that WM_REQUESTS response has a JSON with not matched result",
-        "actualValue": "${preload[WM_REQUESTS].get(response)}",
-        "expectedValue": ["\"wasMatched\" : false"]
-    }
+"e2eFlowSteps": [
+                    {
+                        "objectName": "Set Wm Localization scenario to 'randomdata'",
+                        "stepNumber": "1",
+                        "beforeStep" : {
+                         "WM_RESET_SERVICE1" : "${wiremock[SERVICE_1].resetRequests}",
+                         "WM_RESET_SCENARIO2" : "${wiremock[SERVICE_2].resetScenarios}"
+                        },
+                    },
 ```
+In this way we can save the value of **${wiremock[SERVICE_2].resetScenarios}** in WM_RESET_SCENARIO2 variable and perform some checks later on.
+For instance we can get the response:
+```
+"${wiremock[WM_RESET_SCENARIO2].get(response)}"
+```
+which returns the response body. This is the same as **${preload[WM_RESET_SCENARIO2]}** because *get(response)* can be omitted.
+The **get(status)** can be used to retrieve the http response status:
+ ```
+ ${preload[WM_RESET_SCENARIO2].get(status)}
+ ```
 
 
 [![Back to the Top Of Page][upArrow]](#placeholders)
