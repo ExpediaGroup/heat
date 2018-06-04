@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2015-2017 Expedia Inc.
+ * Copyright (C) 2015-2018 Expedia Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,6 +15,8 @@
  */
 package com.hotels.heat.core.runner;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 
 import org.testng.annotations.Test;
@@ -32,6 +34,8 @@ import com.jayway.restassured.response.Response;
  */
 public class FlowMode extends TestBaseRunner {
 
+    private static final List<String> PARAMS_TO_SKIP = Arrays.asList("beforeStep", "fieldCheck", "outputParams");
+
     /**
      * Method that manages the execution of a single test case.
      * @param testCaseParams Map containing test case parameters coming from the json input file
@@ -45,7 +49,7 @@ public class FlowMode extends TestBaseRunner {
         getTestContext().setAttribute(TestBaseRunner.ATTR_TESTCASE_ID, testCaseId);
 
         if (!super.isTestCaseSkippable(testSuiteName, testCaseId, "", "")) {
-            Map  testCaseParamsElaborated = super.resolvePlaceholdersInTcParams(testCaseParams);
+            Map  testCaseParamsElaborated = super.resolvePlaceholdersInTcParams(testCaseParams, PARAMS_TO_SKIP);
             getLogUtils().debug("test not skippable");
             RestAssuredRequestMaker restAssuredRequestMaker = new RestAssuredRequestMaker();
             getLogUtils().debug("I'm going to execute 'retrieveInfo'");
@@ -53,8 +57,7 @@ public class FlowMode extends TestBaseRunner {
             flowChecks.setRestAssuredRequestMaker(restAssuredRequestMaker);
 
             TestCaseMapHandler tcMapHandler = new TestCaseMapHandler(testCaseParamsElaborated, getPlaceholderHandler());
-            Map<String, Object> elaboratedTestCaseParams = (Map) tcMapHandler.retriveProcessedMap();
-            Map<String, Response> rspRetrieved = flowChecks.retrieveInfo(elaboratedTestCaseParams);
+            Map<String, Response> rspRetrieved = flowChecks.retrieveInfo(testCaseParamsElaborated);
 
             super.specificChecks(testCaseParamsElaborated, rspRetrieved, testSuiteHandler.getEnvironmentHandler().getEnvironmentUnderTest());
 

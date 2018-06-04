@@ -1,0 +1,79 @@
+{
+  "testSuite": {
+    "generalSettings": {
+      "suiteDesc": "Flow Mode Tests for $path placeholder",
+      "flowMode": "true"
+    },
+    "beforeTestSuite": {
+      "MYJSON_1" : "{\"userId\":1,\"id\":1,\"title\":\"mytitle\",\"body\":\"mybody\"},userId]}",
+      "MYJSON_2" : "[{\"userId\":1,\"id\":1,\"title\":\"title1\",\"body\":\"pippo1\"},{\"userId\":10,\"id\":100,\"title\":\"title2\",\"body\":\"pippo2\"}]"
+    },
+    "testCases": [
+      {
+        "testId": "001",
+        "testName": "Test behaviour of ${path and ${path[$preload with 1 param",
+        "e2eFlowSteps": [
+          {
+            "objectName": "Test behaviour of ${path and ${path[$preload",
+            "stepNumber": "1",
+            "webappName": "FAKEAPI",
+            "httpMethod": "GET",
+            "url": "/posts/1",
+            "queryParameters": {},
+            "headers": {},
+            "expects": {
+              "responseCode": "200",
+              "fieldCheck": [
+                {
+                  "description": "Check ${path with one parameter on webapp response",
+                  "actualValue": "${path[userId]}",
+                  "expectedValue": "1"
+                }
+              ]
+            }
+          }
+        ]
+      },
+      {
+        "testId": "002",
+        "testName": "Test behaviour of ${path with 2 param",
+        "e2eFlowSteps": [
+          {
+            "objectName": "Test behaviour of ${path and ${path[$preload",
+            "stepNumber": "1",
+            "webappName": "FAKEAPI",
+            "httpMethod": "GET",
+            "url": "/posts/1",
+            "queryParameters": {},
+            "headers": {},
+            "expects": {
+              "responseCode": "200",
+              "fieldCheck": [
+                {
+                  "description": "Check ${path with 2 parameters on variable",
+                  "actualValue": "${path[${preload[MYJSON_1]},title]}",
+                  "expectedValue": "mytitle"
+                },
+                {
+                  "description": "Check ${path with 2 parameters on variable",
+                  "actualValue": "${path[${preload[MYJSON_2]},[0].userId]}",
+                  "expectedValue": "1"
+                },
+                {
+                  "description": "Check ${path with 2 parameters on hard-coded content",
+                  "actualValue": "${path[{\"userId\":1,\"id\":1,\"title\":\"mytitle\",\"body\":\"mybody\"},title]}",
+                  "expectedValue": "mytitle"
+                },
+                {
+                  "description": "Check ${path with 2 parameters on hard-coded content",
+                  "actualValue": "${path[[{\"userId\":1,\"id\":1,\"title\":\"title1\",\"body\":\"pippo1\"},{\"userId\":10,\"id\":100,\"title\":\"title2\",\"body\":\"pippo2\"}],[0].userId]}",
+                  "expectedValue": "1"
+                }
+              ]
+            }
+          }
+        ]
+      }
+    ]
+  }
+}

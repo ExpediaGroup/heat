@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2015-2017 Expedia Inc.
+ * Copyright (C) 2015-2018 Expedia Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,6 +16,7 @@
 package com.hotels.heat.core.handlers;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 import com.hotels.heat.core.utils.log.LoggingUtils;
@@ -28,6 +29,7 @@ import com.hotels.heat.core.utils.log.LoggingUtils;
 public class TestCaseMapHandler {
 
     private final Map<String, Object> testCaseMap;
+    private final List<String> paramsToSkip;
     private final PlaceholderHandler placeholderHandler;
     private final LoggingUtils logUtils;
 
@@ -37,10 +39,15 @@ public class TestCaseMapHandler {
  * @param placeholderhandler is the PlaceholderHandler to use. It could contain some data coming from the parsing of
  * the first part of the json input file, so it is useful to pass it in the constructor
  */
-    public TestCaseMapHandler(Map testCaseMapInput, PlaceholderHandler placeholderhandler) {
+    public TestCaseMapHandler(Map testCaseMapInput, PlaceholderHandler placeholderhandler, List<String> paramsToSkip) {
         this.placeholderHandler = placeholderhandler;
+        this.paramsToSkip = paramsToSkip;
         this.logUtils = TestSuiteHandler.getInstance().getLogUtils();
         this.testCaseMap = testCaseMapInput;
+    }
+
+    public TestCaseMapHandler(Map testCaseMapInput, PlaceholderHandler placeholderhandler) {
+        this(testCaseMapInput, placeholderhandler, new ArrayList<>());
     }
 
     /**
@@ -48,13 +55,12 @@ public class TestCaseMapHandler {
      * coming from the json input file.
      * @return the same structure of the json input file, but with placeholders resolved
      */
-    public Map<String, Object> retriveProcessedMap() {
+    public Map<String, Object> retrieveProcessedMap() {
         logUtils.trace("input: '{}'", testCaseMap.toString());
         Map<String, Object> output = (Map<String, Object>) process(testCaseMap);
         logUtils.trace("output: '{}'", output.toString());
         return output;
     }
-
 
     private Object processString(Object input) {
         Object output = input;
@@ -68,16 +74,19 @@ public class TestCaseMapHandler {
 
     private Object processMap(Object input) {
         Object output = input;
-        ((Map<String, Object>) input).forEach((key, valueObj) -> {
-            logUtils.trace("key:'{}' / OLD value: '{}'", key, valueObj.toString());
-            if (valueObj.getClass().equals(String.class)) {
-                valueObj = processString(valueObj);
-            } else {
-                valueObj = process(valueObj);
-            }
-            ((Map<String, Object>) output).put(key, valueObj);
-            logUtils.trace("key:'{}' / NEW value: '{}'", key, valueObj.toString());
-        });
+        ((Map<String, Object>) input).entrySet().stream()
+                .filter(map -> !paramsToSkip.contains(map.getKey()))
+                .forEach(entry -> {
+                    logUtils.trace("key:'{}' / OLD value: '{}'", entry.getKey(), entry.getValue());
+                    Object value;
+                    if (entry.getValue().getClass().equals(String.class)) {
+                        value = processString(entry.getValue());
+                    } else {
+                        value = process(entry.getValue());
+                    }
+                    ((Map<String, Object>) output).put(entry.getKey(), value);
+                    logUtils.trace("key:'{}' / NEW value: '{}'", entry.getKey(), value);
+                });
 
         return output;
     }

@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2015-2017 Expedia Inc.
+ * Copyright (C) 2015-2018 Expedia Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,11 +23,9 @@ import java.util.Map;
 import com.hotels.heat.core.checks.BasicMultipleChecks;
 import com.hotels.heat.core.specificexception.HeatException;
 import com.hotels.heat.core.utils.DataExtractionSupport;
-import com.hotels.heat.core.utils.TestCaseUtils;
 import com.hotels.heat.core.utils.log.LoggingUtils;
 import com.hotels.heat.core.validations.ArithmeticalValidator;
 import com.hotels.heat.core.validations.StringValidator;
-
 import com.jayway.restassured.response.Response;
 
 
@@ -267,41 +265,27 @@ public class OperationHandler {
         String actualValue = fieldsToCheck.get(JSON_ELEM_ACTUAL_VALUE).toString();
         // the check can be executed ONLY if the actual value is a "${path"-style placeholder
         if (actualValue.contains(PlaceholderHandler.PATH_PLACEHOLDER)) {
-            TestCaseUtils testCaseUtils = TestSuiteHandler.getInstance().getTestCaseUtils();
-            String jsonPathToCheck = testCaseUtils.regexpExtractor(actualValue, PlaceholderHandler.PATH_JSONPATH_REGEXP, 1);
-            this.logUtils.debug("check if the path '{}' is {} in the response",
-                        jsonPathToCheck, expectedValue);
-            boolean isPathPresent = fieldPresent((Response) responses, jsonPathToCheck);
+
+            PlaceholderHandler placeholderHandler = TestSuiteHandler.getInstance().getEnvironmentHandler().getPlaceholderHandler();
+            placeholderHandler.setResponse((Response) responses);
+            String jsonPathResponse = placeholderHandler.getPathVar(actualValue);
+
+            this.logUtils.debug("The output of jsonPath: '{}' is {}", actualValue, jsonPathResponse);
+
+            boolean isPathPresent = jsonPathResponse != null && !jsonPathResponse.isEmpty();
+
             if (PlaceholderHandler.PLACEHOLDER_NOT_PRESENT.equals(expectedValue)) {
                 isExecutionOk = assertionHandler.assertion(isBlocking, "assertFalse",
-                    logUtils.getTestCaseDetails() + "json path '" + jsonPathToCheck + "' has not to be present in the response --> ", isPathPresent);
+                    logUtils.getTestCaseDetails() + "json path '" + actualValue + "' has not to be present ", isPathPresent);
             } else if (PlaceholderHandler.PLACEHOLDER_PRESENT.equals(expectedValue)) {
                 isExecutionOk = assertionHandler.assertion(isBlocking, "assertTrue",
-                    logUtils.getTestCaseDetails() + "json path '" + jsonPathToCheck + "' has to be present in the response -->", isPathPresent);
+                    logUtils.getTestCaseDetails() + "json path '" + actualValue + "' has to be present", isPathPresent);
             }
         } else {
             isExecutionOk = false;
             logUtils.error("the check can be executed ONLY if the actual value is a \"" + PlaceholderHandler.PLACEHOLDER_SYMBOL_BEGIN + "path\"-style placeholder");
         }
         return isExecutionOk;
-    }
-
-
-    /**
-     * Method to check if a given 'json path' is present in a response.
-     * @param response It is the response to parse
-     * @param jsonPathToCheck it is the json path to check
-     * @return true if the path is present in the response, otherwise false
-     */
-    private boolean fieldPresent(Response response, String jsonPathToCheck) {
-        boolean isFieldPresent = true;
-        try {
-            response.jsonPath().get(jsonPathToCheck).toString();
-            isFieldPresent = true;
-        } catch (Exception oEx) {
-            isFieldPresent = false;
-        }
-        return isFieldPresent;
     }
 
     private boolean isItMathematicalCheck(String operation) {

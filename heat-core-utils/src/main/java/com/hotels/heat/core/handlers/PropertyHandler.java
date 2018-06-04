@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2015-2017 Expedia Inc.
+ * Copyright (C) 2015-2018 Expedia Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -48,7 +48,7 @@ public class PropertyHandler {
     /**
      * Loads and cache the environment properties from file system.
      */
-    public void loadEnvironmentProperties() {
+    public void loadFromPropertyFile() {
 
         if (!isLoaded) {
             InputStream inputStream = null;
@@ -73,7 +73,7 @@ public class PropertyHandler {
     }
 
     /**
-     * Retrive the string associated to the property name.
+     * Retrieve the string associated to the property name.
      * @param propertyName name of the property to retrieve
      * @return the string set in environment property file.
      */
@@ -97,6 +97,11 @@ public class PropertyHandler {
     public void setProperties(Properties properties) {
         this.properties = properties;
     }
+
+    public String getPropFile() {
+        return propFile;
+    }
+
 
     public boolean isLoaded() {
         return isLoaded;

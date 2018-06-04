@@ -180,7 +180,7 @@ To verify if the array "partecipants" in the response contains exactly 4 element
 ```json
 {
     "description": "partecipants array contains 4 elements",
-    "actualValue": "${path[partecipants].size()}",
+    "actualValue": "${path[partecipants.size()}",
     "operation": "=",
     "expectedValue": "4"
 }
@@ -190,7 +190,7 @@ To verify if the array "partecipants" in the response contains exactly 4 element
 ```json
 {
     "description": "partecipants array contains 4 elements",
-    "actualValue": "${path[partecipants].size()}",
+    "actualValue": "${path[partecipants.size()}",
     "expectedValue": "4"
 }
 ```
@@ -200,7 +200,7 @@ To verify if the array "partecipants" in the response contains more than 1 eleme
 ```json
 {
     "description": "partecipants array contains more than 1 element",
-    "actualValue": "${path[partecipants].size()}",
+    "actualValue": "${path[partecipants.size()}",
     "operation": ">",
     "expectedValue": "1"
 }

@@ -4,7 +4,7 @@
             "httpMethod": "POST",
             "suiteDesc":"Example Single Mode Tests with POST"
         },
-        "preloadVariables": {
+        "beforeTestSuite": {
           "PRELOAD_COMMENT":"PIPPO",
           "PRELOAD_DELIVERY":"${TODAY+101_YYYY-MM-dd}"
         },

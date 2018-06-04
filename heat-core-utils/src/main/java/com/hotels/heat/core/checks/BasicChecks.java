@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2015-2017 Expedia Inc.
+ * Copyright (C) 2015-2018 Expedia Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,7 +22,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.apache.http.HttpStatus;
 import org.testng.ITestContext;
 
 import com.hotels.heat.core.handlers.AssertionHandler;
@@ -110,7 +109,7 @@ public class BasicChecks {
      * all input test data
      * @return true if the check is ok, false otherwise
      */
-    private boolean checkResponseCode(Map testCaseParams) {
+    public boolean checkResponseCode(Map testCaseParams) {
         boolean isCheckOk = true;
         //isBlocking: if it is true, in case of failure the test stops running, otherwise it will go on running with the other checks (the final result does not change)
         boolean isBlocking = TestSuiteHandler.getInstance().getTestCaseUtils().getSystemParamOnBlocking();
@@ -120,11 +119,12 @@ public class BasicChecks {
         }
         if (testCaseParams.containsKey(EXPECTS_JSON_ELEMENT)) {
             Map<String, String> expectedParams = (Map<String, String>) testCaseParams.get(EXPECTS_JSON_ELEMENT);
-            // The attribute "responseCode" in the json file is optional. If it is missing, the default value is 200
-            int expectedRespCode = expectedParams.get(RESPONSE_CODE_JSON_ELEMENT) != null ? Integer.parseInt(expectedParams.get(RESPONSE_CODE_JSON_ELEMENT)) : HttpStatus.SC_OK;
-            int currentStatusCode = ((Response) responses).getStatusCode();
-            logUtils.debug("check response code: current '{}' / expected '{}'", currentStatusCode, expectedRespCode);
-            isCheckOk &= assertionHandler.assertion(isBlocking, "assertEquals", logUtils.getTestCaseDetails() + "{checkResponseCode} ", currentStatusCode, expectedRespCode);
+            String expectedRespCode = expectedParams.get(RESPONSE_CODE_JSON_ELEMENT);
+            if (expectedRespCode != null) {
+                String currentStatusCode = String.valueOf(((Response) responses).getStatusCode());
+                logUtils.debug("check response code: current '{}' / expected '{}'", currentStatusCode, expectedRespCode);
+                isCheckOk &= assertionHandler.assertion(isBlocking, "assertEquals", logUtils.getTestCaseDetails() + "{checkResponseCode} ", currentStatusCode, expectedRespCode);
+            }
         } else {
             throw new HeatException(logUtils.getExceptionDetails() + "not any 'expects' found");
         }

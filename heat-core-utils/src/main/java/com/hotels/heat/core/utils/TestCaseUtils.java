@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2015-2017 Expedia Inc.
+ * Copyright (C) 2015-2018 Expedia Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,10 +18,14 @@ package com.hotels.heat.core.utils;
 import static com.jayway.restassured.path.json.JsonPath.with;
 
 import java.io.File;
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -34,7 +38,6 @@ import com.hotels.heat.core.handlers.TestSuiteHandler;
 import com.hotels.heat.core.runner.TestBaseRunner;
 import com.hotels.heat.core.specificexception.HeatException;
 import com.hotels.heat.core.utils.log.LoggingUtils;
-
 import com.jayway.restassured.internal.http.Method;
 import com.jayway.restassured.path.json.JsonPath;
 
@@ -60,20 +63,22 @@ public class TestCaseUtils {
     public static final String JSON_FIELD_HEADERS = "headers";
 
     private static final String JSONPATH_GENERAL_SETTINGS = "testSuite.generalSettings";
-    private static final String JSONPATH_PRELOAD_SECTION = "testSuite.preloadVariables";
+    private static final String JSONPATH_BEFORE_SUITE_SECTION = "testSuite.beforeTestSuite";
     private static final String JSONPATH_JSONSCHEMAS = "testSuite.jsonSchemas";
     private static final String JSONPATH_TEST_CASES = "testSuite.testCases";
     private static final String SUITE_DESCRIPTION_DEFAULT = "TEST SUITE";
     private static final String SUITE_DESCRIPTION_PATH = "suiteDesc";
+    public static final String CUSTOM_FIELDS        = "customFields";
+    public static final String FLOW_STEPS_OBJ       = "e2eFlowSteps";
+    public static final String OBJECTNAME_OBJ       = "objectName";
 
-    private Map<String, Object> tcParams;
     private Method httpMethod;
-    private String webappPath;
     private String suiteDescription;
     private Map<String, String> jsonSchemas;
     private Iterator<Object[]> tcArrayIterator;
     private PlaceholderHandler placeholderHandler;
-    private Map<String, Object> preloadVariables;
+    private Map<String, Object> beforeSuiteVariables;
+    private Map<String, Object> beforeStepVariables;
 
     private LoggingUtils logUtils;
 
@@ -84,7 +89,7 @@ public class TestCaseUtils {
      * inside the suite.
      */
     public TestCaseUtils() {
-        this.webappPath = "";
+        this.beforeStepVariables = new HashMap<>();
         this.httpMethod = Method.GET;
         this.suiteDescription = SUITE_DESCRIPTION_DEFAULT;
     }
@@ -108,14 +113,14 @@ public class TestCaseUtils {
 
     }
 
-    private void loadPreloadedSection(JsonPath testSuiteJsonPath) {
-        preloadVariables = testSuiteJsonPath.get(JSONPATH_PRELOAD_SECTION);
-        if (preloadVariables != null && !preloadVariables.isEmpty()) {
-            logUtils.debug("PRELOAD VARIABLES PRESENT");
+    private void loadBeforeSuiteSection(JsonPath testSuiteJsonPath) {
+        beforeSuiteVariables = testSuiteJsonPath.get(JSONPATH_BEFORE_SUITE_SECTION);
+        if (beforeSuiteVariables != null && !beforeSuiteVariables.isEmpty()) {
+            logUtils.debug("BEFORE SUITE VARIABLES PRESENT");
             placeholderHandler = new PlaceholderHandler();
-            for (Map.Entry<String, Object> entry : preloadVariables.entrySet()) {
-                preloadVariables.put(entry.getKey(), placeholderHandler.placeholderProcessString(entry.getValue().toString()));
-                logUtils.debug("PRELOADED VARIABLE: '{}' = '{}'", entry.getKey(), entry.getValue());
+            for (Map.Entry<String, Object> entry : beforeSuiteVariables.entrySet()) {
+                beforeSuiteVariables.put(entry.getKey(), placeholderHandler.placeholderProcessString(entry.getValue().toString()));
+                logUtils.debug("BEFORE SUITE VARIABLE: '{}' = '{}'", entry.getKey(), entry.getValue());
             }
         }
     }
@@ -127,10 +132,8 @@ public class TestCaseUtils {
     private Iterator<Object[]> getTestCaseIterator(JsonPath testSuiteJsonPath) {
         List<Object> testCases = testSuiteJsonPath.get(JSONPATH_TEST_CASES);
         List<Object[]> listOfArray = new ArrayList<>();
-        for (Iterator<Object> testCasesIterator = testCases.iterator(); testCasesIterator.hasNext();) {
-            Object[] array = new Object[1];
-            array[0] = testCasesIterator.next();
-            listOfArray.add(array);
+        for (Object testCase : testCases) {
+            listOfArray.add(new Object[]{testCase});
         }
         tcArrayIterator = listOfArray.iterator();
         return tcArrayIterator;
@@ -143,37 +146,30 @@ public class TestCaseUtils {
      * @return the iterator of the test cases described in the json input file
      */
     public Iterator<Object[]> jsonReader(String testSuiteFilePath, ITestContext context) {
-        Iterator<Object[]> iterator = null;
         if (logUtils == null) {
-            throw new HeatException(logUtils.getExceptionDetails() + "logUtils null");
+            throw new HeatException("logUtils null");
         }
         if (context == null) {
             throw new HeatException(logUtils.getExceptionDetails() + "context null");
         }
 
-        //check if the test suite is runnable (in terms of enabled environments or test suite explicitly declared in the 'heatTest' system property)
+        Iterator<Object[]> iterator;
+        //check if the test suite is runnable
+        // (in terms of enabled environments or test suite explicitly declared in the 'heatTest' system property)
         if (isTestSuiteRunnable(context.getName())) {
-            File testSuiteJsonFile;
-
-            try {
-                testSuiteJsonFile = new File(getClass().getResource(testSuiteFilePath).getPath());
-            } catch (NullPointerException oEx) {
-                logUtils.error("the file '{}' does not exist", testSuiteFilePath);
-                throw new HeatException(logUtils.getExceptionDetails()
-                        + "the file '" + testSuiteFilePath + "' does not exist");
-            }
-
+            File testSuiteJsonFile = Optional.ofNullable(getClass().getResource(testSuiteFilePath))
+                .map(url -> new File(url.getPath()))
+                .orElseThrow(() -> new HeatException(logUtils.getExceptionDetails()
+                        + "the file '" + testSuiteFilePath + "' does not exist"));
             try {
                 JsonPath testSuiteJsonPath = with(testSuiteJsonFile);
-
                 loadGeneralSettings(testSuiteJsonPath);
-                loadPreloadedSection(testSuiteJsonPath);
+                loadBeforeSuiteSection(testSuiteJsonPath);
                 loadJsonSchemaForOutputValidation(testSuiteJsonPath);
                 iterator = getTestCaseIterator(testSuiteJsonPath);
             } catch (Exception oEx) {
-                logUtils.error("catched exception message: '{}' \n cause: '{}'",
-                        oEx.getLocalizedMessage(), oEx.getCause());
-                throw new HeatException(logUtils.getExceptionDetails() + "catched exception '" + oEx.getLocalizedMessage() + "'");
+                throw new HeatException(String.format("%scatched exception '%s'",
+                        logUtils.getExceptionDetails(), oEx.getLocalizedMessage()), oEx);
             }
         } else {
             logUtils.debug("SKIPPED test suite");
@@ -182,8 +178,8 @@ public class TestCaseUtils {
         return iterator;
     }
 
-    public Map<String, Object> getPreloadedVariables() {
-        return preloadVariables;
+    public Map<String, Object> getBeforeSuiteVariables() {
+        return beforeSuiteVariables;
     }
 
     /**
@@ -220,14 +216,6 @@ public class TestCaseUtils {
         }
 
         return isTSrunnable;
-    }
-
-    public void setWebappPath(String path) {
-        this.webappPath = path;
-    }
-
-    public void setTcParams(Map<String, Object> params) {
-        tcParams = params;
     }
 
     public Method getHttpMethod() {
@@ -332,5 +320,130 @@ public class TestCaseUtils {
             }
         }
         return isValid;
+    }
+
+    public void setBeforeStepVariables(Map<String,Object> beforeStepVariables) {
+        this.beforeStepVariables = beforeStepVariables;
+    }
+
+    public Map<String,Object> getBeforeStepVariables() {
+        return this.beforeStepVariables;
+    }
+
+    public void setBeforeSuiteVariables(Map<String, Object> beforeSuiteVariables) {
+        this.beforeSuiteVariables = beforeSuiteVariables;
+    }
+
+
+    /**
+     * Given testCaseParameter and object name in input, it retrieves the query params related to the object name.
+     * @param testCaseParameter test case parameters in json input file
+     * @param objectName object name to retrieve
+     * @return query parameters map
+     */
+    public static Map<String, String> getQueryParametersByFlowObjectName(Map testCaseParameter, String objectName) {
+        return getSectionByFlowObjectName(testCaseParameter, objectName, JSON_FIELD_QUERY_PARAMETERS);
+    }
+
+    /**
+     * Given testCaseParameter and object name in input, it retrieves the 'customFields' section related to the object name.
+     * @param testCaseParameter test case parameters in json input file
+     * @param objectName object name to retrieve
+     * @return customFields map
+     */
+    public static Map<String, String> getCustomFieldsByFlowObjectName(Map testCaseParameter, String objectName) {
+        return getSectionByFlowObjectName(testCaseParameter, objectName, CUSTOM_FIELDS);
+    }
+
+    /**
+     * Given testCaseParameter in input, it retrieves the 'customFields' section for the SingleMode.
+     * @param testCaseParameter test case parameters in json input file
+     * @return customFields map
+     */
+    public static Map<String, String> getCustomFields(Map testCaseParameter) {
+        return getSection(testCaseParameter, CUSTOM_FIELDS);
+    }
+
+    private static Map<String,String> getSection(Map testCaseParameter, String sectionName) {
+        Map<String, String> section = new HashMap<>();
+        if (testCaseParameter.containsKey(sectionName)) {
+            section = (Map<String, String>) testCaseParameter.get(sectionName);
+        }
+        return section;
+    }
+
+    /**
+     * Given testCaseParameter and object name in input, it retrieves the requested section related to the object name.
+     * @param testCaseParameter test case parameters in json input file
+     * @param objectName object name to retrieve
+     * @param sectionName the name of the requested section
+     * @return the requested section map
+     */
+    public static Map<String, String> getSectionByFlowObjectName(Map testCaseParameter, String objectName, String sectionName) {
+        Map<String, String> section = new HashMap<>();
+
+        List<Map<String, Object>> e2eFlowSteps = (List) testCaseParameter.get(FLOW_STEPS_OBJ);
+        for (Map<String, Object> step: e2eFlowSteps) {
+            if (step.containsKey(OBJECTNAME_OBJ) && step.containsKey(sectionName) && objectName.equals(step.get(OBJECTNAME_OBJ))) {
+                section = (Map<String, String>) step.get(sectionName);
+            }
+        }
+
+        return section;
+    }
+
+    /**
+     * Given a query parameters array and a name of parameter, it retrieves the value of this parameter.
+     * @param queryParameters query parameters array
+     * @param queryParamName parameter name to retrieve
+     * @return queryParamValue parameter value retrieved
+     */
+    public String getQueryParamValue(String[] queryParameters, String queryParamName) {
+        String queryParamValue = "";
+        for (int i = 0; i < queryParameters.length; ++i) {
+            if (queryParameters[i].startsWith(queryParamName + "=")) {
+                queryParamValue = queryParameters[i].split("=")[1];
+                break;
+            }
+        }
+        return queryParamValue;
+    }
+
+    /**
+     * Given a query parameters String and a name of parameter, it retrieves the value of this parameter.
+     * @param queryParametersString query parameters as URL String
+     * @param queryParamName parameter name to retrieve
+     * @return queryParamValue parameter value retrieved
+     */
+    public String getQueryParamValue(String queryParametersString, String queryParamName) {
+        return getQueryParamValue(queryParametersString, queryParamName, false);
+    }
+
+    /**
+     * Given a query parameters String and a name of parameter, it retrieves the value of this parameter.
+     * @param queryParametersString query parameters as URL String
+     * @param queryParamName parameter name to retrieve
+     * @param urlDecode true if want to decode the query parameter value
+     * @return queryParamValue parameter value retrieved
+     */
+    public String getQueryParamValue(String queryParametersString, String queryParamName, boolean urlDecode) {
+        String queryParametersStringProcessed = queryParametersString;
+        String paramValue = "";
+        if (queryParametersStringProcessed != null) {
+            if (queryParametersStringProcessed.charAt(0) == '?') {
+                queryParametersStringProcessed = queryParametersStringProcessed.substring(1);
+            }
+            String[] queryParametersArray = queryParametersStringProcessed.split("&");
+            paramValue = getQueryParamValue(queryParametersArray, queryParamName);
+
+            if (urlDecode) {
+                try {
+                    paramValue = URLDecoder.decode(paramValue, "UTF-8");
+                } catch (UnsupportedEncodingException e) {
+                    logUtils.error("Error during paramValue '{}' decoding: {}", paramValue, e.getMessage());
+                }
+            }
+        }
+        return paramValue;
     }
 }
