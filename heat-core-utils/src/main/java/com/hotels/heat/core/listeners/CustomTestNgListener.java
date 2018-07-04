@@ -137,12 +137,12 @@ public class CustomTestNgListener extends TestListenerAdapter {
         }
         if (numTestSkipped > 0 && numTestSuccess == 0 && numTestFailed == 0) {
             // test suite totally skipped
-            logger.trace("*************[{}][Suite description: {}] SKIPPED Test Suite", testName, testContext.getAttribute(TestBaseRunner.SUITE_DESCRIPTION_CTX_ATTR).toString());
+            logger.trace("*************[{}][Suite description: {}] SKIPPED Test Suite", testName, testContext.getAttribute(TestBaseRunner.SUITE_DESCRIPTION_CTX_ATTR));
             logger.info("*************[{}][{}] END Test Suite: Success: {} / Failed: {} / Skipped: {}",
-                testName, testContext.getAttribute(TestBaseRunner.SUITE_DESCRIPTION_CTX_ATTR).toString(), numTestSuccess, numTestFailed, numTestSkipped);
+                testName, testContext.getAttribute(TestBaseRunner.SUITE_DESCRIPTION_CTX_ATTR), numTestSuccess, numTestFailed, numTestSkipped);
         } else {
             logger.debug("*************[{}][{}] END Test Suite: Success: {} / Failed: {} / Skipped: {}",
-                testName, testContext.getAttribute(TestBaseRunner.SUITE_DESCRIPTION_CTX_ATTR).toString(), numTestSuccess, numTestFailed, numTestSkipped);
+                testName, testContext.getAttribute(TestBaseRunner.SUITE_DESCRIPTION_CTX_ATTR), numTestSuccess, numTestFailed, numTestSkipped);
         }
 
         if (numTestFailed > 0) {
