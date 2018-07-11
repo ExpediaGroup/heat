@@ -20,7 +20,7 @@ import com.jayway.restassured.internal.http.Method;
 public enum WiremockAction {
     UNKNOWN,
     REQUESTS("requests", "/__admin/requests", Method.GET, new String[]{"response", "status", "total"}),
-    RESETREQUESTS("resetRequests", "/__admin/reset", Method.POST, new String[]{"response", "status"}),
+    RESETREQUESTS("resetRequests", "/__admin/requests/reset", Method.POST, new String[]{"response", "status"}),
     RESETSCENARIOS("resetScenarios", "/__admin/scenarios/reset", Method.POST, new String[]{"response", "status"});
 
     private String actionName;
