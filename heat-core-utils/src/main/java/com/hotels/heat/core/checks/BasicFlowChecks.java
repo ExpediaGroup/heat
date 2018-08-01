@@ -21,6 +21,7 @@ import java.util.Map;
 import org.testng.ITestContext;
 
 import com.hotels.heat.core.handlers.PlaceholderHandler;
+import com.hotels.heat.core.handlers.TestSuiteHandler;
 import com.hotels.heat.core.specificexception.HeatException;
 import com.hotels.heat.core.utils.TestCaseUtils;
 import com.hotels.heat.core.utils.log.LoggingUtils;
@@ -52,19 +53,23 @@ public class BasicFlowChecks extends BasicMultipleChecks {
      * @return Map webapp name, response from the specified webapp
      */
     @Override
-    public Map<String, Response> retrieveInfo(Map testCaseParamsInput) {
+    public Map<String, Response> retrieveInfo(Map<String, Object> testCaseParamsInput) {
         Map<String, Response> respRetrieved = new HashMap<>();
         try {
             compactInfoToCompare(testCaseParamsInput);
             if (getIsRunnable()) {
-                int numberOfBlocks = getHttpMethods().size();
-                getLogUtils().trace("number of blocks to load: {}", numberOfBlocks);
-                Map<String, Object> singleObjecs = getInputJsonObjs();
+                getLogUtils().trace("number of blocks to load: {}", getHttpMethods().size());
+                Map<String, Object> singleObjects = getInputJsonObjs();
                 getSteps().forEach((blockID, singleBlockName) -> {
                     getLogUtils().debug("loading the block id {}: '{}'", blockID, singleBlockName);
-                    Map singleBlockObj = (Map) singleObjecs.get(singleBlockName);
+                    Map singleBlockObj = (Map) singleObjects.get(singleBlockName);
+
+                    //this map has to be taken from the "beforeStep" section
+                    Map<String, Object> stepPreloadedVariables = loadMapFromTestStep("beforeStep", singleBlockObj);
+                    TestSuiteHandler.getInstance().getTestCaseUtils().setBeforeStepVariables(stepPreloadedVariables); //add before Step variables
 
                     if (!retrievedParameters.isEmpty()) {
+                        // this retrieves parameters exposed with 'output' from previous steps, if present.
                         singleBlockObj = processJsonBlockWithPreviousStepsParameters(singleBlockObj);
                     }
 
@@ -82,7 +87,7 @@ public class BasicFlowChecks extends BasicMultipleChecks {
                     }
 
                     addDelayOnStep(singleBlockObj, FIELD_DELAY_AFTER);
-
+                    TestSuiteHandler.getInstance().getTestCaseUtils().getBeforeStepVariables().clear();  //reset before Step variables
                 });
 
             }
@@ -92,6 +97,18 @@ public class BasicFlowChecks extends BasicMultipleChecks {
                     + " / cause: " + oEx.getCause() + " / message: " + oEx.getLocalizedMessage());
         }
         return respRetrieved;
+    }
+
+    private Map<String,Object> loadMapFromTestStep(String elementName, Map testStep) {
+        Map<String, Object> loadedMap = new HashMap<>();
+        if (testStep.containsKey(elementName) && testStep.get(elementName) != null) {
+            Map<String, Object> elementMap = (Map<String, Object>) testStep.get(elementName);
+            elementMap.forEach((key, value) -> {
+                Object resolvedValue = TestSuiteHandler.getInstance().getEnvironmentHandler().getPlaceholderHandler().placeholderProcessString((String) value);
+                loadedMap.put(key, resolvedValue);
+            });
+        }
+        return loadedMap;
     }
 
     private Map processJsonBlockWithPreviousStepsParameters(Map singleBlockObj) {
@@ -107,8 +124,10 @@ public class BasicFlowChecks extends BasicMultipleChecks {
         if (stepObject.containsKey(fieldName)) {
             int delayMs = Integer.valueOf(stepObject.get(fieldName).toString());
             try {
-                getLogUtils().info("Delay of {} ms", delayMs);
-                Thread.sleep(delayMs);
+                if (delayMs > 0) {
+                    getLogUtils().debug("Delay of {} ms", delayMs);
+                    Thread.sleep(delayMs);
+                }
             } catch (InterruptedException ex) {
                 getLogUtils().error("Interrupted Exception during '{}' phase", fieldName);
             }
@@ -151,6 +170,7 @@ public class BasicFlowChecks extends BasicMultipleChecks {
             updateParameters(blockID, paramName, (String) placeholderHandler.placeholderProcessString(paramValue));
 
         });
+
     }
 
 }

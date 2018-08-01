@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2015-2017 Expedia Inc.
+ * Copyright (C) 2015-2018 Expedia Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -38,7 +38,7 @@ public final class EnvironmentHandler {
     private static final String HTTP = "http";
     private static final String HEAT_TEST_SEPARATOR = ",";
 
-    private PropertyHandler ph;
+    private PropertyHandler propertyHandler;
     private String enabledEnvironments;
     private String defaultEnvironment;
     private String environmentUnderTest;
@@ -55,7 +55,7 @@ public final class EnvironmentHandler {
      */
     public EnvironmentHandler(PropertyHandler inputPh) {
         this.logUtils = TestSuiteHandler.getInstance().getLogUtils();
-        this.ph = inputPh;
+        this.propertyHandler = inputPh;
         loadSysProperties();
         this.setEnabledEnvironments(defaultEnvironment);
     }
@@ -67,7 +67,7 @@ public final class EnvironmentHandler {
     public EnvironmentHandler(String propFilePath) {
         this.logUtils = TestSuiteHandler.getInstance().getLogUtils();
         this.placeholderHandler = new PlaceholderHandler();
-        this.ph = new PropertyHandler(propFilePath, placeholderHandler);
+        this.propertyHandler = new PropertyHandler(propFilePath, placeholderHandler);
         loadSysProperties();
     }
 
@@ -102,14 +102,14 @@ public final class EnvironmentHandler {
      */
     public String getEnvironmentUrl(String webApp) {
         String url;
-        ph.loadEnvironmentProperties();
+        propertyHandler.loadFromPropertyFile();
         logUtils.trace("The environment I am going to test is '{}'", environmentUnderTest);
         logUtils.trace("Enabled environments are '{}'", enabledEnvironments);
 
         if (!environmentUnderTest.startsWith(HTTP)) { //no custom environment
             if (enabledEnvironments.contains(environmentUnderTest)) {
                 logUtils.trace("The environment is among the enabled ones.");
-                url = ph.getProperty(webApp + "." + environmentUnderTest + ".path");
+                url = propertyHandler.getProperty(webApp + "." + environmentUnderTest + ".path");
 
             } else {
                 url = null;
@@ -119,7 +119,7 @@ public final class EnvironmentHandler {
         } else {
             logUtils.trace("The environment is not a standard one");
             if (!webApp.equalsIgnoreCase(webappUnderTest)) {
-                url = ph.getProperty(webApp + "." + defaultEnvironment + ".path");
+                url = propertyHandler.getProperty(webApp + "." + defaultEnvironment + ".path");
             } else {
                 url = environmentUnderTest;
             }
@@ -151,8 +151,12 @@ public final class EnvironmentHandler {
         this.environmentUnderTest = System.getProperty("environment", DEFAULT_ENVIRONMENT);
     }
 
-    public void setPh(PropertyHandler ph) {
-        this.ph = ph;
+    public void setPropertyHandler(PropertyHandler propertyHandler) {
+        this.propertyHandler = propertyHandler;
+    }
+
+    public PropertyHandler getPropertyHandler() {
+        return propertyHandler;
     }
 
     public void setEnabledEnvironments(String environmentToTest) {
@@ -179,4 +183,7 @@ public final class EnvironmentHandler {
         return this.webappUnderTest;
     }
 
+    public PlaceholderHandler getPlaceholderHandler() {
+        return placeholderHandler;
+    }
 }

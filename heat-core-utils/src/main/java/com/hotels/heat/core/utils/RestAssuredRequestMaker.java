@@ -159,7 +159,7 @@ public class RestAssuredRequestMaker {
      * @param queryParams is a Map<String, String> with the query parameters
      * @return the response of the request done.
      */
-    private Response executeHttpRequest(Method httpMethod, String url, Map<String, Object> queryParams) {
+    public Response executeHttpRequest(Method httpMethod, String url, Map<String, Object> queryParams) {
         Response serviceResponse = null;
 
         try {

@@ -16,6 +16,7 @@
 package com.hotels.heat.core.utils;
 
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 import org.testng.ITestContext;
@@ -37,6 +38,8 @@ public interface RunnerInterface {
             ITestContext context);
 
     Iterator<Object[]> providerJson();
+
+    Map resolvePlaceholdersInTcParams(Map<String, Object> testCaseParams, List<String> paramsToSkip);
 
     Map resolvePlaceholdersInTcParams(Map<String, Object> testCaseParams);
 

@@ -1,4 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Copyright (C) 2015-2018 Expedia Inc.
+
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+  http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+-->
 <!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
 <suite name="HEAT RUN" parallel="tests" thread-count="1">
 
@@ -6,12 +21,16 @@
     <listeners>
         <listener class-name="com.hotels.heat.core.listeners.CustomTestNgListener"/>
         <listener class-name="com.hotels.heat.core.listeners.CustomJUnitReportListener" />
+        <listener class-name="com.hotels.heat.dummypackage.listeners.SetupTestsListener">
+            <parameter name="wmTests" value="WM_TEST"/>
+        </listener>
     </listeners>
+
     <parameter name="envPropFilePath" value="environment.properties"/>
     <!-- Please do not touch this section: END -->
 
     <test name="FIRST_SUITE" enabled="false">
-        <parameter name="inputJsonPath" value="/testCases/ExampleSingleModeTestCases.json"/>
+        <parameter name="inputJsonPath" value="/testcases/ExampleSingleModeTestCases.json"/>
         <parameter name="enabledEnvironments" value="environment1,environment2"/>
         <classes>
             <class name="com.hotels.heat.core.runner.SingleMode"/>
@@ -19,7 +38,7 @@
     </test>
 
     <test name="GOOGLE_MAPS_ENV1" enabled="true">
-        <parameter name="inputJsonPath" value="/testCases/GmapsSingleModeTestCases.json"/>
+        <parameter name="inputJsonPath" value="/testcases/GmapsSingleModeTestCases.json"/>
         <parameter name="enabledEnvironments" value="environment1"/>
         <classes>
             <class name="com.hotels.heat.core.runner.SingleMode"/>
@@ -27,7 +46,7 @@
     </test>
 
     <test name="GOOGLE_MAPS_ENV2" enabled="true">
-        <parameter name="inputJsonPath" value="/testCases/GmapsSingleModeTestCases.json"/>
+        <parameter name="inputJsonPath" value="/testcases/GmapsSingleModeTestCases.json"/>
         <parameter name="enabledEnvironments" value="environment2"/>
         <classes>
             <class name="com.hotels.heat.core.runner.SingleMode"/>
@@ -35,7 +54,7 @@
     </test>
 
     <test name="POST_TESTS_ENV3" enabled="true">
-        <parameter name="inputJsonPath" value="/testCases/GmapsSingleModePostTestCases.json"/>
+        <parameter name="inputJsonPath" value="/testcases/GmapsSingleModePostTestCases.json"/>
         <parameter name="enabledEnvironments" value="environment3"/>
         <classes>
             <class name="com.hotels.heat.core.runner.SingleMode"/>
@@ -43,7 +62,7 @@
     </test>
 
     <test name="GOOGLE_FLOW_ENV1" enabled="true">
-        <parameter name="inputJsonPath" value="/testCases/GmapFlowModeTestCases.json"/>
+        <parameter name="inputJsonPath" value="/testcases/GmapFlowModeTestCases.json"/>
         <parameter name="enabledEnvironments" value="environment1"/>
         <classes>
             <class name="com.hotels.heat.core.runner.FlowMode"/>
@@ -51,10 +70,29 @@
     </test>
 
     <test name="GOOGLE_COMPARE_ENV1" enabled="true">
-        <parameter name="inputJsonPath" value="/testCases/GmapsCompareModeTestCases.json"/>
+        <parameter name="inputJsonPath" value="/testcases/GmapsCompareModeTestCases.json"/>
         <parameter name="enabledEnvironments" value="environment1"/>
         <classes>
             <class name="com.hotels.heat.core.runner.CompareMode"/>
+        </classes>
+    </test>
+
+    <test name="WM_TEST" enabled="true">
+        <parameter name="inputJsonPath" value="/testcases/WM_TEST.json"/>
+        <parameter name="enabledEnvironments" value="environment1"/>
+        <parameter name="wmBindAddress" value="localhost"/>
+        <parameter name="wmRoot" value="."/>
+        <parameter name="wmPort" value="30002"/>
+        <classes>
+            <class name="com.hotels.heat.core.runner.FlowMode"/>
+        </classes>
+    </test>
+
+    <test name="PATH_TEST" enabled="true">
+        <parameter name="inputJsonPath" value="/testcases/PATH_TEST.json"/>
+        <parameter name="enabledEnvironments" value="environment1"/>
+        <classes>
+            <class name="com.hotels.heat.core.runner.FlowMode"/>
         </classes>
     </test>
 

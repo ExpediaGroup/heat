@@ -27,8 +27,6 @@ import org.powermock.modules.junit4.PowerMockRunner;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
-import com.hotels.heat.core.specificexception.HeatException;
-
 import io.restassured.builder.ResponseBuilder;
 import io.restassured.http.Cookie;
 import io.restassured.http.Cookies;
@@ -89,9 +87,9 @@ public class PlaceholderHandlerTest {
     @Test (enabled = true)
     public void testGetPreloadSimpleString() {
         underTest = new PlaceholderHandler();
-        Map<String, Object> preloadedVariables = new HashMap<>();
-        preloadedVariables.put("preloadedVarName", "preloadedVarValue");
-        underTest.setPreloadedVariables(preloadedVariables);
+        Map<String, Object> beforeSuiteVariables = new HashMap<>();
+        beforeSuiteVariables.put("preloadedVarName", "preloadedVarValue");
+        TestSuiteHandler.getInstance().getTestCaseUtils().setBeforeSuiteVariables(beforeSuiteVariables);
         String stringToProcess = "${preload[preloadedVarName]}";
         String processedStr = (String) underTest.placeholderProcessString(stringToProcess);
         Assert.assertEquals(processedStr, "preloadedVarValue");
@@ -100,13 +98,14 @@ public class PlaceholderHandlerTest {
     @Test (enabled = true)
     public void testGetPreloadComplexDefaultString() {
         underTest = new PlaceholderHandler();
-        Map<String, Object> preloadedVariables = new HashMap<>();
+        Map<String, Object> beforeSuiteVariables = new HashMap<>();
         Map<String, String> complexStructure = new HashMap<>();
         complexStructure.put("DEFAULT", "default_value");
         complexStructure.put("param1", "param1_value");
         complexStructure.put("param2", "param2_value");
-        preloadedVariables.put("preloadedVarName", complexStructure);
-        underTest.setPreloadedVariables(preloadedVariables);
+        beforeSuiteVariables.put("preloadedVarName", complexStructure);
+        TestSuiteHandler.getInstance().getTestCaseUtils().setBeforeSuiteVariables(beforeSuiteVariables);
+
 
         String stringToProcess = "${preload[preloadedVarName]}";
         String processedStr = (String) underTest.placeholderProcessString(stringToProcess);
@@ -134,15 +133,15 @@ public class PlaceholderHandlerTest {
     }
 
 
-    @Test(enabled = true, expectedExceptions = { HeatException.class },
-            expectedExceptionsMessageRegExp = ".* variable '.*' not correctly preloaded")
-    public void testGetPreloadNotExistentString() throws Exception {
+    @Test(enabled = true)
+    public void testGetPreloadNotExistentString() {
         underTest = new PlaceholderHandler();
-        Map<String, Object> preloadedVariables = new HashMap<>();
-        preloadedVariables.put("preloadedVarName", "preloadedVarValue");
-        underTest.setPreloadedVariables(preloadedVariables);
+        Map<String, Object> beforeSuiteVariables = new HashMap<>();
+        beforeSuiteVariables.put("preloadedVarName", "preloadedVarValue");
+        TestSuiteHandler.getInstance().getTestCaseUtils().setBeforeSuiteVariables(beforeSuiteVariables);
         String stringToProcess = "${preload[NotpreloadedVarName]}";
-        underTest.placeholderProcessString(stringToProcess);
+        Object o = underTest.placeholderProcessString(stringToProcess);
+        Assert.assertEquals(stringToProcess, o, "When a preloaded variable is not found, the string should be unmodified");
     }
 
     @Test (enabled = true)
@@ -197,8 +196,9 @@ public class PlaceholderHandlerTest {
         Assert.assertEquals(processedStr, "{\"field_path\":\"field_value\",\"array1\":[{\"array_field1\":\"array_field_value1\"}]}");
     }
 
-    @Test(enabled = true, expectedExceptions = { HeatException.class },
-            expectedExceptionsMessageRegExp = ".* It is not possible to retrieve the jsonPath (.*) from the current response. --> response: .*")
+//    @Test(enabled = true, expectedExceptions = { HeatException.class },
+//            expectedExceptionsMessageRegExp = ".* It is not possible to retrieve the jsonPath (.*) from the current response. --> response: .*")
+    @Test
     public void testPathPlaceholderNotExistentString() throws Exception {
         underTest = new PlaceholderHandler();
         underTest.setResponse(buildResponse());
@@ -288,9 +288,9 @@ public class PlaceholderHandlerTest {
     public void testGeneralMapAsInput() {
         underTest = new PlaceholderHandler();
 
-        Map<String, Object> preloadedVariables = new HashMap<>();
-        preloadedVariables.put("preloadedVarName", "preloadedVarValue");
-        underTest.setPreloadedVariables(preloadedVariables);
+        Map<String, Object> beforeSuiteVariables = new HashMap<>();
+        beforeSuiteVariables.put("preloadedVarName", "preloadedVarValue");
+        TestSuiteHandler.getInstance().getTestCaseUtils().setBeforeSuiteVariables(beforeSuiteVariables);
 
         Map<String, Object> mapToProcess = new HashMap<>();
         mapToProcess.put("field1", "field1_value");
@@ -311,11 +311,11 @@ public class PlaceholderHandlerTest {
     @Test (enabled = true)
     public void testProcessPlaceholders() {
         underTest = new PlaceholderHandler();
-        Map<String, Object> preloadedVariables = new HashMap<>();
-        preloadedVariables.put("preloadedVarName1", "preloadedVarValue1");
-        preloadedVariables.put("preloadedVarName2", "preloadedVarValue2");
-        preloadedVariables.put("preloadedVarName3", "preloadedVarValue3");
-        underTest.setPreloadedVariables(preloadedVariables);
+        Map<String, Object> beforeSuiteVariables = new HashMap<>();
+        beforeSuiteVariables.put("preloadedVarName1", "preloadedVarValue1");
+        beforeSuiteVariables.put("preloadedVarName2", "preloadedVarValue2");
+        beforeSuiteVariables.put("preloadedVarName3", "preloadedVarValue3");
+        TestSuiteHandler.getInstance().getTestCaseUtils().setBeforeSuiteVariables(beforeSuiteVariables);
 
         Map<String, Object> mapToProcess = new HashMap<>();
         mapToProcess.put("field1", "{\"custname\":\"pippo\",\"custemail\":\"pippo@test.test\",\"delivery\":\"${preload[preloadedVarName1]}\""

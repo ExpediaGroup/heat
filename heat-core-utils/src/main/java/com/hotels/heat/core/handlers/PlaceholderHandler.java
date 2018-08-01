@@ -31,6 +31,7 @@ import com.hotels.heat.core.specificexception.HeatException;
 import com.hotels.heat.core.utils.TestCaseUtils;
 import com.hotels.heat.core.utils.log.LoggingUtils;
 
+import io.restassured.path.json.JsonPath;
 import io.restassured.path.json.config.JsonPathConfig;
 import io.restassured.response.Response;
 
@@ -49,14 +50,14 @@ public class PlaceholderHandler {
     public static final String PATH_PLACEHOLDER = PLACEHOLDER_SYMBOL_BEGIN + "path";
     public static final String PLACEHOLDER_NOT_PRESENT = PLACEHOLDER_SYMBOL_BEGIN + "NotPresent" + PLACEHOLDER_SYMBOL_END;
     public static final String PLACEHOLDER_PRESENT = PLACEHOLDER_SYMBOL_BEGIN + "Present" + PLACEHOLDER_SYMBOL_END;
-    public static final String PATH_JSONPATH_REGEXP = ".*?\\$\\{path\\[(.*?)\\]\\}.*?";
+    public static final String PATH_JSONPATH_REGEXP = ".*?\\$\\{path\\[(.*?)\\]\\}$";
 
     private static final String DEFAULT_VALUE_NOT_FOUND_MSG = "DEFAULT VALUE NOT FOUND!!!";
 
     private static final String JSONPATH_COMPLETE = ".";
 
     private static final String REGEXP_PRELOAD_PLACEHOLDER = "((?:\\$\\{preload\\[[^\\]\\}]*\\]\\})|(?:\\$\\{preload\\[[^\\]\\}]*\\]\\.get\\(.*?\\)\\}))";
-    private static final String REGEXP_PATH_PLACEHOLDER = "(?:\\$\\{path\\[.*?\\]\\})"; //"(?:\\$\\{path\\[[^\\}]*\\]\\})";
+    private static final String REGEXP_PATH_PLACEHOLDER = "(?:\\$\\{path\\[.*\\]\\})"; //"(?:\\$\\{path\\[[^\\}]*\\]\\})";
     private static final String REGEXP_COOKIE_PLACEHOLDER = "(?:\\$\\{cookie\\[[^\\]\\}]*\\]\\})";
     private static final String REGEXP_COOKIE_JSONPATH = ".*?\\$\\{cookie\\[(.*?)\\]\\}.*?";
     private static final String REGEXP_HEADER_PLACEHOLDER = "(?:\\$\\{header\\[[^\\]\\}]*\\]\\})";
@@ -77,15 +78,15 @@ public class PlaceholderHandler {
 
     /**
      * PlaceholderHandler class is useful to placeholderProcessString json input files structure,
- so that it is possible to manage external libraries, preloaded variables and so on
- with specific placeholders.
+     * so that it is possible to manage external libraries, preloaded variables and so on
+     * with specific placeholders.
      */
     public PlaceholderHandler() {
         this.logUtils = TestSuiteHandler.getInstance().getLogUtils();
         //here we are checking if there are some external libraries to load (see Java Service Provider Interface pattern)
         //providerMap contains placeholders (key) and the specific class instances that are able to manage them (value)
         providerMap = new HashMap<>();
-        ServiceLoader.load(HeatPlaceholderModuleProvider.class).forEach((provider) -> {
+        ServiceLoader.load(HeatPlaceholderModuleProvider.class).forEach(provider -> {
             providerMap = constructProviderMap(providerMap, provider.getHandledPlaceholders(), provider);
         });
         this.logUtils.trace("found n. {} provider(s)", providerMap.size());
@@ -106,14 +107,11 @@ public class PlaceholderHandler {
             HeatPlaceholderModuleProvider provider) {
         try {
             logUtils.trace("found provider for: {}", provider.getHandledPlaceholders());
-            handledPlaceholders.forEach((placeholder) -> {
-                providerMapInput.put(placeholder, provider);
-            });
+            handledPlaceholders.forEach(placeholder -> providerMapInput.put(placeholder, provider));
         } catch (Exception oEx) {
             logUtils.error("catched exception message: '{}' \n cause: '{}'",
                         oEx.getLocalizedMessage(), oEx.getCause());
         }
-
         return providerMapInput;
     }
 
@@ -125,7 +123,7 @@ public class PlaceholderHandler {
      * - preload placeholder
      * - path placeholder
      * - placeholders coming from external heat modules and present in the provider map
-     * @param inputStr string to placeholderProcessString. It can contain more than one placeholders, but it does not manage innested ones.
+     * @param inputStr string to placeholderProcessString. It can contain more than one placeholders, but it does not manage nested ones.
      * @return the processed string
      */
     public Object placeholderProcessString(String inputStr) {
@@ -134,8 +132,8 @@ public class PlaceholderHandler {
         try {
             if (inputStr.contains(PLACEHOLDER_SYMBOL_BEGIN)) {
                 outputObj = processGetStepPlaceholder(outputObj.toString());
-                outputObj = processPreloadPlaceholders(outputObj.toString());
                 outputObj = processPathPlaceholder(outputObj.toString());
+                outputObj = processPreloadPlaceholders(outputObj.toString());
                 outputObj = processCookiePlaceholder(outputObj.toString());
                 outputObj = processHeaderPlaceholder(outputObj.toString());
                 outputObj = processPlaceholderFromExternalModules(outputObj.toString());
@@ -160,10 +158,32 @@ public class PlaceholderHandler {
         return outputObj;
     }
 
-    private String getPathVar(Object inputObj) {
+    public String getPathVar(String inputObj) {
         TestCaseUtils testCaseUtils = TestSuiteHandler.getInstance().getTestCaseUtils();
-        String jsonPathToRetrieve = testCaseUtils.regexpExtractor(inputObj.toString(), PATH_JSONPATH_REGEXP, 1);
-        return retriveStringFromPath(response, jsonPathToRetrieve);
+        String getPathArg = testCaseUtils.regexpExtractor(inputObj, PATH_JSONPATH_REGEXP, 1);
+        int separatorIndex = getPathArg.lastIndexOf(",");
+        String result = null;
+        try {
+            if (separatorIndex == -1) {
+                //we apply the JSON Path on the test response
+                result = retriveStringFromPath(response, getPathArg);
+            } else {
+                String jsonString = getPathArg.substring(0, separatorIndex);
+                String jsonPath = getPathArg.substring(separatorIndex + 1);
+                if (jsonString.contains("${preload[")) {
+                    jsonString = processPreloadPlaceholders(jsonString); //assuming that the first argument is a ${preload(WM_REQUESTS).get(response)}
+                }
+                JsonPath jsPath = new JsonPath(jsonString);
+
+                result = String.valueOf((Object) jsPath.get(jsonPath));
+                if (result == null) {
+                    logUtils.warning("It is not possible to retrieve the jsonPath '{}'", jsonPath);
+                }
+            }
+        } catch (Exception oEx) {
+            logUtils.error("It is not possible to retrieve the jsonPath '{}'", getPathArg);
+        }
+        return result;
     }
 
     /**
@@ -217,7 +237,7 @@ public class PlaceholderHandler {
                 for (Map.Entry<String, HeatPlaceholderModuleProvider> entry : providerMap.entrySet()) {
                     if (outputObj.toString().contains(entry.getKey())) {
                         HeatTestDetails testDetails = new HeatTestDetails(eh.getEnvironmentUnderTest(), logUtils.getTestCaseDetails());
-                        outputObj = (Map<String, String>) entry.getValue().getModuleInstance().process(outputObj.toString(), testDetails);
+                        outputObj = entry.getValue().getModuleInstance().process(outputObj.toString(), testDetails);
                         break;
                     }
                 }
@@ -276,7 +296,8 @@ public class PlaceholderHandler {
                 if (stringComponent.equals(placeholder)) {
                     logUtils.debug("substitution '{}'", placeholder);
                     //modifiedString += getPreloadedVariable(placeholder);
-                    modifiedString += substituctionFunct.apply(placeholder);
+                    String applied = substituctionFunct.apply(placeholder);
+                    modifiedString += applied == null ? "" : applied;
                 } else {
                     modifiedString += stringComponent;
                 }
@@ -335,13 +356,18 @@ public class PlaceholderHandler {
                 output = rsp.asString().trim();
             } else {
                 JsonPathConfig config = new JsonPathConfig(JsonPathConfig.NumberReturnType.BIG_DECIMAL);
-                output = rsp.jsonPath(config).get(path).toString();
+                Object jpathResp = rsp.jsonPath(config).get(path);
+                if (jpathResp != null) {
+                    output = String.valueOf(jpathResp);
+                } else {
+                    logUtils.warning("It is not possible to retrieve the jsonPath '{}'", path);
+                }
             }
         } catch (Exception oEx) {
             logUtils.error("It is not possible to retrieve the jsonPath "
                     + "('{}') from the current response. --> response: {}", path, rsp.asString());
-            throw new HeatException(logUtils.getExceptionDetails() + "It is not possible to retrieve the jsonPath (" + path
-                    + ") from the current response. --> response: " + rsp.asString());
+//            throw new HeatException(logUtils.getExceptionDetails() + "It is not possible to retrieve the jsonPath (" + path
+//                    + ") from the current response. --> response: " + rsp.asString());
         }
         return output;
     }
@@ -392,12 +418,17 @@ public class PlaceholderHandler {
      */
     private String getPreloadedVariable(String stringInput) {
         String outputStr = stringInput;
-        preloadedVariables = getPreloadedVariables();
-        if (!preloadedVariables.isEmpty()) {
+        preloadedVariables = TestSuiteHandler.getInstance().getTestCaseUtils().getBeforeSuiteVariables();
+        Map<String, Object> stepVariables = TestSuiteHandler.getInstance().getTestCaseUtils().getBeforeStepVariables();
+
+        Map<String, Object> stepAndSuitePreloadVariables = new HashMap<>(preloadedVariables);
+        stepAndSuitePreloadVariables.putAll(stepVariables);
+
+        if (!stepAndSuitePreloadVariables.isEmpty()) {
             outputStr = TestSuiteHandler.getInstance().getTestCaseUtils().regexpExtractor(stringInput, REGEXP_PRELOAD_VAR_NAME_PLACEHOLDER, 1);
-            if (preloadedVariables.containsKey(outputStr)) {
+            if (stepAndSuitePreloadVariables.containsKey(outputStr)) {
                 // if there is not any specific variable to get
-                Object objectPreloaded = preloadedVariables.get(outputStr);
+                Object objectPreloaded = stepAndSuitePreloadVariables.get(outputStr);
                 if (objectPreloaded.getClass().equals(String.class)) {
                     outputStr = objectPreloaded.toString();
                 } else {
@@ -405,7 +436,9 @@ public class PlaceholderHandler {
                     outputStr = getSpecificPreloadValue(stringInput, preloadedObject);
                 }
             } else {
-                throw new HeatException(logUtils.getExceptionDetails() + "variable '" + outputStr + "' not correctly preloaded");
+                logUtils.warning("variable '{}' not correctly preloaded - no transformation will be applied", outputStr);
+                outputStr = stringInput;
+//                throw new HeatException(logUtils.getExceptionDetails() + "variable '" + outputStr + "' not correctly preloaded");
             }
         }
         return outputStr;
@@ -430,6 +463,7 @@ public class PlaceholderHandler {
                     outputStr = ((Map<String, String>) loadedObject).get(specificFieldReq);
                 } else {
                     outputStr = ((Map<String, String>) loadedObject).getOrDefault(DEFAULT_PRELOADED_VALUE, DEFAULT_VALUE_NOT_FOUND_MSG);
+                    logUtils.trace("Requested key '{}': DEFAULT value will be used", specificFieldReq);
                 }
             }
         } catch (Exception oEx) {
@@ -448,7 +482,7 @@ public class PlaceholderHandler {
     }
 
     public Map<String, Object> getPreloadedVariables() {
-        return preloadedVariables;
+        return TestSuiteHandler.getInstance().getTestCaseUtils().getBeforeSuiteVariables();
     }
 
     public void setFlowVariables(Map<Integer, Map<String, String>> flowPreloadedVariables) {

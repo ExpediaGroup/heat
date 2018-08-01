@@ -1,0 +1,247 @@
+{
+  "testSuite": {
+    "generalSettings": {
+      "suiteDesc": "Example Flow Mode Tests",
+      "flowMode": "true"
+    },
+    "beforeTestSuite": {
+      "WM_REQUESTS" : "beforeTestSuite_value",
+      "MYVAR_1" : "valueSuite1",
+      "MYVAR_2" : "valueSuite2"
+    },
+    "testCases": [
+      {
+        "testId": "001",
+        "testName": "Test beforeTestSuite and beforeStep scopes",
+        "e2eFlowSteps": [
+          {
+            "stepNumber": "1",
+            "objectName": "beforeStep variable with the same name of beforeTestSuite variable",
+            "beforeStep" : {
+              "MYVAR_1" : "valueStep1"
+            },
+            "webappName": "FAKEAPI",
+            "httpMethod": "GET",
+            "url": "/users",
+            "queryParameters": {},
+            "headers": {},
+            "expects": {
+              "responseCode": "200",
+              "fieldCheck": [
+                {
+                  "description": "Overwritten var",
+                  "actualValue": "${preload[MYVAR_1]}",
+                  "expectedValue": "valueStep1"
+                },
+                {
+                  "description": "Not Overwritten var",
+                  "actualValue": "${preload[MYVAR_2]}",
+                  "expectedValue": "valueSuite2"
+                }
+              ]
+            }
+          },
+          {
+            "stepNumber": "2",
+            "objectName": "Variable written in the previous step is no longer in the scope",
+            "webappName": "FAKEAPI",
+            "httpMethod": "GET",
+            "url": "/users",
+            "queryParameters": {},
+            "headers": {},
+            "expects": {
+              "responseCode": "200",
+              "fieldCheck": [
+                {
+                  "description": "Overwritten in previous step",
+                  "actualValue": "${preload[MYVAR_1]}",
+                  "expectedValue": "valueSuite1"
+                },
+                {
+                  "description": "Not Overwritten var",
+                  "actualValue": "${preload[MYVAR_2]}",
+                  "expectedValue": "valueSuite2"
+                }
+              ]
+            }
+          }
+        ]
+      },
+      {
+        "testId": "002",
+        "testName": "Test $wiremock.resetRequests feature - get(total) - get(response) - get(status) - default getter",
+        "e2eFlowSteps": [
+          {
+            "stepNumber": "1",
+            "objectName": "Reset wiremock, then ask for total, response and default",
+            "beforeStep" : {
+              "WM_RESET" : "${wiremock[WM_INSTANCE].resetRequests}"
+            },
+            "webappName": "FAKEAPI",
+            "httpMethod": "GET",
+            "url": "/users",
+            "queryParameters": {},
+            "headers": {},
+            "expects": {
+              "responseCode": "200",
+              "fieldCheck": [
+                {
+                  "description": "Check that WM_RESET response has an empty string",
+                  "actualValue": "${preload[WM_RESET].get(response)}",
+                  "expectedValue": ""
+                },
+                {
+                  "description": "Check that WM_RESET default oject is the same of get(response)",
+                  "actualValue": "${preload[WM_RESET]}",
+                  "expectedValue": ""
+                },
+                {
+                  "description": "Check that WM_RESET status has HTTP status code returned of wiremock server",
+                  "actualValue": "${preload[WM_RESET].get(status)}",
+                  "expectedValue": "200"
+                }
+              ]
+            }
+          }
+        ]
+      },
+      {
+        "testId": "003",
+        "testName": "Test $wiremock.requests feature - get(total) - get(response) - get(status) - default getter",
+        "e2eFlowSteps": [
+          {
+            "stepNumber": "1",
+            "objectName": "Make a call to unexisting resource in wiremock",
+            "beforeStep" : {
+              "WM_RESET" : "${wiremock[WM_INSTANCE].resetRequests}"
+            },
+            "webappName": "WM_INSTANCE",
+            "httpMethod": "GET",
+            "url": "/pippo",
+            "queryParameters": {},
+            "headers": {},
+            "expects": {
+              "responseCode": "404"
+            }
+          },
+          {
+            "stepNumber": "2",
+            "objectName": "Call /requests, then ask for total, response, status and default",
+            "beforeStep" : {
+              "WM_REQUESTS" : "${wiremock[WM_INSTANCE].requests}"
+            },
+            "webappName": "FAKEAPI",
+            "httpMethod": "GET",
+            "url": "/users",
+            "queryParameters": {},
+            "headers": {},
+            "expects": {
+              "responseCode": "200",
+              "fieldCheck": [
+                {
+                  "description": "Check that WM_REQUESTS meta.total has the correct result",
+                  "actualValue": "${preload[WM_REQUESTS].get(total)}",
+                  "expectedValue": "1"
+                },
+                {
+                  "description": "Check that WM_REQUESTS response has a JSON with not matched result",
+                  "actualValue": "${preload[WM_REQUESTS].get(response)}",
+                  "expectedValue": ["\"wasMatched\" : false"]
+                },
+                {
+                  "description": "Check that WM_REQUESTS default oject is the same of get(response)",
+                  "actualValue": "${preload[WM_REQUESTS]}",
+                  "expectedValue": ["\"wasMatched\" : false"]
+                },
+                {
+                  "description": "Check that WM_REQUESTS status has HTTP status code returned of wiremock server",
+                  "actualValue": "${preload[WM_REQUESTS].get(status)}",
+                  "expectedValue": "200"
+                }
+              ]
+            }
+          }
+        ]
+      },
+      {
+        "testId": "004",
+        "testName": "Test behaviour of ${path with 2 param",
+        "e2eFlowSteps": [
+          {
+            "objectName": "Test behaviour of ${path with WIREMOCK $preload",
+            "stepNumber": "1",
+            "beforeStep" : {
+              "WM_REQUESTS" : "${wiremock[WM_INSTANCE].requests}"
+            },
+            "webappName": "WM_INSTANCE",
+            "httpMethod": "GET",
+            "url": "/pippo",
+            "queryParameters": {},
+            "headers": {},
+            "expects": {
+              "responseCode": "404",
+              "fieldCheck": [
+                {
+                  "description": "Check ${path with 2 parameters on beforeStep variable",
+                  "actualValue": "${path[${preload[WM_REQUESTS]},requestJournalDisabled]}",
+                  "expectedValue": "false"
+                }
+              ]
+            }
+          }
+        ]
+      },
+      {
+        "testId": "005",
+        "testName": "Test $wiremock.requests feature together with outputParams feature",
+        "e2eFlowSteps": [
+          {
+            "stepNumber": "1",
+            "objectName": "Make a call to unexisting resource in wiremock and save status on outputParams",
+            "beforeStep" : {
+              "WM_RESET" : "${wiremock[WM_INSTANCE].resetRequests}"
+            },
+            "webappName": "WM_INSTANCE",
+            "httpMethod": "GET",
+            "url": "/pippo",
+            "queryParameters": {},
+            "headers": {},
+            "expects": {
+              "responseCode": "404"
+            },
+            "outputParams": {
+              "wmStatus": "${preload[WM_RESET].get(status)}"
+            }
+          },
+          {
+            "stepNumber": "2",
+            "objectName": "Call using outputParams and beforeStep",
+            "beforeStep" : {
+              "WM_REQUESTS" : "${wiremock[WM_INSTANCE].requests}"
+            },
+            "webappName": "FAKEAPI",
+            "httpMethod": "GET",
+            "url": "/users",
+            "queryParameters": {},
+            "headers": {},
+            "expects": {
+              "responseCode": "200",
+              "fieldCheck": [
+                {
+                  "description": "Check that WM_REQUESTS meta.total has the correct result",
+                  "actualValue": "${preload[WM_REQUESTS].get(total)}",
+                  "expectedValue": "1"
+                },
+                {
+                  "description": "Check that outputParams of previous step is working",
+                  "actualValue": "${getStep(1).getOutputParam(wmStatus)}",
+                  "expectedValue": "200"
+                }
+              ]
+            }
+          }
+        ]
+      }
+    ]
+  }
+}

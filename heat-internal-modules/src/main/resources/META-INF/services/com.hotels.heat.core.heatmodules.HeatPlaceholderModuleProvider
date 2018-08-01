@@ -1,2 +1,3 @@
 com.hotels.heat.module.syspropretrieving.SysPropHeatPlaceholderModuleProvider
 com.hotels.heat.module.dateretrieving.DateHeatPlaceholderModuleProvider
+com.hotels.heat.module.wiremocksupport.WiremockSupportModuleProvider

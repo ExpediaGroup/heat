@@ -11,13 +11,14 @@
   * [SysProp](#sysprop)
   * [Present / NotPresent](#present)
   * [Today](#today)
+  * [Wiremock](#wiremock)
 
 In order to make data dynamic and easier to use in the JSON input files, we introduced some placeholders
 
 |             Placeholder             |                                            Short Description                                            |
 |:-----------------------------------:|:-------------------------------------------------------------------------------------------------------:|
 | `${path[...]}`                       | retrieves the value of a specific field from a json response                                            |
-| `${preload[...]}`                     | retrieves the value of one of the elements present in the 'preloadVariables' section                    |
+| `${preload[...]}`                     | retrieves the value of one of the elements present in the 'beforeTestSuite' and 'beforeStep' sections                    |
 | `${cookie[...]}`                      | retrieves the value of a cookie from a json response                                                    |
 | `${header[...]}`                      | retrieves the value of a header from a json response                                                    |
 | `${getStep(...).getOutputParam(...)}` | in flow mode tests, it retrieves a specific output parameter coming from a specific step of the same tc |
@@ -30,8 +31,27 @@ In order to make data dynamic and easier to use in the JSON input files, we intr
 <a name="path"></a>
 ## Path
 
-'Path' placeholder is used to retrieve a specific field from the JSON body of a response. The syntax is `${path[<PATH>]}` where `<PATH>` is a string describing the position of the field. To understand how we can use this important placeholder, let's have a look at how RestAssured treats a response and how we can navigate it.
+'Path' placeholder is used to execute a specific query over a JSON string using a JSONPath (GPATH) query.<br/>
+The syntax is:
 
+    `${path[<PATH>]}`
+
+or
+
+    `${path[<JSON_STRING>, <PATH>]}`
+
+**Description:**<br/>
+`<PATH>` is the GPath string describing the query <br/>
+`<JSON_STRING>` is the JSON which the `<PATH>` is applied
+
+NOTE 1: A common usage to pass `<JSON_STRING>` is using a `$preload` variable: <br/>
+```json
+"actualValue": "${path[${preload(MY_JSON)},my.path.to.field]}"
+```
+NOTE 2: **if `<JSON_STRING>` is not specified, the service response is used**<br/>
+
+**Additional information:**<br/>
+To understand how we can use this important placeholder, let's have a look at how RestAssured treats a response and how we can navigate it.
 A JSON response is treated as a `com.jayway.restassured.response.Response` object (official documentation [here](https://static.javadoc.io/com.jayway.restassured/rest-assured/2.4.0/com/jayway/restassured/response/Response.html)) so, in order to navigate the body of a response we use the following code:
 
 ```java
@@ -105,39 +125,63 @@ Another feature of this placeholder is that, if you want to retrieve the entire 
 
 <a name="preload"></a>
 ## Preload
-Preload placeholder is used to refer to a variable declared in the 'preloadVariables' section of the JSON input file.
+Preload placeholder is used to refer to a variable declared in the 'beforeTestSuite' and 'beforeStep' sections of the JSON input file.
 
 For example, the json file can be written as follows:
 
 ```json
 {
-    "testSuite": {
-        "generalSettings": {
+  "testSuite": {
+    "generalSettings": {
+      "suiteDesc": "Example Flow Mode Tests",
+      "flowMode": "true"
+    },
+    "beforeTestSuite": {
+      "WM_REQUESTS" : "beforeTestSuite_value",
+      "MYVAR_1" : "valueSuite1",
+      "MYVAR_2" : "valueSuite2"
+    },
+    "testCases": [
+      {
+        "testId": "001",
+        "testName": "Test beforeTestSuite and beforeStep scopes",
+        "e2eFlowSteps": [
+          {
+            "stepNumber": "1",
+            "objectName": "beforeStep variable with the same name of beforeTestSuite variable",
+            "beforeStep" : {
+              "MYVAR_1" : "valueStep1"
+            },
+            "webappName": "FAKEAPI",
             "httpMethod": "GET",
-            "suiteDesc":"Example Single Mode Tests"
-        },
-        "preloadVariables": {
-            "CHECK_IN":"${TODAY+100_YYYY-MM-dd}",
-            "CHECK_OUT":"${TODAY+101_YYYY-MM-dd}",
-            "API_KEY":"AIzaSyDuJvGUBixcL3uzS4dDVtDE-jex24F0BFk"
-        },
-        .....
-        "testCases": [
-            {
-                "testId": "001",
-                "testName": "single mode test for new heat #1",
-                "url": "/json",
-                "queryParameters": {
-                    "units": "meters",
-                    "origins":"via Galileo Galilei 15, Taranto Italia",
-                    "destinations":"via dei Giuochi Istmici 40, Roma Italia",
-                    "key":"${preload[API_KEY]}"
-                },  
-                ....      
-```
-In this way we have declared the variable in the 'preloadVariables' section as `"API_KEY":"AIzaSyDuJvGUBixcL3uzS4dDVtDE-jex24F0BFk"` and we use it simply referring to its name `"key":"${preload[API_KEY]}"`.
+            "url": "/users",
+            "queryParameters": {},
+            "headers": {},
+            "expects": {
+              "responseCode": "200",
+              "fieldCheck": [
+                {
+                  "description": "Overwritten var",
+                  "actualValue": "${preload[MYVAR_1]}",
+                  "expectedValue": "valueStep1"
+                },
+                {
+                  "description": "Not Overwritten var",
+                  "actualValue": "${preload[MYVAR_2]}",
+                  "expectedValue": "valueSuite2"
+                }
+              ]
+            }
+          }
 
-There are two advantages coming from this approach. The first one is that we can avoid some typo in writing always the same string. The second one is a great performance advantage: if the preloadVariable contains some elaborations coming from a custom external module (see doc [here](externalModules.md)), we can do it only once and not each time we write the entire placeholder.
+```
+In this way we declared the variable in 'beforeTestSuite' section as `"MYVAR_2":"valueSuite2"` and we use it simply referring to its name `"key":"${preload[MYVAR_2]}"`
+
+At the same way we declared the variable in 'beforeStep' section as `"MYVAR_1":"valueStep1"` and we use it simply referring to its name `"key":"${preload[MYVAR_1]}"`
+
+Please notice that the value of MYVAR_1 in beforeStep overrides the one declared in beforeTestSuite
+
+There are two advantages coming from this approach. The first one is that we can avoid some typo in writing always the same string. The second one is a great performance advantage: if the beforeTestSuite contains some elaborations coming from a custom external module (see doc [here](externalModules.md)), we can do it only once and not each time we write the entire placeholder.
 
 [![Back to the Top Of Page][upArrow]](#placeholders)
 
@@ -154,7 +198,7 @@ For example:
       "suiteDesc": "Example Flow Mode Tests",
       "flowMode": "true"
     },
-        "preloadVariables": {
+        "beforeTestSuite": {
         "outputRspFormat":"json",
         "DISTANCE_API_KEY":"AIzaSyDuJvGUBixcL3uzS4dDVtDE-jex24F0BFk",
         "GEOCODE_API_KEY":"AIzaSyBHOMI_1PF4ag943jCgIavFtGYN5lJn61I" 
@@ -233,7 +277,7 @@ It can be useful, for example, in the flow mode, comparing two cookies coming fr
       "suiteDesc": "Example Flow Mode Tests",
       "flowMode": "true"
     },
-        "preloadVariables": {
+        "beforeTestSuite": {
         "outputRspFormat":"json",
         "DISTANCE_API_KEY":"AIzaSyDuJvGUBixcL3uzS4dDVtDE-jex24F0BFk",
         "GEOCODE_API_KEY":"AIzaSyBHOMI_1PF4ag943jCgIavFtGYN5lJn61I" 
@@ -313,7 +357,7 @@ and in the JSON input file we can find
       "suiteDesc": "Example Flow Mode Tests",
       "flowMode": "true"
     },
-        "preloadVariables": {
+        "beforeTestSuite": {
         "outputRspFormat":"json",
         "DISTANCE_API_KEY":"AIzaSyDuJvGUBixcL3uzS4dDVtDE-jex24F0BFk",
         "GEOCODE_API_KEY":"AIzaSyBHOMI_1PF4ag943jCgIavFtGYN5lJn61I",
@@ -350,6 +394,154 @@ Another possibility is to add a specific number of days to the current one, for 
 ```
 ${TODAY+100_YYYY:MM:dd}
 ```
+
+[![Back to the Top Of Page][upArrow]](#placeholders)
+
+<a name="wiremock"></a>
+## Wiremock
+HEAT provides a set of utilities to easily use Wiremock in test cases (more info on Wiremock here: http://wiremock.org/).
+
+- ${wiremock[WM_INSTANCE].resetRequests}
+- ${wiremock[WM_INSTANCE].resetScenarios}
+- ${wiremock[WM_INSTANCE].requests}
+
+
+Here the exhaustive list:
+
+  **Reset utilities**
+
+ * The following example shows how to reset Wiremock cache (equivalent to perform a POST call to __admin/requests/reset endpoint) 
+```json
+{
+        "testId": "002",
+        "testName": "Test $wiremock.resetRequests feature - get(total) - get(response) - get(status) - default getter",
+        "e2eFlowSteps": [
+          {
+            "stepNumber": "1",
+            "objectName": "Reset wiremock, then ask for total, response and default",
+            "beforeStep" : {
+              "WM_RESET" : "${wiremock[WM_INSTANCE].resetRequests}"
+            },
+            "webappName": "FAKEAPI",
+            "httpMethod": "GET",
+            "url": "/users",
+            "queryParameters": {},
+            "headers": {},
+            "expects": {
+              "responseCode": "200",
+              "fieldCheck": [
+                {
+                  "description": "Check that WM_RESET response has an empty string",
+                  "actualValue": "${preload[WM_RESET].get(response)}",
+                  "expectedValue": ""
+                },
+                {
+                  "description": "Check that WM_RESET default oject is the same of get(response)",
+                  "actualValue": "${preload[WM_RESET]}",
+                  "expectedValue": ""
+                },
+                {
+                  "description": "Check that WM_RESET status has HTTP status code returned of wiremock server",
+                  "actualValue": "${preload[WM_RESET].get(status)}",
+                  "expectedValue": "200"
+                }
+              ]
+            }
+```
+
+The value of **WM_RESET** is returned in beforeStep and we can perform the following operation on it:
+ ```
+ ${preload[WM_RESET].get(response)}
+ ```
+ In order to get the response. Please note that the above is equivalent to **${preload[WM_RESET]}** because *get(response)* method is the default one.
+
+The **get(status)** can be used to retrieve the http response status:
+ ```
+ ${preload[WM_RESET].get(status)}
+ ```
+
+ **Requests utilities**
+ 
+ The following example shows hot to call Wiremock cache to retrieve response and http status:
+ 
+```json
+"beforeStep" : {
+              "WM_REQUESTS" : "${wiremock[WM_INSTANCE].requests}"
+            },
+            "webappName": "FAKEAPI",
+            "httpMethod": "GET",
+            "url": "/users",
+            "queryParameters": {},
+            "headers": {},
+            "expects": {
+              "responseCode": "200",
+              "fieldCheck": [
+                {
+                  "description": "Check that WM_REQUESTS meta.total has the correct result",
+                  "actualValue": "${preload[WM_REQUESTS].get(total)}",
+                  "expectedValue": "1"
+                },
+                {
+                  "description": "Check that WM_REQUESTS response has a JSON with not matched result",
+                  "actualValue": "${preload[WM_REQUESTS].get(response)}",
+                  "expectedValue": ["\"wasMatched\" : false"]
+                },
+                {
+                  "description": "Check that WM_REQUESTS default oject is the same of get(response)",
+                  "actualValue": "${preload[WM_REQUESTS]}",
+                  "expectedValue": ["\"wasMatched\" : false"]
+                },
+                {
+                  "description": "Check that WM_REQUESTS status has HTTP status code returned of wiremock server",
+                  "actualValue": "${preload[WM_REQUESTS].get(status)}",
+                  "expectedValue": "200"
+                }
+              ]
+```
+The value of **WM_REQUESTS** is returned in beforeStep and we can perform the following operation on it:
+ ```
+ ${preload[WM_REQUESTS].get(total)}
+ ```
+to get the number of request intercepted by Wiremock. This corresponds to the **meta.total** value returned when calling Wiremock __admin/requests endpoint
+ ```
+  ${preload[WM_REQUESTS].get(response)}
+  ```
+which returns the response body. This is the same as **${preload[WM_REQUESTS]}** because *get(response)* can be omitted.
+
+The **get(status)** can be used to retrieve the http response status:
+ ```
+ ${preload[WM_REQUESTS].get(status)}
+ ```
+ 
+ **Reset scenario**
+ 
+In order to reset Wiremock scenario the following command can be used:
+```
+"${wiremock[WIREMOCK_LOCALIZATION].resetScenarios}"
+```
+Example of usage:
+```json
+"e2eFlowSteps": [
+                    {
+                        "objectName": "Set Wm Localization scenario to 'randomdata'",
+                        "stepNumber": "1",
+                        "beforeStep" : {
+                         "WM_RESET_SERVICE1" : "${wiremock[SERVICE_1].resetRequests}",
+                         "WM_RESET_SCENARIO2" : "${wiremock[SERVICE_2].resetScenarios}"
+                        },
+                    },
+```
+In this way we can save the value of **${wiremock[SERVICE_2].resetScenarios}** in WM_RESET_SCENARIO2 variable and perform some checks later on.
+For instance we can get the response:
+```
+"${wiremock[WM_RESET_SCENARIO2].get(response)}"
+```
+which returns the response body. This is the same as **${preload[WM_RESET_SCENARIO2]}** because *get(response)* can be omitted.
+The **get(status)** can be used to retrieve the http response status:
+ ```
+ ${preload[WM_RESET_SCENARIO2].get(status)}
+ ```
+
 
 [![Back to the Top Of Page][upArrow]](#placeholders)
 
