@@ -365,9 +365,9 @@
         <property name="max" value="300" />
         <property name="id" value="FileLength_Error" />
     </module>
-    <module name="Header">
+    <module name="RegexpHeader">
         <property name="severity" value="error" />
-        <property name="header" value="/**\n * Copyright (C) 2015-2018 Expedia Inc." />
+        <property name="header" value="\/\*\*\n \* Copyright \(C\) 2015-201\d? Expedia Inc\." />
         <metadata name="com.atlassw.tools.eclipse.checkstyle.comment" value="No header" />
     </module>
     <module name="NewlineAtEndOfFile">

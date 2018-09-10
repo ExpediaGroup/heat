@@ -20,10 +20,11 @@ import java.util.Map;
 
 import com.hotels.heat.core.dto.HeatTestDetails;
 import com.hotels.heat.core.utils.RestAssuredRequestMaker;
-import com.jayway.restassured.internal.http.Method;
-import com.jayway.restassured.path.json.JsonPath;
-import com.jayway.restassured.response.Response;
-import com.jayway.restassured.specification.RequestSpecification;
+import io.restassured.http.Method;
+import io.restassured.path.json.JsonPath;
+import io.restassured.response.Response;
+import io.restassured.specification.RequestSpecification;
+
 
 /**
  * Wiremock Support Handler.

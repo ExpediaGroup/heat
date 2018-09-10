@@ -34,8 +34,8 @@ import com.hotels.heat.core.utils.TestCaseUtils;
 import com.hotels.heat.core.utils.TestRequest;
 import com.hotels.heat.core.utils.log.LoggingUtils;
 
-import com.jayway.restassured.internal.http.Method;
-import com.jayway.restassured.response.Response;
+import io.restassured.http.Method;
+import io.restassured.response.Response;
 
 
 /**

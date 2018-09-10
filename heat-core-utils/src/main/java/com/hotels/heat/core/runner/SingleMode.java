@@ -32,7 +32,7 @@ import com.hotels.heat.core.utils.RestAssuredRequestMaker;
 import com.hotels.heat.core.utils.TestCaseUtils;
 import com.hotels.heat.core.utils.TestRequest;
 
-import com.jayway.restassured.response.Response;
+import io.restassured.response.Response;
 
 
 

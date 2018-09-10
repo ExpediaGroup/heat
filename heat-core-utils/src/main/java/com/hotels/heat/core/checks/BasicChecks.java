@@ -31,9 +31,9 @@ import com.hotels.heat.core.specificexception.HeatException;
 import com.hotels.heat.core.utils.TestCaseUtils;
 import com.hotels.heat.core.utils.log.LoggingUtils;
 
-import com.jayway.restassured.module.jsv.JsonSchemaValidator;
-import com.jayway.restassured.response.Header;
-import com.jayway.restassured.response.Response;
+import io.restassured.http.Header;
+import io.restassured.module.jsv.JsonSchemaValidator;
+import io.restassured.response.Response;
 
 
 

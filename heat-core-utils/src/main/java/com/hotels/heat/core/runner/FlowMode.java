@@ -26,7 +26,7 @@ import com.hotels.heat.core.handlers.TestCaseMapHandler;
 import com.hotels.heat.core.handlers.TestSuiteHandler;
 import com.hotels.heat.core.utils.RestAssuredRequestMaker;
 
-import com.jayway.restassured.response.Response;
+import io.restassured.response.Response;
 
 
 /**

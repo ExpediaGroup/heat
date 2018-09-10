@@ -24,7 +24,7 @@ import org.slf4j.LoggerFactory;
 
 import com.hotels.heat.core.heatspecificchecks.SpecificChecks;
 
-import com.jayway.restassured.response.Response;
+import io.restassured.response.Response;
 
 
 /**

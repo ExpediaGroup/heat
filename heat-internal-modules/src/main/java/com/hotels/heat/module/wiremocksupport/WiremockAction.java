@@ -15,7 +15,8 @@
  */
 package com.hotels.heat.module.wiremocksupport;
 
-import com.jayway.restassured.internal.http.Method;
+
+import io.restassured.http.Method;
 
 public enum WiremockAction {
     UNKNOWN,

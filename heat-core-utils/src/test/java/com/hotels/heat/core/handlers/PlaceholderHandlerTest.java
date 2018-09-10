@@ -27,12 +27,12 @@ import org.powermock.modules.junit4.PowerMockRunner;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
-import com.jayway.restassured.builder.ResponseBuilder;
-import com.jayway.restassured.response.Cookie;
-import com.jayway.restassured.response.Cookies;
-import com.jayway.restassured.response.Header;
-import com.jayway.restassured.response.Headers;
-import com.jayway.restassured.response.Response;
+import io.restassured.builder.ResponseBuilder;
+import io.restassured.http.Cookie;
+import io.restassured.http.Cookies;
+import io.restassured.http.Header;
+import io.restassured.http.Headers;
+import io.restassured.response.Response;
 
 
 

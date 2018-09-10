@@ -35,7 +35,7 @@ import com.hotels.heat.core.heatspecificchecks.SpecificChecks;
 import com.hotels.heat.core.utils.RunnerInterface;
 import com.hotels.heat.core.utils.log.LoggingUtils;
 
-import com.jayway.restassured.response.Response;
+import io.restassured.response.Response;
 
 
 /**

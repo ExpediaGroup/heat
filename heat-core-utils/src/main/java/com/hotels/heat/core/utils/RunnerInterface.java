@@ -21,7 +21,7 @@ import java.util.Map;
 
 import org.testng.ITestContext;
 
-import com.jayway.restassured.response.Response;
+import io.restassured.response.Response;
 
 
 /**

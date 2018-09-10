@@ -26,7 +26,8 @@ import com.hotels.heat.core.utils.DataExtractionSupport;
 import com.hotels.heat.core.utils.log.LoggingUtils;
 import com.hotels.heat.core.validations.ArithmeticalValidator;
 import com.hotels.heat.core.validations.StringValidator;
-import com.jayway.restassured.response.Response;
+
+import io.restassured.response.Response;
 
 
 /**

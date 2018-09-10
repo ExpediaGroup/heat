@@ -20,7 +20,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -33,8 +32,8 @@ import org.testng.annotations.Test;
 
 import com.hotels.heat.core.specificexception.HeatException;
 
-import com.jayway.restassured.builder.ResponseBuilder;
-import com.jayway.restassured.response.Response;
+import io.restassured.builder.ResponseBuilder;
+import io.restassured.response.Response;
 
 
 /**

@@ -34,14 +34,14 @@ import com.hotels.heat.core.handlers.TestSuiteHandler;
 import com.hotels.heat.core.specificexception.HeatException;
 import com.hotels.heat.core.utils.log.LoggingUtils;
 
-import com.jayway.restassured.RestAssured;
-import com.jayway.restassured.filter.log.LogDetail;
-import com.jayway.restassured.internal.http.Method;
-import com.jayway.restassured.internal.print.RequestPrinter;
-import com.jayway.restassured.response.Response;
-import com.jayway.restassured.specification.FilterableRequestSpecification;
-import com.jayway.restassured.specification.MultiPartSpecification;
-import com.jayway.restassured.specification.RequestSpecification;
+import io.restassured.RestAssured;
+import io.restassured.filter.log.LogDetail;
+import io.restassured.http.Method;
+import io.restassured.internal.print.RequestPrinter;
+import io.restassured.response.Response;
+import io.restassured.specification.FilterableRequestSpecification;
+import io.restassured.specification.MultiPartSpecification;
+import io.restassured.specification.RequestSpecification;
 
 
 /**
