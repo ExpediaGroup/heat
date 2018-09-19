@@ -74,7 +74,7 @@ For example:
 ```java
     @Override
     public List<String> getHandledPlaceholders() {
-        List<String> listPlaceholders = new ArrayList<>();
+        List<String> listPlaceholders = new ArrayList();
         listPlaceholders.add("CUSTOMERDATA("); //the placeholder starts with
         return listPlaceholders;
     }
@@ -114,7 +114,7 @@ For example, for our "CUSTOMERDATA" placeholder, you could implement a logic for
 ```java
     @Override
     public Map<String, String> process(String placeholder, HeatTestDetails testDetails) {
-        Map<String, String> processedObj = new HashMap<>();
+        Map<String, String> processedObj = new HashMap();
         
         String cId = getCustomerIdFromPlaceholder(placeholder);
         CustomerData cd = retieveCustomerDataById(cId);

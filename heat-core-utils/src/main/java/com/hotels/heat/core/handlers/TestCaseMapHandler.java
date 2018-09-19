@@ -47,7 +47,7 @@ public class TestCaseMapHandler {
     }
 
     public TestCaseMapHandler(Map testCaseMapInput, PlaceholderHandler placeholderhandler) {
-        this(testCaseMapInput, placeholderhandler, new ArrayList<>());
+        this(testCaseMapInput, placeholderhandler, new ArrayList());
     }
 
     /**

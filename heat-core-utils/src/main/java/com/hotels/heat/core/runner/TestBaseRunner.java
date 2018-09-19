@@ -159,7 +159,7 @@ public class TestBaseRunner implements RunnerInterface {
     }
 
     public Map resolvePlaceholdersInTcParams(Map<String, Object> testCaseParams) {
-        return resolvePlaceholdersInTcParams(testCaseParams, new ArrayList<>());
+        return resolvePlaceholdersInTcParams(testCaseParams, new ArrayList());
     }
 
     /**

@@ -75,24 +75,24 @@ public class BasicChecksTest {
 
     private Map buildTcParamsWithRspCode() {
 
-        Map<String, Object> step1 = new HashMap<>();
+        Map<String, Object> step1 = new HashMap();
         step1.put("objectName", "Find_Distance");
         step1.put("stepNumber", "1");
         step1.put("testName", "flow mode test for new heat #1");
 
-        Map<String, String> beforeStep = new HashMap<>();
+        Map<String, String> beforeStep = new HashMap();
         beforeStep.put("WM_REQUESTS", "${wiremock[WM_INSTANCE].requests}");
         step1.put("beforeStep", beforeStep);
 
-        Map<String, String> headers = new HashMap<>();
+        Map<String, String> headers = new HashMap();
         headers.put("Cache-Control", "no-cache");
         step1.put("headers", headers);
 
-        Map<String, Object> expects = new HashMap<>();
+        Map<String, Object> expects = new HashMap();
         expects.put("responseCode", "200");
 
-        List<Map<String, Object>> fieldCheck = new ArrayList<>();
-        Map<String, Object> check1 = new HashMap<>();
+        List<Map<String, Object>> fieldCheck = new ArrayList();
+        Map<String, Object> check1 = new HashMap();
         check1.put("description", "result has to be OK");
         check1.put("actualValue", "${WM_REQUESTS.requestNumber}");
         check1.put("expectedValue", "OK");
@@ -105,23 +105,23 @@ public class BasicChecksTest {
 
     private Map buildTcParamsWithoutRspCode() {
 
-        Map<String, Object> step1 = new HashMap<>();
+        Map<String, Object> step1 = new HashMap();
         step1.put("objectName", "Find_Distance");
         step1.put("stepNumber", "1");
         step1.put("testName", "flow mode test for new heat #1");
 
-        Map<String, String> beforeStep = new HashMap<>();
+        Map<String, String> beforeStep = new HashMap();
         beforeStep.put("WM_REQUESTS", "${wiremock[WM_INSTANCE].requests}");
         step1.put("beforeStep", beforeStep);
 
-        Map<String, String> headers = new HashMap<>();
+        Map<String, String> headers = new HashMap();
         headers.put("Cache-Control", "no-cache");
         step1.put("headers", headers);
 
-        Map<String, Object> expects = new HashMap<>();
+        Map<String, Object> expects = new HashMap();
 
-        List<Map<String, Object>> fieldCheck = new ArrayList<>();
-        Map<String, Object> check1 = new HashMap<>();
+        List<Map<String, Object>> fieldCheck = new ArrayList();
+        Map<String, Object> check1 = new HashMap();
         check1.put("description", "result has to be OK");
         check1.put("actualValue", "${WM_REQUESTS.requestNumber}");
         check1.put("expectedValue", "OK");

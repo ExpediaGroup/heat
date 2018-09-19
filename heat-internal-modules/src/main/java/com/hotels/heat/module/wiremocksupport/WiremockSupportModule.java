@@ -52,7 +52,7 @@ public final class WiremockSupportModule implements HeatPlaceholderModule {
 
     @Override
     public Map<String, String> process(String stringToProcess, HeatTestDetails testDetails) {
-        Map<String, String> processedMap = new HashMap<>();
+        Map<String, String> processedMap = new HashMap();
         processedMap.put(DEFAULT_PRELOADED_VALUE, stringToProcess);
 
         try {

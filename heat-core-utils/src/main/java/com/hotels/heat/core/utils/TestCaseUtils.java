@@ -90,7 +90,7 @@ public class TestCaseUtils {
      * inside the suite.
      */
     public TestCaseUtils() {
-        this.beforeStepVariables = new HashMap<>();
+        this.beforeStepVariables = new HashMap();
         this.httpMethod = Method.GET;
         this.suiteDescription = SUITE_DESCRIPTION_DEFAULT;
     }
@@ -132,7 +132,7 @@ public class TestCaseUtils {
 
     private Iterator<Object[]> getTestCaseIterator(JsonPath testSuiteJsonPath) {
         List<Object> testCases = testSuiteJsonPath.get(JSONPATH_TEST_CASES);
-        List<Object[]> listOfArray = new ArrayList<>();
+        List<Object[]> listOfArray = new ArrayList();
         for (Object testCase : testCases) {
             listOfArray.add(new Object[]{testCase});
         }
@@ -366,7 +366,7 @@ public class TestCaseUtils {
     }
 
     private static Map<String,String> getSection(Map testCaseParameter, String sectionName) {
-        Map<String, String> section = new HashMap<>();
+        Map<String, String> section = new HashMap();
         if (testCaseParameter.containsKey(sectionName)) {
             section = (Map<String, String>) testCaseParameter.get(sectionName);
         }
@@ -381,7 +381,7 @@ public class TestCaseUtils {
      * @return the requested section map
      */
     public static Map<String, String> getSectionByFlowObjectName(Map testCaseParameter, String objectName, String sectionName) {
-        Map<String, String> section = new HashMap<>();
+        Map<String, String> section = new HashMap();
 
         List<Map<String, Object>> e2eFlowSteps = (List) testCaseParameter.get(FLOW_STEPS_OBJ);
         for (Map<String, Object> step: e2eFlowSteps) {

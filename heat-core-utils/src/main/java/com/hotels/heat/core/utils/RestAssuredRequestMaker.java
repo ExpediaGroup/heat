@@ -146,7 +146,7 @@ public class RestAssuredRequestMaker {
         if (singleRequestParamsMap.containsKey(paramName)) {
             extractedParams = (Map<K, V>) singleRequestParamsMap.get(paramName);
         } else {
-            extractedParams = new HashMap<>();
+            extractedParams = new HashMap();
         }
         return extractedParams;
     }

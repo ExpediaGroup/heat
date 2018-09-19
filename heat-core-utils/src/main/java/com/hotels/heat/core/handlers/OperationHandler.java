@@ -64,7 +64,7 @@ public class OperationHandler {
      */
     public OperationHandler(Map fieldsToCheck,
             Object response) {
-        this.retrievedParameters = new HashMap<>();
+        this.retrievedParameters = new HashMap();
         this.logUtils = TestSuiteHandler.getInstance().getLogUtils();
         this.responses = response;
         this.dataExtractionSupport = new DataExtractionSupport(this.logUtils);
@@ -207,7 +207,7 @@ public class OperationHandler {
         String operationToExecute = loadOperationToExecuteOrDefault(StringValidator.STRING_OPERATOR_CONTAINS);
         // get each element of the array and placeholderProcessString it with the placeholderProcessString handler
         List<String> expectedElementList = (List<String>) fieldsToCheck.get(JSON_ELEM_EXPECTED_VALUE);
-        List<String> processedList = new ArrayList<>();
+        List<String> processedList = new ArrayList();
         PlaceholderHandler placeholderHandler = new PlaceholderHandler();
         placeholderHandler.setResponse((Response) responses);
         // TODO: bisogna passare al placeholder la response!!!!!

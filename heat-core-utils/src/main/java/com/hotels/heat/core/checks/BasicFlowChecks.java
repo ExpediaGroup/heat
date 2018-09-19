@@ -40,7 +40,7 @@ public class BasicFlowChecks extends BasicMultipleChecks {
 
     private ITestContext context;
 
-    private final Map<Integer, Map<String, String>> retrievedParameters = new HashMap<>();
+    private final Map<Integer, Map<String, String>> retrievedParameters = new HashMap();
 
     public BasicFlowChecks(LoggingUtils logUtils, TestCaseUtils tcUtils, ITestContext context) {
         super(context);
@@ -54,7 +54,7 @@ public class BasicFlowChecks extends BasicMultipleChecks {
      */
     @Override
     public Map<String, Response> retrieveInfo(Map<String, Object> testCaseParamsInput) {
-        Map<String, Response> respRetrieved = new HashMap<>();
+        Map<String, Response> respRetrieved = new HashMap();
         try {
             compactInfoToCompare(testCaseParamsInput);
             if (getIsRunnable()) {
@@ -100,7 +100,7 @@ public class BasicFlowChecks extends BasicMultipleChecks {
     }
 
     private Map<String,Object> loadMapFromTestStep(String elementName, Map testStep) {
-        Map<String, Object> loadedMap = new HashMap<>();
+        Map<String, Object> loadedMap = new HashMap();
         if (testStep.containsKey(elementName) && testStep.get(elementName) != null) {
             Map<String, Object> elementMap = (Map<String, Object>) testStep.get(elementName);
             elementMap.forEach((key, value) -> {
@@ -152,7 +152,7 @@ public class BasicFlowChecks extends BasicMultipleChecks {
      */
     private void updateParameters(Integer blockID, String paramName, String valueToStore) {
         if (!retrievedParameters.containsKey(blockID)) {
-            retrievedParameters.put(blockID, new HashMap<>());
+            retrievedParameters.put(blockID, new HashMap());
         }
         Map<String, String> tmp = retrievedParameters.get(blockID);
         getLogUtils().debug("storing Step[{}].{} = '{}'", blockID, paramName, valueToStore);

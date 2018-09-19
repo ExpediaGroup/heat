@@ -101,7 +101,7 @@ public class SingleMode extends TestBaseRunner {
             basicChecks.setResponse(apiResponse);
             basicChecks.commonTestValidation(testCaseParamsElaborated);
 
-            Map<String, Response> rspMap = new HashMap<>();
+            Map<String, Response> rspMap = new HashMap();
             rspMap.put(webappName, apiResponse);
 
             super.specificChecks(testCaseParamsElaborated, rspMap, TestSuiteHandler.getInstance().getEnvironmentHandler().getEnvironmentUnderTest());

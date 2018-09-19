@@ -85,13 +85,13 @@ public class PlaceholderHandler {
         this.logUtils = TestSuiteHandler.getInstance().getLogUtils();
         //here we are checking if there are some external libraries to load (see Java Service Provider Interface pattern)
         //providerMap contains placeholders (key) and the specific class instances that are able to manage them (value)
-        providerMap = new HashMap<>();
+        providerMap = new HashMap();
         ServiceLoader.load(HeatPlaceholderModuleProvider.class).forEach(provider -> {
             providerMap = constructProviderMap(providerMap, provider.getHandledPlaceholders(), provider);
         });
         this.logUtils.trace("found n. {} provider(s)", providerMap.size());
-        this.preloadedVariables = new HashMap<>();
-        this.flowPreloadedVariables = new HashMap<>();
+        this.preloadedVariables = new HashMap();
+        this.flowPreloadedVariables = new HashMap();
     }
 
 
@@ -177,11 +177,11 @@ public class PlaceholderHandler {
 
                 result = String.valueOf((Object) jsPath.get(jsonPath));
                 if (result == null) {
-                    logUtils.warning("It is not possible to retrieve the jsonPath '{}'", jsonPath);
+                    logUtils.debug("It is not possible to retrieve the jsonPath '{}'", jsonPath);
                 }
             }
         } catch (Exception oEx) {
-            logUtils.error("It is not possible to retrieve the jsonPath '{}'", getPathArg);
+            logUtils.debug("It is not possible to retrieve the jsonPath '{}'", getPathArg);
         }
         return result;
     }
@@ -281,7 +281,7 @@ public class PlaceholderHandler {
         String outputStr = inputString;
         Pattern pattern = Pattern.compile(regex);
         Matcher matcher = pattern.matcher(inputString);
-        List<String> placeholders = new ArrayList<>();
+        List<String> placeholders = new ArrayList();
 
         while (matcher.find()) {
             placeholders.add(matcher.group(0));
@@ -360,11 +360,11 @@ public class PlaceholderHandler {
                 if (jpathResp != null) {
                     output = String.valueOf(jpathResp);
                 } else {
-                    logUtils.warning("It is not possible to retrieve the jsonPath '{}'", path);
+                    logUtils.debug("It is not possible to retrieve the jsonPath '{}'", path);
                 }
             }
         } catch (Exception oEx) {
-            logUtils.error("It is not possible to retrieve the jsonPath "
+            logUtils.debug("It is not possible to retrieve the jsonPath "
                     + "('{}') from the current response. --> response: {}", path, rsp.asString());
 //            throw new HeatException(logUtils.getExceptionDetails() + "It is not possible to retrieve the jsonPath (" + path
 //                    + ") from the current response. --> response: " + rsp.asString());
@@ -421,7 +421,7 @@ public class PlaceholderHandler {
         preloadedVariables = TestSuiteHandler.getInstance().getTestCaseUtils().getBeforeSuiteVariables();
         Map<String, Object> stepVariables = TestSuiteHandler.getInstance().getTestCaseUtils().getBeforeStepVariables();
 
-        Map<String, Object> stepAndSuitePreloadVariables = new HashMap<>(preloadedVariables);
+        Map<String, Object> stepAndSuitePreloadVariables = new HashMap(preloadedVariables);
         stepAndSuitePreloadVariables.putAll(stepVariables);
 
         if (!stepAndSuitePreloadVariables.isEmpty()) {

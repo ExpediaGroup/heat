@@ -28,7 +28,7 @@ public class WiremockSupportModuleProvider  implements HeatPlaceholderModuleProv
 
     @Override
     public List<String> getHandledPlaceholders() {
-        List<String> listPlaceholders = new ArrayList<>();
+        List<String> listPlaceholders = new ArrayList();
         listPlaceholders.add(WiremockSupportModule.WIREMOCK_PROP_PLACEHOLDER);
         return listPlaceholders;
     }
