@@ -60,7 +60,7 @@ public class BasicChecks {
     private final LoggingUtils logUtils;
     private final ITestContext testContext;
 
-    private Map<Integer, Map<String, String>> retrievedParameters = new HashMap<>();
+    private Map<Integer, Map<String, String>> retrievedParameters = new HashMap();
 
     /**
      * This is the constructor of the class BasicChecks.

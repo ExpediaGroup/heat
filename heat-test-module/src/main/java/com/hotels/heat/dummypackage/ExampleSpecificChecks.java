@@ -40,7 +40,7 @@ public class ExampleSpecificChecks extends SpecificChecks {
  */
     @Override
     public Set<String> handledSuites() {
-        Set<String> suites = new HashSet<>();
+        Set<String> suites = new HashSet();
         suites.add("FIRST_SUITE");
         return suites;
     }

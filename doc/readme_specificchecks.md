@@ -49,7 +49,7 @@ Through the implementation of **handledSuites()** method, you can associate this
 
 ```java
     public Set<String> handledSuites() {
-        Set<String> suites = new HashSet<>();
+        Set<String> suites = new HashSet();
         suites.add("FIRST_SUITE");
         return suites;
     }

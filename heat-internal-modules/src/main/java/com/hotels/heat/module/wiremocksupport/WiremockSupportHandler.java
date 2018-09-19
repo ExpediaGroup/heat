@@ -51,7 +51,7 @@ public class WiremockSupportHandler {
     public Map<String, String> executeAction(WiremockAction action) {
         String urlOperation;
         Method httpMethod;
-        Map<String, String> rsp = new HashMap<>();
+        Map<String, String> rsp = new HashMap();
         Response httpResp = null;
 
         switch (action) {
@@ -99,8 +99,8 @@ public class WiremockSupportHandler {
 
     private Response makeHttpCall(String urlOperation, Method httpMethod) {
         requestMaker.setBasePath(urlOperation);
-        requestMaker.setRequestSpecification(new HashMap<>(), new HashMap<>(), urlOperation);
-        Response wmRsp = requestMaker.executeHttpRequest(httpMethod, urlOperation, new HashMap<>());
+        requestMaker.setRequestSpecification(new HashMap(), new HashMap(), urlOperation);
+        Response wmRsp = requestMaker.executeHttpRequest(httpMethod, urlOperation, new HashMap());
 
         return wmRsp;
     }

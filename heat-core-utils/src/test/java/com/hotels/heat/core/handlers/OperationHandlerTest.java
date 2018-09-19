@@ -68,11 +68,11 @@ public class OperationHandlerTest {
     }
 
     private Map getEqualsFieldsToCheck() {
-        Map fieldsToCheck = new HashMap<>();
-        Map<String, String> compareActualValue = new HashMap<>();
+        Map fieldsToCheck = new HashMap();
+        Map<String, String> compareActualValue = new HashMap();
         compareActualValue.put("referringObjectName", "rsp1");
         compareActualValue.put("actualValue", "${path[field_path1]}");
-        Map<String, String> compareExpectedValue = new HashMap<>();
+        Map<String, String> compareExpectedValue = new HashMap();
         compareExpectedValue.put("referringObjectName", "rsp2");
         compareExpectedValue.put("actualValue", "${path[field_path2]}");
 
@@ -84,11 +84,11 @@ public class OperationHandlerTest {
     }
 
     private Map getDifferentFieldsToCheck() {
-        Map fieldsToCheck = new HashMap<>();
-        Map<String, String> compareActualValue = new HashMap<>();
+        Map fieldsToCheck = new HashMap();
+        Map<String, String> compareActualValue = new HashMap();
         compareActualValue.put("referringObjectName", "rsp1");
         compareActualValue.put("actualValue", "${path[field_path1]}");
-        Map<String, String> compareExpectedValue = new HashMap<>();
+        Map<String, String> compareExpectedValue = new HashMap();
         compareExpectedValue.put("referringObjectName", "rsp2");
         compareExpectedValue.put("actualValue", "${path[.]}");
 
@@ -104,7 +104,7 @@ public class OperationHandlerTest {
         rspBuilder.setStatusCode(200);
         rspBuilder.setBody("{\"field_path1\":\"field_value\",\"array1\":[{\"array_field1\":\"array_field_value\"}]}");
 
-        List<Header> headerList = new ArrayList<>();
+        List<Header> headerList = new ArrayList();
         Header header1 = new Header("test_header", "test_value");
         Header header2 = new Header("test_header2", "test_value2");
         headerList.add(header1);
@@ -112,7 +112,7 @@ public class OperationHandlerTest {
         Headers headers = new Headers(headerList);
         rspBuilder.setHeaders(headers);
 
-        List<Cookie> cookieList = new ArrayList<>();
+        List<Cookie> cookieList = new ArrayList();
         Cookie cookie1 = new Cookie.Builder("test_cookie", "test_value").build();
         Cookie cookie2 = new Cookie.Builder("test_cookie2", "test_value2").build();
         cookieList.add(cookie1);

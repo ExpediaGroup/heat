@@ -57,8 +57,8 @@ public class PlaceholderHandlerTest {
     @Test (enabled = true)
     public void testGetStepString() {
         underTest = new PlaceholderHandler();
-        Map<Integer, Map<String, String>> flowVariables = new HashMap<>();
-        Map<String, String> step1 = new HashMap<>();
+        Map<Integer, Map<String, String>> flowVariables = new HashMap();
+        Map<String, String> step1 = new HashMap();
         step1.put("outputParamName", "outputParamValue");
         flowVariables.put(1, step1);
         underTest.setFlowVariables(flowVariables);
@@ -87,7 +87,7 @@ public class PlaceholderHandlerTest {
     @Test (enabled = true)
     public void testGetPreloadSimpleString() {
         underTest = new PlaceholderHandler();
-        Map<String, Object> beforeSuiteVariables = new HashMap<>();
+        Map<String, Object> beforeSuiteVariables = new HashMap();
         beforeSuiteVariables.put("preloadedVarName", "preloadedVarValue");
         TestSuiteHandler.getInstance().getTestCaseUtils().setBeforeSuiteVariables(beforeSuiteVariables);
         String stringToProcess = "${preload[preloadedVarName]}";
@@ -98,8 +98,8 @@ public class PlaceholderHandlerTest {
     @Test (enabled = true)
     public void testGetPreloadComplexDefaultString() {
         underTest = new PlaceholderHandler();
-        Map<String, Object> beforeSuiteVariables = new HashMap<>();
-        Map<String, String> complexStructure = new HashMap<>();
+        Map<String, Object> beforeSuiteVariables = new HashMap();
+        Map<String, String> complexStructure = new HashMap();
         complexStructure.put("DEFAULT", "default_value");
         complexStructure.put("param1", "param1_value");
         complexStructure.put("param2", "param2_value");
@@ -136,7 +136,7 @@ public class PlaceholderHandlerTest {
     @Test(enabled = true)
     public void testGetPreloadNotExistentString() {
         underTest = new PlaceholderHandler();
-        Map<String, Object> beforeSuiteVariables = new HashMap<>();
+        Map<String, Object> beforeSuiteVariables = new HashMap();
         beforeSuiteVariables.put("preloadedVarName", "preloadedVarValue");
         TestSuiteHandler.getInstance().getTestCaseUtils().setBeforeSuiteVariables(beforeSuiteVariables);
         String stringToProcess = "${preload[NotpreloadedVarName]}";
@@ -147,8 +147,8 @@ public class PlaceholderHandlerTest {
     @Test (enabled = true)
     public void testGetNotExistentStepString() {
         underTest = new PlaceholderHandler();
-        Map<Integer, Map<String, String>> flowVariables = new HashMap<>();
-        Map<String, String> step1 = new HashMap<>();
+        Map<Integer, Map<String, String>> flowVariables = new HashMap();
+        Map<String, String> step1 = new HashMap();
         step1.put("outputParamName", "outputParamValue");
         flowVariables.put(1, step1);
         underTest.setFlowVariables(flowVariables);
@@ -160,8 +160,8 @@ public class PlaceholderHandlerTest {
     @Test (enabled = true)
     public void testGetNotExistentOutputString() {
         underTest = new PlaceholderHandler();
-        Map<Integer, Map<String, String>> flowVariables = new HashMap<>();
-        Map<String, String> step1 = new HashMap<>();
+        Map<Integer, Map<String, String>> flowVariables = new HashMap();
+        Map<String, String> step1 = new HashMap();
         step1.put("outputParamName", "outputParamValue");
         flowVariables.put(1, step1);
         underTest.setFlowVariables(flowVariables);
@@ -265,7 +265,7 @@ public class PlaceholderHandlerTest {
         rspBuilder.setStatusCode(200);
         rspBuilder.setBody("{\"field_path\":\"field_value\",\"array1\":[{\"array_field1\":\"array_field_value1\"}]}");
 
-        List<Header> headerList = new ArrayList<>();
+        List<Header> headerList = new ArrayList();
         Header header1 = new Header("test_header", "test_value");
         Header header2 = new Header("test_header2", "test_value2");
         headerList.add(header1);
@@ -273,7 +273,7 @@ public class PlaceholderHandlerTest {
         Headers headers = new Headers(headerList);
         rspBuilder.setHeaders(headers);
 
-        List<Cookie> cookieList = new ArrayList<>();
+        List<Cookie> cookieList = new ArrayList();
         Cookie cookie1 = new Cookie.Builder("test_cookie", "test_value").build();
         Cookie cookie2 = new Cookie.Builder("test_cookie2", "test_value2").build();
         cookieList.add(cookie1);
@@ -288,19 +288,19 @@ public class PlaceholderHandlerTest {
     public void testGeneralMapAsInput() {
         underTest = new PlaceholderHandler();
 
-        Map<String, Object> beforeSuiteVariables = new HashMap<>();
+        Map<String, Object> beforeSuiteVariables = new HashMap();
         beforeSuiteVariables.put("preloadedVarName", "preloadedVarValue");
         TestSuiteHandler.getInstance().getTestCaseUtils().setBeforeSuiteVariables(beforeSuiteVariables);
 
-        Map<String, Object> mapToProcess = new HashMap<>();
+        Map<String, Object> mapToProcess = new HashMap();
         mapToProcess.put("field1", "field1_value");
-        Map<String, String> secondLevelMap = new HashMap<>();
+        Map<String, String> secondLevelMap = new HashMap();
         secondLevelMap.put("field2_1", "${preload[preloadedVarName]}");
         mapToProcess.put("field2", secondLevelMap);
 
-        Map<String, Object> expectedMap = new HashMap<>();
+        Map<String, Object> expectedMap = new HashMap();
         expectedMap.put("field1", "field1_value");
-        Map<String, String> secondLevelExpectedMap = new HashMap<>();
+        Map<String, String> secondLevelExpectedMap = new HashMap();
         secondLevelExpectedMap.put("field2_1", "preloadedVarValue");
         expectedMap.put("field2", secondLevelExpectedMap);
 
@@ -311,85 +311,85 @@ public class PlaceholderHandlerTest {
     @Test (enabled = true)
     public void testProcessPlaceholders() {
         underTest = new PlaceholderHandler();
-        Map<String, Object> beforeSuiteVariables = new HashMap<>();
+        Map<String, Object> beforeSuiteVariables = new HashMap();
         beforeSuiteVariables.put("preloadedVarName1", "preloadedVarValue1");
         beforeSuiteVariables.put("preloadedVarName2", "preloadedVarValue2");
         beforeSuiteVariables.put("preloadedVarName3", "preloadedVarValue3");
         TestSuiteHandler.getInstance().getTestCaseUtils().setBeforeSuiteVariables(beforeSuiteVariables);
 
-        Map<String, Object> mapToProcess = new HashMap<>();
+        Map<String, Object> mapToProcess = new HashMap();
         mapToProcess.put("field1", "{\"custname\":\"pippo\",\"custemail\":\"pippo@test.test\",\"delivery\":\"${preload[preloadedVarName1]}\""
                 + ",\"size\":\"large\",\"topping\": [\"bacon\",\"cheese\"],\"comment\":\"${preload[preloadedVarName2]}\"}");
         Map processedMap = underTest.placeholderProcessMap(mapToProcess);
 
-        Map<String, Object> expectedMap = new HashMap<>();
+        Map<String, Object> expectedMap = new HashMap();
         expectedMap.put("field1", "{\"custname\":\"pippo\",\"custemail\":\"pippo@test.test\",\"delivery\":\"preloadedVarValue1\","
                 + "\"size\":\"large\",\"topping\": [\"bacon\",\"cheese\"],\"comment\":\"preloadedVarValue2\"}");
 
         Assert.assertEquals(processedMap, expectedMap);
 
-        mapToProcess = new HashMap<>();
+        mapToProcess = new HashMap();
         mapToProcess.put("field1", "${preload[preloadedVarName3]}:\"pippo\",\"custemail\":\"pippo@test.test\","
                 + "\"delivery\":\"${preload[preloadedVarName1]}\",\"size\":\"large\",\"topping\": [\"bacon\",\"cheese\"],\"comment\":\"${preload[preloadedVarName2]}\"}");
         processedMap = underTest.placeholderProcessMap(mapToProcess);
 
-        expectedMap = new HashMap<>();
+        expectedMap = new HashMap();
         expectedMap.put("field1", "preloadedVarValue3:\"pippo\",\"custemail\":\"pippo@test.test\","
                 + "\"delivery\":\"preloadedVarValue1\",\"size\":\"large\",\"topping\": [\"bacon\",\"cheese\"],\"comment\":\"preloadedVarValue2\"}");
 
         Assert.assertEquals(processedMap, expectedMap);
 
-        mapToProcess = new HashMap<>();
+        mapToProcess = new HashMap();
         mapToProcess.put("field1", "${preload[preloadedVarName1]}:\"pippo\",\"custemail\":\"pippo@test.test\","
                 + "\"delivery\":\"${preload[preloadedVarName1]}\",\"size\":\"large\",\"topping\": [\"bacon\",\"cheese\"],\"comment\":\"${preload[preloadedVarName1]}\"}");
         processedMap = underTest.placeholderProcessMap(mapToProcess);
 
-        expectedMap = new HashMap<>();
+        expectedMap = new HashMap();
         expectedMap.put("field1", "preloadedVarValue1:\"pippo\",\"custemail\":\"pippo@test.test\","
                 + "\"delivery\":\"preloadedVarValue1\",\"size\":\"large\",\"topping\": [\"bacon\",\"cheese\"],\"comment\":\"preloadedVarValue1\"}");
 
         Assert.assertEquals(processedMap, expectedMap);
 
-        mapToProcess = new HashMap<>();
+        mapToProcess = new HashMap();
         mapToProcess.put("field1", "${preload[preloadedVarName1]}:\"pippo\",\"custemail\":\"pippo@test.test\","
                 + "\"delivery\":\"${preload[preloadedVarName1]}\",\"size\":\"large\",\"topping\": [\"bacon\",\"cheese\"],"
                 + "\"comment\":\"${preload[preloadedVarName1]}\"}${preload[preloadedVarName1]}");
         processedMap = underTest.placeholderProcessMap(mapToProcess);
 
-        expectedMap = new HashMap<>();
+        expectedMap = new HashMap();
         expectedMap.put("field1", "preloadedVarValue1:\"pippo\",\"custemail\":\"pippo@test.test\",\"delivery\":\"preloadedVarValue1\","
                 + "\"size\":\"large\",\"topping\": [\"bacon\",\"cheese\"],\"comment\":\"preloadedVarValue1\"}preloadedVarValue1");
 
         Assert.assertEquals(processedMap, expectedMap);
 
-        mapToProcess = new HashMap<>();
+        mapToProcess = new HashMap();
         mapToProcess.put("field1", "preloadedVarValue1:\"pippo\",\"custemail\":\"pippo@test.test\",\"delivery\":\"${preload[preloadedVarName1]}\","
                 + "\"size\":\"large\",\"topping\": [\"bacon\",\"cheese\"],\"comment\":\"preloadedVarValue1\"}preloadedVarValue1");
         processedMap = underTest.placeholderProcessMap(mapToProcess);
 
-        expectedMap = new HashMap<>();
+        expectedMap = new HashMap();
         expectedMap.put("field1", "preloadedVarValue1:\"pippo\",\"custemail\":\"pippo@test.test\",\"delivery\":\"preloadedVarValue1\",\"size\":\"large\","
                 + "\"topping\": [\"bacon\",\"cheese\"],\"comment\":\"preloadedVarValue1\"}preloadedVarValue1");
 
         Assert.assertEquals(processedMap, expectedMap);
 
-        mapToProcess = new HashMap<>();
+        mapToProcess = new HashMap();
         mapToProcess.put("field1", "preloadedVarValue1:\"pippo\",\"custemail\":\"pippo@test.test\",\"delivery\":\"preloadedVarValue1\","
                 + "\"size\":\"large\",\"topping\": [\"bacon\",\"cheese\"],\"comment\":\"preloadedVarValue1\"}preloadedVarValue1");
         processedMap = underTest.placeholderProcessMap(mapToProcess);
 
-        expectedMap = new HashMap<>();
+        expectedMap = new HashMap();
         expectedMap.put("field1", "preloadedVarValue1:\"pippo\",\"custemail\":\"pippo@test.test\",\"delivery\":\"preloadedVarValue1\","
                 + "\"size\":\"large\",\"topping\": [\"bacon\",\"cheese\"],\"comment\":\"preloadedVarValue1\"}preloadedVarValue1");
 
         Assert.assertEquals(processedMap, expectedMap);
 
-        mapToProcess = new HashMap<>();
+        mapToProcess = new HashMap();
         mapToProcess.put("field1", "preloadedVarValue1:\"pippo\",\"custemail\":\"pippo@test.test\",\"delivery\":\"{preload[preloadedVarName1]}\","
                 + "\"size\":\"large\",\"topping\": [\"bacon\",\"cheese\"],\"comment\":\"preloadedVarValue1\"}preloadedVarValue1");
         processedMap = underTest.placeholderProcessMap(mapToProcess);
 
-        expectedMap = new HashMap<>();
+        expectedMap = new HashMap();
         expectedMap.put("field1", "preloadedVarValue1:\"pippo\",\"custemail\":\"pippo@test.test\",\"delivery\":\"{preload[preloadedVarName1]}\","
                 + "\"size\":\"large\",\"topping\": [\"bacon\",\"cheese\"],\"comment\":\"preloadedVarValue1\"}preloadedVarValue1");
 

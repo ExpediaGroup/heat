@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2015-2017 Expedia Inc.
+ * Copyright (C) 2015-2018 Expedia Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -89,27 +89,27 @@ public class DataExtractionSupportTest {
     }
 
     private List getNotSupportedClassObject() {
-        List<String> list = new ArrayList<>();
+        List<String> list = new ArrayList();
         list.add("pippo");
         return list;
     }
 
     private Map getRegexpExtractionMapObject() {
-        Map<String, Object> map = new HashMap<>();
+        Map<String, Object> map = new HashMap();
         map.put(DataExtractionSupport.REGEXP_JSON_ELEMENT, "PIPPO_(.*?)_PLUTO");
         map.put(DataExtractionSupport.STRING_TO_PARSE_JSON_ELEMENT, "PIPPO_123_PLUTO");
         return map;
     }
 
     private Map getOccurrenceOfMapObject() {
-        Map<String, Object> map = new HashMap<>();
+        Map<String, Object> map = new HashMap();
         map.put(DataExtractionSupport.OCCURRENCE_JSON_ELEMENT, "PIPPO");
         map.put(DataExtractionSupport.STRING_TO_PARSE_JSON_ELEMENT, "PIPPO_PLUTO_PIPPO_MICKEY");
         return map;
     }
 
     private Map getNotSupportedMapObject() {
-        Map<String, Object> map = new HashMap<>();
+        Map<String, Object> map = new HashMap();
         map.put("PIPPO", "hello!");
         return map;
     }

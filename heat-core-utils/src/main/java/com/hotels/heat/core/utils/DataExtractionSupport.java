@@ -44,7 +44,7 @@ public class DataExtractionSupport {
 
     public DataExtractionSupport(LoggingUtils logUtils) {
         this.logUtils = logUtils;
-        this.retrievedParametersFlowMode = new HashMap<>();
+        this.retrievedParametersFlowMode = new HashMap();
     }
 
     /**

@@ -134,7 +134,7 @@ public final class EnvironmentHandler {
      * @return a list of test ids
      */
     private List<String> testIds2List(String testIds) {
-        List<String> testIdsList = new ArrayList<>();
+        List<String> testIdsList = new ArrayList();
 
         if (testIds != null) {
             testIdsList.addAll(Arrays.asList(testIds.split(HEAT_TEST_SEPARATOR)));

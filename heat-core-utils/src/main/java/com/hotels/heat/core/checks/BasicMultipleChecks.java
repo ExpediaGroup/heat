@@ -60,16 +60,16 @@ public class BasicMultipleChecks {
     private final LoggingUtils logUtils;
     private final ITestContext context;
 
-    private Map<String, Object> inputJsonObjs = new HashMap<>();
+    private Map<String, Object> inputJsonObjs = new HashMap();
     private RestAssuredRequestMaker restAssuredMsg;
 
 
     public BasicMultipleChecks(ITestContext context) {
         this.logUtils = TestSuiteHandler.getInstance().getLogUtils();
         this.context = context;
-        this.steps = new TreeMap<>();
-        this.paths = new HashMap<>();
-        this.httpMethods = new HashMap<>();
+        this.steps = new TreeMap();
+        this.paths = new HashMap();
+        this.httpMethods = new HashMap();
     }
 
     public LoggingUtils getLogUtils() {
@@ -156,7 +156,7 @@ public class BasicMultipleChecks {
      * @return Map webapp name, response from the specified webapp
      */
     public Map<String, Response> retrieveInfo(Map<String, Object> testCaseParamsInput) {
-        Map<String, Response> respRetrieved = new HashMap<>();
+        Map<String, Response> respRetrieved = new HashMap();
         try {
             compactInfoToCompare(testCaseParamsInput);
 
