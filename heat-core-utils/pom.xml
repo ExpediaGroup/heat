@@ -32,12 +32,12 @@
         <dependency>
             <groupId>org.testng</groupId>
             <artifactId>testng</artifactId>
-            <version>6.8.21</version>
+            <version>6.14.3</version>
         </dependency>
     </dependencies>
     <properties>
-        <maven.compiler.target>1.8</maven.compiler.target>
-        <maven.compiler.source>1.8</maven.compiler.source>
+        <jdk.version>10</jdk.version>
+
         <!-- Maven Checkstyle Plugin -->
         <main.basedir>${project.basedir}</main.basedir>
         <checkstyle.basedir>${main.basedir}/rules</checkstyle.basedir>
@@ -116,7 +116,7 @@
             <plugin>
                 <groupId>org.jacoco</groupId>
                 <artifactId>jacoco-maven-plugin</artifactId>
-                <version>0.7.5.201505241946</version>
+                <version>0.8.2</version>
                 <configuration>
                     <excludes>
                         <exclude>com/hotels/heat/core/runner/SingleMode.class</exclude>
