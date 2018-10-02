@@ -52,7 +52,7 @@ NOTE 2: **if `<JSON_STRING>` is not specified, the service response is used**<br
 
 **Additional information:**<br/>
 To understand how we can use this important placeholder, let's have a look at how RestAssured treats a response and how we can navigate it.
-A JSON response is treated as a `com.jayway.restassured.response.Response` object (official documentation [here](https://static.javadoc.io/com.jayway.restassured/rest-assured/2.4.0/com/jayway/restassured/response/Response.html)) so, in order to navigate the body of a response we use the following code:
+A JSON response is treated as a `io.restassured.response.Response` object (official documentation [here](https://static.javadoc.io/io.rest-assured/rest-assured/3.1.1/io/restassured/response/Response.html)) so, in order to navigate the body of a response we use the following code:
 
 ```java
 Response rsp = ...
@@ -61,7 +61,7 @@ JsonPathConfig config = new JsonPathConfig(JsonPathConfig.NumberReturnType.BIG_D
 String field = rsp.jsonPath(config).get(pathToNavigate).toString();
 ```
 
-where `com.jayway.restassured.path.json.config.JsonPathConfig` is a configuration for the JSON path retrieving (official documentation [here](http://static.javadoc.io/com.jayway.restassured/json-path/2.8.0/com/jayway/restassured/path/json/config/JsonPathConfig.html)), `rsp` is the response to analyse (`Response` object) that we transform in a `com.jayway.restassured.path.json.JsonPath` object (official documentation [here](https://github.com/json-path/JsonPath)) and `pathToNavigate` is the 'address' we use to reach a specific object in the given response.
+where `io.restassured.path.json.config.JsonPathConfig` is a configuration for the JSON path retrieving (official documentation [here](https://static.javadoc.io/io.rest-assured/json-path/3.1.1/io/restassured/path/json/config/JsonPathConfig.html)), `rsp` is the response to analyse (`Response` object) that we transform in a `com.jayway.restassured.path.json.JsonPath` object (official documentation [here](https://github.com/json-path/JsonPath)) and `pathToNavigate` is the 'address' we use to reach a specific object in the given response.
 
 For example, if we have a response whose JSON body is
 

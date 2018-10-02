@@ -37,7 +37,7 @@
         <dependency>
             <groupId>io.rest-assured</groupId>
             <artifactId>rest-assured</artifactId>
-            <version>${rest-assured.version}</version>
+            <version>3.1.1</version>
         </dependency>
         <!-- Unit Testing -->
         <dependency>
@@ -59,8 +59,6 @@
     </dependencies>
     <properties>
 
-        <!-- Rest Assured-->
-        <rest-assured.version>3.1.0</rest-assured.version>
 
         <!-- Maven PMD Plugin -->
         <maven-pmd-plugin.version>3.1</maven-pmd-plugin.version>

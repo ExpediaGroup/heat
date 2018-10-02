@@ -23,8 +23,8 @@ import com.hotels.heat.core.handlers.PlaceholderHandler;
 import com.hotels.heat.core.handlers.PropertyHandler;
 import com.hotels.heat.core.handlers.TestSuiteHandler;
 import com.hotels.heat.core.utils.log.LoggingUtils;
-import com.jayway.restassured.path.json.config.JsonPathConfig;
-import com.jayway.restassured.response.Response;
+import io.restassured.path.json.config.JsonPathConfig;
+import io.restassured.response.Response;
 
 public class WiremockUtils {
     public static final JsonPathConfig JSON_CONFIG = new JsonPathConfig(JsonPathConfig.NumberReturnType.BIG_DECIMAL);
