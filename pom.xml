@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <packaging>pom</packaging>
     <artifactId>heat-core</artifactId>
-    <version>4.0.2-SNAPSHOT</version>
+    <version>4.0.2</version>
 
     <parent>
         <groupId>com.hotels</groupId>
@@ -15,7 +15,7 @@
         <connection>scm:git:git@github.com:HotelsDotCom/heat.git</connection>
         <developerConnection>scm:git:git@github.com:HotelsDotCom/heat.git</developerConnection>
         <url>https://github.com/HotelsDotCom/heat</url>
-        <tag>HEAD</tag>
+        <tag>heat-core-4.0.2</tag>
     </scm>
 
     <modules>
