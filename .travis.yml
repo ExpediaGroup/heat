@@ -1,6 +1,6 @@
 language: java
 jdk:
-  - openjdk10
+  - openjdk8
 os:
   - linux
 cache:
