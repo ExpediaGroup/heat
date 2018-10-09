@@ -59,6 +59,7 @@
     </dependencies>
     <properties>
 
+        <jdk.version>1.8</jdk.version>
 
         <!-- Maven PMD Plugin -->
         <maven-pmd-plugin.version>3.1</maven-pmd-plugin.version>
@@ -78,7 +79,6 @@
         <jacoco.complexityRatio>0</jacoco.complexityRatio>
         <jacoco.lineRatio>0</jacoco.lineRatio>
 
-        <jdk.version>10</jdk.version>
         <maven.site.plugin.version>3.8.0</maven.site.plugin.version>
         <hotels.oss.plugin.config.version>1.2.1</hotels.oss.plugin.config.version>
 

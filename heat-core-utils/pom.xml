@@ -36,7 +36,7 @@
         </dependency>
     </dependencies>
     <properties>
-        <jdk.version>10</jdk.version>
+        <jdk.version>1.8</jdk.version>
 
         <!-- Maven Checkstyle Plugin -->
         <main.basedir>${project.basedir}</main.basedir>
