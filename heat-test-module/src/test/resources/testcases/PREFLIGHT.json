@@ -1,0 +1,34 @@
+{
+  "testSuite": {
+    "generalSettings": {
+      "suiteDesc": "Test a preflight request in the CORS context",
+      "flowMode": "true"
+    },
+    "testCases": [
+      {
+        "testId": "001",
+        "testName": "TC1 - simple preflight requests",
+        "e2eFlowSteps": [
+          {
+            "objectName": "PREFLIGHT",
+            "stepNumber": "1",
+            "webappName": "CORS_WEB_APP",
+            "httpMethod": "OPTIONS",
+            "url": "/",
+            "headers": {
+              "Access-Control-Request-Method": "POST",
+              "Origin": "chrome-search://local-ntp",
+              "Access-Control-Request-Headers": "access-control-allow-origin,content-type"
+            },
+            "expects": {
+              "responseCode": "200",
+              "headerCheck": {
+                "Access-Control-Allow-Headers": "access-control-allow-origin,content-type"
+              }
+            }
+          }
+        ]
+      }
+    ]
+  }
+}

@@ -195,6 +195,9 @@ public class RestAssuredRequestMaker {
             case POST:
                 serviceResponse = requestSpecification.when().post(url);
                 break;
+            case OPTIONS:
+                serviceResponse = requestSpecification.when().options(url);
+                break;
             default:
                 logUtils.warning("HTTP METHOD '{}' not recognized. GET METHOD used as default", httpMethod.toString());
                 serviceResponse = requestSpecification.when().get(url);
