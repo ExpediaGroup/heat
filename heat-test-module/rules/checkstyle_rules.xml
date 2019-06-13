@@ -367,7 +367,7 @@
     </module>
     <module name="RegexpHeader">
         <property name="severity" value="error" />
-        <property name="header" value="\/\*\*\n \* Copyright \(C\) 2015-201\d? Expedia Inc\." />
+        <property name="header" value="\/\*\*\n \* Copyright \(C\) 2015-201\d? Expedia, Inc\." />
         <metadata name="com.atlassw.tools.eclipse.checkstyle.comment" value="No header" />
     </module>
     <module name="NewlineAtEndOfFile">

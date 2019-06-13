@@ -8,7 +8,7 @@
     <parent>
         <groupId>com.hotels</groupId>
         <artifactId>hotels-oss-parent</artifactId>
-        <version>2.3.3</version>
+        <version>4.0.1</version>
     </parent>
 
     <scm>
@@ -85,7 +85,7 @@
     </properties>
     <build>
         <plugins>
-            <plugin>
+           <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-site-plugin</artifactId>
                 <version>${plugin.maven.site.version}</version>
@@ -103,7 +103,7 @@
                 </dependencies>
             </plugin>
             <!-- Generate javadoc -->
-            <plugin>
+            <!-- <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-javadoc-plugin</artifactId>
                 <version>2.9.1</version>
@@ -111,7 +111,7 @@
                     <encoding>UTF-8</encoding>
                     <aggregate>true</aggregate>
                 </configuration>
-            </plugin>
+            </plugin> -->
             <!-- jacoco coverage plugin -->
             <plugin>
                 <groupId>org.jacoco</groupId>
@@ -187,18 +187,17 @@
                     </execution>
                 </executions>
             </plugin>
-            <plugin>
+            <!-- <plugin>
                 <groupId>org.sonatype.plugins</groupId>
                 <artifactId>nexus-staging-maven-plugin</artifactId>
                 <version>1.6.3</version>
                 <extensions>true</extensions>
                 <configuration>
-                    <!-- This should match the id you have your settings.xml-->
                     <serverId>sonatype-nexus-staging</serverId>
                     <nexusUrl>https://oss.sonatype.org/</nexusUrl>
                     <autoReleaseAfterClose>true</autoReleaseAfterClose>
                 </configuration>
-            </plugin>
+            </plugin> -->
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>cobertura-maven-plugin</artifactId>
