@@ -15,6 +15,8 @@
  */
 package com.hotels.heat.core.utils;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import static io.restassured.path.json.JsonPath.with;
 
 import java.io.File;
@@ -32,6 +34,8 @@ import java.util.regex.Pattern;
 import org.testng.ITestContext;
 import org.testng.SkipException;
 
+import org.yaml.snakeyaml.Yaml;
+
 import com.hotels.heat.core.environment.EnvironmentHandler;
 import com.hotels.heat.core.handlers.PlaceholderHandler;
 import com.hotels.heat.core.handlers.TestSuiteHandler;
@@ -41,6 +45,9 @@ import com.hotels.heat.core.utils.log.LoggingUtils;
 
 import io.restassured.http.Method;
 import io.restassured.path.json.JsonPath;
+import java.io.IOException;
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.FilenameUtils;
 
 /**
  * Class which reads out the test details from the JSON input files.
@@ -69,9 +76,9 @@ public class TestCaseUtils {
     private static final String JSONPATH_TEST_CASES = "testSuite.testCases";
     private static final String SUITE_DESCRIPTION_DEFAULT = "TEST SUITE";
     private static final String SUITE_DESCRIPTION_PATH = "suiteDesc";
-    public static final String CUSTOM_FIELDS        = "customFields";
-    public static final String FLOW_STEPS_OBJ       = "e2eFlowSteps";
-    public static final String OBJECTNAME_OBJ       = "objectName";
+    public static final String CUSTOM_FIELDS = "customFields";
+    public static final String FLOW_STEPS_OBJ = "e2eFlowSteps";
+    public static final String OBJECTNAME_OBJ = "objectName";
 
     private Method httpMethod;
     private String suiteDescription;
@@ -84,10 +91,10 @@ public class TestCaseUtils {
     private LoggingUtils logUtils;
 
     /**
-     * Constructor for TestCaseUtils object.
-     * It is used to handle all utilities for the specific request, in terms of collecting general settings and
-     * preload variables coming from the json input file driving the test suite. Moreover it handles the running of any test cases
-     * inside the suite.
+     * Constructor for TestCaseUtils object. It is used to handle all utilities
+     * for the specific request, in terms of collecting general settings and
+     * preload variables coming from the json input file driving the test suite.
+     * Moreover it handles the running of any test cases inside the suite.
      */
     public TestCaseUtils() {
         this.beforeStepVariables = new HashMap();
@@ -140,10 +147,33 @@ public class TestCaseUtils {
         return tcArrayIterator;
     }
 
+        private JsonPath convertToJson(File yamlFile) {
+        try {
+            String content = FileUtils.readFileToString(yamlFile);
+            Yaml yaml = new Yaml();
+            Map<String, Object> map = (Map<String, Object>) yaml.load(content);
+            ObjectMapper jsonWriter = new ObjectMapper();
+            JsonPath testSuiteJsonPath = with(jsonWriter.writerWithDefaultPrettyPrinter().writeValueAsString(map));
+            return testSuiteJsonPath;
+        } catch (JsonProcessingException ex) {
+            logUtils.error(ex.getLocalizedMessage());
+            throw new HeatException(logUtils.getExceptionDetails()
+                    + "the file '" + yamlFile.getAbsolutePath() + "' can not be parsed", ex);
+        } catch (IOException ex) {
+            logUtils.error(ex.getLocalizedMessage());
+            throw new HeatException(logUtils.getExceptionDetails()
+                    + "the file '" + yamlFile.getAbsolutePath() + "' can not be open", ex);
+        }
+    }
+
     /**
-     * It is the method that handles the reading of the json input file that is driving the test suite.
+     * It is the method that handles the reading of the json input file that is
+     * driving the test suite.
+     *
      * @param testSuiteFilePath the path of the json input file
-     * @param context it is the context of the test. It is managed from TestNG but it can be used to set and read some parameters all over the test suite execution
+     * @param context it is the context of the test. It is managed from TestNG
+     * but it can be used to set and read some parameters all over the test
+     * suite execution
      * @return the iterator of the test cases described in the json input file
      */
     public Iterator<Object[]> jsonReader(String testSuiteFilePath, ITestContext context) {
@@ -159,11 +189,17 @@ public class TestCaseUtils {
         // (in terms of enabled environments or test suite explicitly declared in the 'heatTest' system property)
         if (isTestSuiteRunnable(context.getName())) {
             File testSuiteJsonFile = Optional.ofNullable(getClass().getResource(testSuiteFilePath))
-                .map(url -> new File(url.getPath()))
-                .orElseThrow(() -> new HeatException(logUtils.getExceptionDetails()
-                        + "the file '" + testSuiteFilePath + "' does not exist"));
+                    .map(url -> new File(url.getPath()))
+                    .orElseThrow(() -> new HeatException(logUtils.getExceptionDetails()
+                    + "the file '" + testSuiteFilePath + "' does not exist"));
             try {
-                JsonPath testSuiteJsonPath = with(testSuiteJsonFile);
+                String extension = FilenameUtils.getExtension(testSuiteFilePath);
+                JsonPath testSuiteJsonPath;
+                if ("yml".equals(extension)) {
+                    testSuiteJsonPath = convertToJson(testSuiteJsonFile);
+                } else {
+                    testSuiteJsonPath = with(testSuiteJsonFile);
+                }
                 loadGeneralSettings(testSuiteJsonPath);
                 loadBeforeSuiteSection(testSuiteJsonPath);
                 loadJsonSchemaForOutputValidation(testSuiteJsonPath);
@@ -185,11 +221,16 @@ public class TestCaseUtils {
 
     /**
      * Method that checks if the test suite is runnable or it is skippable.
-     * Checks are made basing on the environments enabled for the specific test (specified in the testng.xml and in the 'environment' system property
-     * set in the test running execution command that specifies the environment against with we want to run the test)
-     * and on the name of a test suite (explicitly requested by 'heatTest' system property set during the test running execution command).
+     * Checks are made basing on the environments enabled for the specific test
+     * (specified in the testng.xml and in the 'environment' system property set
+     * in the test running execution command that specifies the environment
+     * against with we want to run the test) and on the name of a test suite
+     * (explicitly requested by 'heatTest' system property set during the test
+     * running execution command).
+     *
      * @param currentTestSuite the name of the test suite currently in execution
-     * @return a boolean value: 'true' if the test is runnable, 'false' if it is not.
+     * @return a boolean value: 'true' if the test is runnable, 'false' if it is
+     * not.
      */
     public boolean isTestSuiteRunnable(String currentTestSuite) {
         boolean isTSrunnable = false;
@@ -243,10 +284,13 @@ public class TestCaseUtils {
     }
 
     /**
-     * Method usefult to extract a regex from a specific string. If the regex does not produce any result, in output there will be the original string.
+     * Method usefult to extract a regex from a specific string. If the regex
+     * does not produce any result, in output there will be the original string.
+     *
      * @param stringToProcess it is the string to parse
      * @param patternForFormat is the pattern (regex) to use
-     * @param group it is the group to retrieve from the regular expression extraction
+     * @param group it is the group to retrieve from the regular expression
+     * extraction
      * @return the extracted string.
      */
     public String regexpExtractor(String stringToProcess, String patternForFormat, int group) {
@@ -267,10 +311,13 @@ public class TestCaseUtils {
     }
 
     /**
-     * Method usefult to extract a regex from a specific string. If the regex does not produce any result, in output there will be 'NO MATCH'.
+     * Method usefult to extract a regex from a specific string. If the regex
+     * does not produce any result, in output there will be 'NO MATCH'.
+     *
      * @param stringToProcess it is the string to parse
      * @param patternForFormat is the pattern (regex) to use
-     * @param group it is the group to retrieve from the regular expression extraction
+     * @param group it is the group to retrieve from the regular expression
+     * extraction
      * @return the extracted string.
      */
     public String getRegexpMatch(String stringToProcess, String patternForFormat, int group) {
@@ -291,19 +338,24 @@ public class TestCaseUtils {
     }
 
     /**
-     * Method useful to check if all the test parameters are valid (used to check if the suite is runnable or not).
+     * Method useful to check if all the test parameters are valid (used to
+     * check if the suite is runnable or not).
+     *
      * @param webappName name of the service under test
-     * @param webappPath path of the service under test, referring to the specific environment
+     * @param webappPath path of the service under test, referring to the
+     * specific environment
      * @param inputJsonPath path of the json input file
-     * @param logUtils utility for logging. It is good because it specifies exactly the class and the method the log is referred to.
+     * @param logUtils utility for logging. It is good because it specifies
+     * exactly the class and the method the log is referred to.
      * @param eh environment handler, useful to manage environment variables
-     * @return boolean value. 'true' if all the parameters are valid, 'false' otherwise.
+     * @return boolean value. 'true' if all the parameters are valid, 'false'
+     * otherwise.
      */
     public boolean isCommonParametersValid(String webappName,
-        String webappPath,
-        String inputJsonPath,
-        LoggingUtils logUtils,
-        EnvironmentHandler eh) {
+            String webappPath,
+            String inputJsonPath,
+            LoggingUtils logUtils,
+            EnvironmentHandler eh) {
         boolean isValid = true;
         if (webappPath == null) {
             logUtils.debug("webApp path (webapp = {}) is null", webappName);
@@ -323,11 +375,11 @@ public class TestCaseUtils {
         return isValid;
     }
 
-    public void setBeforeStepVariables(Map<String,Object> beforeStepVariables) {
+    public void setBeforeStepVariables(Map<String, Object> beforeStepVariables) {
         this.beforeStepVariables = beforeStepVariables;
     }
 
-    public Map<String,Object> getBeforeStepVariables() {
+    public Map<String, Object> getBeforeStepVariables() {
         return this.beforeStepVariables;
     }
 
@@ -335,9 +387,10 @@ public class TestCaseUtils {
         this.beforeSuiteVariables = beforeSuiteVariables;
     }
 
-
     /**
-     * Given testCaseParameter and object name in input, it retrieves the query params related to the object name.
+     * Given testCaseParameter and object name in input, it retrieves the query
+     * params related to the object name.
+     *
      * @param testCaseParameter test case parameters in json input file
      * @param objectName object name to retrieve
      * @return query parameters map
@@ -347,7 +400,9 @@ public class TestCaseUtils {
     }
 
     /**
-     * Given testCaseParameter and object name in input, it retrieves the 'customFields' section related to the object name.
+     * Given testCaseParameter and object name in input, it retrieves the
+     * 'customFields' section related to the object name.
+     *
      * @param testCaseParameter test case parameters in json input file
      * @param objectName object name to retrieve
      * @return customFields map
@@ -357,7 +412,9 @@ public class TestCaseUtils {
     }
 
     /**
-     * Given testCaseParameter in input, it retrieves the 'customFields' section for the SingleMode.
+     * Given testCaseParameter in input, it retrieves the 'customFields' section
+     * for the SingleMode.
+     *
      * @param testCaseParameter test case parameters in json input file
      * @return customFields map
      */
@@ -365,7 +422,7 @@ public class TestCaseUtils {
         return getSection(testCaseParameter, CUSTOM_FIELDS);
     }
 
-    private static Map<String,String> getSection(Map testCaseParameter, String sectionName) {
+    private static Map<String, String> getSection(Map testCaseParameter, String sectionName) {
         Map<String, String> section = new HashMap();
         if (testCaseParameter.containsKey(sectionName)) {
             section = (Map<String, String>) testCaseParameter.get(sectionName);
@@ -374,7 +431,9 @@ public class TestCaseUtils {
     }
 
     /**
-     * Given testCaseParameter and object name in input, it retrieves the requested section related to the object name.
+     * Given testCaseParameter and object name in input, it retrieves the
+     * requested section related to the object name.
+     *
      * @param testCaseParameter test case parameters in json input file
      * @param objectName object name to retrieve
      * @param sectionName the name of the requested section
@@ -384,7 +443,7 @@ public class TestCaseUtils {
         Map<String, String> section = new HashMap();
 
         List<Map<String, Object>> e2eFlowSteps = (List) testCaseParameter.get(FLOW_STEPS_OBJ);
-        for (Map<String, Object> step: e2eFlowSteps) {
+        for (Map<String, Object> step : e2eFlowSteps) {
             if (step.containsKey(OBJECTNAME_OBJ) && step.containsKey(sectionName) && objectName.equals(step.get(OBJECTNAME_OBJ))) {
                 section = (Map<String, String>) step.get(sectionName);
             }
@@ -394,7 +453,9 @@ public class TestCaseUtils {
     }
 
     /**
-     * Given a query parameters array and a name of parameter, it retrieves the value of this parameter.
+     * Given a query parameters array and a name of parameter, it retrieves the
+     * value of this parameter.
+     *
      * @param queryParameters query parameters array
      * @param queryParamName parameter name to retrieve
      * @return queryParamValue parameter value retrieved
@@ -411,7 +472,9 @@ public class TestCaseUtils {
     }
 
     /**
-     * Given a query parameters String and a name of parameter, it retrieves the value of this parameter.
+     * Given a query parameters String and a name of parameter, it retrieves the
+     * value of this parameter.
+     *
      * @param queryParametersString query parameters as URL String
      * @param queryParamName parameter name to retrieve
      * @return queryParamValue parameter value retrieved
@@ -421,7 +484,9 @@ public class TestCaseUtils {
     }
 
     /**
-     * Given a query parameters String and a name of parameter, it retrieves the value of this parameter.
+     * Given a query parameters String and a name of parameter, it retrieves the
+     * value of this parameter.
+     *
      * @param queryParametersString query parameters as URL String
      * @param queryParamName parameter name to retrieve
      * @param urlDecode true if want to decode the query parameter value
