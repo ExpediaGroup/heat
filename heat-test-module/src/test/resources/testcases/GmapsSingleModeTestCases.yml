@@ -1,13 +1,13 @@
+---
 testSuite:
   generalSettings:
     httpMethod: GET
     suiteDesc: Example Single Mode Tests
-  preloadVariables:
+  beforeTestSuite:
     CHECK_IN: "${TODAY+100_YYYY-MM-dd}"
     CHECK_OUT: "${TODAY+101_YYYY-MM-dd}"
     PIPPO: PIPPO
     OK: OK
-    # this is a comment that can be used
     API_KEY: AIzaSyDuJvGUBixcL3uzS4dDVtDE-jex24F0BFk
   jsonSchemas:
     correctResponse: schemas/okCase.json
@@ -27,16 +27,14 @@ testSuite:
       responseCode: '200'
       jsonSchemaToCheck: correctResponse
       fieldCheck:
-      #anchor defined
-      - &statusMap 
+      # I can add anchor and aliases that can change dinamycally
+      - &statusChanges
         description: result has to be OK
         actualValue: "${path[status]}"
         expectedValue: OK
-      #alias used with variation
-      - <<: *statusMap
+      - <<: *statusChanges
         expectedValue: "${preload[OK]}"
-      - description: result field has to be present
-        actualValue: "${path[status]}"
+      - <<: *statusChanges
         expectedValue: "${Present}"
       - description: pippo field has not to be present
         actualValue: "${path[pippo]}"
@@ -88,8 +86,8 @@ testSuite:
       - description: if the result is ok, then check if the response contains 'OK'
           string
         condition:
-        #alias used
-        - *statusMap
+        - <<: *statusChanges
+          expectedValue: OK
         actualValue: "${path[.]}"
         expectedValue:
         - "${preload[OK]}"
@@ -97,7 +95,8 @@ testSuite:
       - description: if the result is ok, then check if the response contains 'OK'
           string
         condition:
-        - *statusMap
+        - <<: *statusChanges
+          expectedValue: OK
         operation: not contains
         actualValue: "${path[.]}"
         expectedValue:
@@ -119,7 +118,7 @@ testSuite:
           regexpToMatch: _PIPPO_(.*?)_PAPERINO
           stringToParse: BLA BLA BLA BLA
         expectedValue: 'false'
-      &header headerCheck:
+      headerCheck:
         Content-Type: application/json; charset=UTF-8
   - testId: '002'
     testName: 'single mode test for new heat #2'
@@ -135,11 +134,9 @@ testSuite:
       responseCode: '200'
       jsonSchemaToCheck: errorResponse
       fieldCheck:
-      - description: status has to be REQUEST_DENIED
-        actualValue: "${path[status]}"
+      - <<: *statusChanges
         expectedValue: REQUEST_DENIED
-      - description: status has to be REQUEST_DENIED
-        actualValue: "${path[status]}"
+      - <<: *statusChanges
         operation: not equals to
         expectedValue: REQUEST_OK
       - description: error message value test
