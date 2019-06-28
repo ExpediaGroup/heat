@@ -37,6 +37,14 @@
         </classes>
     </test>
 
+    <test name="GOOGLE_MAPS_ENV1_YML" enabled="true">
+        <parameter name="inputJsonPath" value="/testCases/GmapsSingleModeTestCases.yml"/>
+        <parameter name="enabledEnvironments" value="environment1"/>
+        <classes>
+            <class name="com.hotels.heat.core.runner.SingleMode"/>
+        </classes>
+    </test>
+    
     <test name="GOOGLE_MAPS_ENV1" enabled="true">
         <parameter name="inputJsonPath" value="/testcases/GmapsSingleModeTestCases.json"/>
         <parameter name="enabledEnvironments" value="environment1"/>
@@ -55,6 +63,14 @@
 
     <test name="POST_TESTS_ENV3" enabled="true">
         <parameter name="inputJsonPath" value="/testcases/GmapsSingleModePostTestCases.json"/>
+        <parameter name="enabledEnvironments" value="environment3"/>
+        <classes>
+            <class name="com.hotels.heat.core.runner.SingleMode"/>
+        </classes>
+    </test>
+    
+    <test name="POST_TESTS_ENV3_YAML" enabled="true">
+        <parameter name="inputJsonPath" value="/testCases/GmapsSingleModePostTestCases.yml"/>
         <parameter name="enabledEnvironments" value="environment3"/>
         <classes>
             <class name="com.hotels.heat.core.runner.SingleMode"/>

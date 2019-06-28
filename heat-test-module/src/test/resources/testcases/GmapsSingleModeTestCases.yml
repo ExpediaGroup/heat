@@ -1,0 +1,152 @@
+testSuite:
+  generalSettings:
+    httpMethod: GET
+    suiteDesc: Example Single Mode Tests
+  preloadVariables:
+    CHECK_IN: "${TODAY+100_YYYY-MM-dd}"
+    CHECK_OUT: "${TODAY+101_YYYY-MM-dd}"
+    PIPPO: PIPPO
+    OK: OK
+    # this is a comment that can be used
+    API_KEY: AIzaSyDuJvGUBixcL3uzS4dDVtDE-jex24F0BFk
+  jsonSchemas:
+    correctResponse: schemas/okCase.json
+    errorResponse: schemas/notOkCase.json
+  testCases:
+  - testId: '001'
+    testName: 'single mode test for new heat #1'
+    url: "/json"
+    queryParameters:
+      units: meters
+      origins: via Atenisio Carducci 8, Taranto Italia
+      destinations: via dei Giuochi Istmici 40, Roma Italia
+      key: "${preload[API_KEY]}"
+    headers:
+      Cache-Control: no-cache
+    expects:
+      responseCode: '200'
+      jsonSchemaToCheck: correctResponse
+      fieldCheck:
+      #anchor defined
+      - &statusMap 
+        description: result has to be OK
+        actualValue: "${path[status]}"
+        expectedValue: OK
+      #alias used with variation
+      - <<: *statusMap
+        expectedValue: "${preload[OK]}"
+      - description: result field has to be present
+        actualValue: "${path[status]}"
+        expectedValue: "${Present}"
+      - description: pippo field has not to be present
+        actualValue: "${path[pippo]}"
+        expectedValue: "${NotPresent}"
+      - description: all the response has to contain the string "status":"OK"
+        actualValue: "${path[.]}"
+        expectedValue:
+        - '"status" : "OK"'
+      - description: all the response has to contain the string "status":"OK" (with
+          the operation)
+        actualValue: "${path[.]}"
+        operation: contains
+        expectedValue:
+        - '"status" : "OK"'
+      - description: all the response has NOT to contain the string "status":"PIPPO"
+        actualValue: "${path[.]}"
+        operation: not contains
+        expectedValue:
+        - '"status":"${preload[PIPPO]}"'
+      - description: elements in rows has to be made of only 1 object
+        actualValue: "${path[rows[0].elements.size()]}"
+        expectedValue: '1'
+      - description: distance value has to be greater than 0
+        actualValue: "${path[rows[0].elements[0].distance.value]}"
+        operation: ">"
+        expectedValue: '0'
+      - description: regexp test 1
+        actualValue:
+          regexp: _PIPPO_(.*?)_PAPERINO
+          stringToParse: _PIPPO_PLUTO_PAPERINO
+        expectedValue: PLUTO
+      - description: regexp test 2
+        actualValue:
+          regexp: _PIPPO_(.*?)_PAPERINO
+          stringToParse: _PIPPO_PIPPO_PAPERINO
+        expectedValue: "${preload[PIPPO]}"
+      - description: regexp test 3
+        actualValue:
+          regexp: _PIPPO_(.*?)_PAPERINO
+          stringToParse: _PIPPO_PIPPO_PAPERINO
+        expectedValue:
+          regexp: _PIPPO_(.*?)_PAPERINO
+          stringToParse: _PIPPO_PIPPO_PAPERINO
+      - description: occurrences of test
+        actualValue:
+          occurrenceOf: OK
+          stringToParse: "${path[.]}"
+        expectedValue: '2'
+      - description: if the result is ok, then check if the response contains 'OK'
+          string
+        condition:
+        #alias used
+        - *statusMap
+        actualValue: "${path[.]}"
+        expectedValue:
+        - "${preload[OK]}"
+        - status
+      - description: if the result is ok, then check if the response contains 'OK'
+          string
+        condition:
+        - *statusMap
+        operation: not contains
+        actualValue: "${path[.]}"
+        expectedValue:
+        - "${preload[PIPPO]}"
+        - pluto
+      - description: expected value array with placeholder
+        actualValue: "${path[.]}"
+        operation: not contains
+        expectedValue:
+        - "${preload[PIPPO]}"
+        - pluto
+      - description: regexp match test 1
+        actualValue:
+          regexpToMatch: _PIPPO_(.*?)_PAPERINO
+          stringToParse: _PIPPO_PIPPO_PAPERINO
+        expectedValue: 'true'
+      - description: regexp match test 2
+        actualValue:
+          regexpToMatch: _PIPPO_(.*?)_PAPERINO
+          stringToParse: BLA BLA BLA BLA
+        expectedValue: 'false'
+      &header headerCheck:
+        Content-Type: application/json; charset=UTF-8
+  - testId: '002'
+    testName: 'single mode test for new heat #2'
+    url: "/json"
+    queryParameters:
+      units: meters
+      origins: via Atenisio Carducci 8, Taranto Italia
+      destinations: via dei Giuochi Istmici 40, Roma Italia
+      key: PIPPO
+    headers:
+      Cache-Control: no-cache
+    expects:
+      responseCode: '200'
+      jsonSchemaToCheck: errorResponse
+      fieldCheck:
+      - description: status has to be REQUEST_DENIED
+        actualValue: "${path[status]}"
+        expectedValue: REQUEST_DENIED
+      - description: status has to be REQUEST_DENIED
+        actualValue: "${path[status]}"
+        operation: not equals to
+        expectedValue: REQUEST_OK
+      - description: error message value test
+        actualValue: "${path[error_message]}"
+        expectedValue: The provided API key is invalid.
+      - description: rows array has to be empty
+        actualValue: "${path[rows.size()]}"
+        expectedValue: '0'
+      headerCheck:
+        Content-Type: application/json; charset=UTF-8
