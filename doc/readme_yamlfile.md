@@ -162,3 +162,5 @@ Rif.
 Documentation https://medium.com/@kinghuang/docker-compose-anchors-aliases-extensions-a1e4105d70bd
 
 Conversion pages https://www.json2yaml.com/ and https://www.json2yaml.com/convert-yaml-to-json
+
+[leftArrow]: img/LeftArrow.png
