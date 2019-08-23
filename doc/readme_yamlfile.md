@@ -2,7 +2,7 @@
 
 # yaml input file
 
-In HEAT you can use YAML file insted of Json File. You can also convert Json input files to yaml file (and back). There are some interesting feature with the use of YAML file:
+For input test file in HEAT you can use YAML file insted of Json File. You can also convert Json input files to yaml file (and back). There are some interesting feature with the use of YAML file:
 
   * [Comment inside the test file](#comment_inside_file)
   * [Json string in YAML file](#json_in_file)
@@ -35,7 +35,7 @@ queryParameters:
 
 <a name="json_in_file"></a>
 ## Json string in YAML file
-You can directly write a Json string in your YAML file, without the need of quoting.
+You can directly write a Json string in your YAML file, without the need of escaping the quotes.
 
 In Json
 
@@ -122,7 +122,7 @@ This is equivalent to this not-stripped conversion
   expectedValue: "${Present}"
 ```
 
-You can use this mechanism also to extend some nodes:
+You can also use this mechanism to extend some nodes:
 
 ```yaml
 # Basic function options
