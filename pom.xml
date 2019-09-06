@@ -12,8 +12,8 @@
     </parent>
 
     <scm>
-        <connection>scm:git:git@github.com:HotelsDotCom/heat.git</connection>
-        <developerConnection>scm:git:git@github.com:HotelsDotCom/heat.git</developerConnection>
+        <connection>scm:git:https://${GIT_USERNAME}:${GIT_PASSWORD}@github.com:HotelsDotCom/heat.git</connection>
+        <developerConnection>scm:git:https://${GIT_USERNAME}:${GIT_PASSWORD}@github.com:HotelsDotCom/heat.git</developerConnection>
         <url>https://github.com/HotelsDotCom/heat</url>
         <tag>HEAD</tag>
     </scm>
