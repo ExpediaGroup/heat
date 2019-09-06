@@ -31,7 +31,7 @@ Now that we have created the driver for our test suite in Flow Mode, let's write
 
 <a name="jsonInputFile"></a>
 ## JSON input file
-This is the place in which you can write your test cases in the specified modality.
+This is the place in which you can write your test cases in the specified modality. Please note that you can also use yml file, read [yamlfile section](readme_yamlfile.md).
 The JSON schema for Flow Mode is quite similar to the other modalities, with some exceptions.
 Here we should be able to perform any number of HTTP requests and put them in connection with the next ones in the same test case.
 For this reason the structure of **"testCases"** attribute changes, as shown in the following example:
@@ -59,7 +59,7 @@ For this reason the structure of **"testCases"** attribute changes, as shown in 
             }
           },
           {
-            "objectName": "Find_Geocode", 
+            "objectName": "Find_Geocode",
             "stepNumber": "2",
             "beforeStep" : {
                 "MY_VAR" : "${wiremock[WM_INSTANCE].resetRequests}"
@@ -69,7 +69,7 @@ For this reason the structure of **"testCases"** attribute changes, as shown in 
             "url": "/json",
             "testName": "SVC call channel ANDROID number 2",
             "queryParameters": {
-              "address": "${getStep(1).getOutputParam(origin_addresses)}", 
+              "address": "${getStep(1).getOutputParam(origin_addresses)}",
               "key": "${preload[GEOCODE_API_KEY]}"
             },
             "headers": {...},
@@ -88,7 +88,7 @@ Each step produced a HTTP request to the specified **"webappName"** (that, in th
 
 Like the other running modalities, also in this case there is a **"url"** field that represents the specific endpoint to hit for that request (for further details, have a look at the [first configuration guide](readme_firstConf.md))
 
-After each call, as for the other running modalities, the expectations block (**"expect"**) is executed and if one of them fails, the test case will be signed as 'FAILED'. 
+After each call, as for the other running modalities, the expectations block (**"expect"**) is executed and if one of them fails, the test case will be signed as 'FAILED'.
 
 [![Back to the Top Of Page][upArrow]](#flow-mode)
 

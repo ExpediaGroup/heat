@@ -1,7 +1,7 @@
 [![Back to Table Of Contents][leftArrow]](../readme.md)
 
 <a name="single_mode"></a>
-# Single Mode Request 
+# Single Mode Request
 
   * [testng.xml](#single_mode_firstConf_testngXml)
   * [json input file](#single_mode_firstConf_jsonInputFile)
@@ -104,7 +104,7 @@ Now that we have created the driver for our test suite, let's write down the jso
 <a name="single_mode_firstConf_jsonInputFile"></a>
 ## JSON Input File (test cases)
 
-This is the place in which you can write your test cases.
+This is the place in which you can write your test cases. Please note that you can also use yml file, read [yamlfile section](readme_yamlfile.md).
 
 It contains some json blocks:
 
@@ -166,7 +166,7 @@ Each test case is defined as follows:
 
 **testName** is a description of the test case. It is not important to make it short, but it is very important to make it meaningful
 
-**url** is the specialization of the base path specified in the [environment.properties](readme_firstConf.md) file. 
+**url** is the specialization of the base path specified in the [environment.properties](readme_firstConf.md) file.
 
 * For example if the service we want to test has a basepath defined as `http://foo.xyz` (according to the specific environment we are using) and we want to test a particular endpoint called `endpointFoo.json`, the **url** parameter will contain the string `/endpointFoo.json`. In this way, the complete path will be the concatenation of the two strings: `http://foo.xyz/endpointFoo.json`.
 * If the [environment.properties](readme_firstConf.md) already contains the complete url, we can leave the **url** parameter empty.
@@ -296,7 +296,7 @@ So, going back to the [example](#single-mode.example), and let's put all the inf
     </listeners>
     <parameter name="envPropFilePath" value="environment.properties"/>
     <!-- Please do not touch this section: END -->
-    
+
     <test name="GOOGLE_MAPS_ENV1" enabled="true">
         <parameter name="inputJsonPath" value="/testCases/GmapsSingleModeTestCases.json"/>
         <parameter name="enabledEnvironments" value="environment1"/>
@@ -304,7 +304,7 @@ So, going back to the [example](#single-mode.example), and let's put all the inf
             <class name="com.hotels.heat.core.runner.SingleMode"/>
         </classes>
     </test>
-    
+
 </suite>    
 ```
 
@@ -385,8 +385,3 @@ Please, refer to the [command line](readme_commandLine.md) section for other det
 
 [upArrow]: img/UpArrow.png
 [leftArrow]: img/LeftArrow.png
-
-
-
-
-
