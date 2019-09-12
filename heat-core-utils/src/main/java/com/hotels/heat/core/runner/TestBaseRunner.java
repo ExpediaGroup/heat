@@ -15,25 +15,20 @@
  */
 package com.hotels.heat.core.runner;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.ServiceLoader;
+import java.io.FileInputStream;
+import java.io.InputStream;
+import java.util.*;
 
+import com.hotels.heat.core.utils.HeatException;
+import com.hotels.heat.core.utils.TestCaseManager;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.testng.ITestContext;
-import org.testng.annotations.BeforeSuite;
-import org.testng.annotations.BeforeTest;
-import org.testng.annotations.DataProvider;
-import org.testng.annotations.Optional;
-import org.testng.annotations.Parameters;
+import org.testng.annotations.*;
 
-import com.hotels.heat.core.handlers.PlaceholderHandler;
-import com.hotels.heat.core.handlers.TestCaseMapHandler;
-import com.hotels.heat.core.handlers.TestSuiteHandler;
 import com.hotels.heat.core.heatspecificchecks.SpecificChecks;
+import com.hotels.heat.core.utils.JsonInput;
 import com.hotels.heat.core.utils.RunnerInterface;
-import com.hotels.heat.core.utils.log.LoggingUtils;
 
 import io.restassured.response.Response;
 
@@ -42,37 +37,52 @@ import io.restassured.response.Response;
  * Generic Test Runner class.
  */
 public class TestBaseRunner implements RunnerInterface {
+
+    public static final String SYSPROP_ENVIRONMENT = "environment";
+    public static final String SYSPROP_LOG_LEVEL = "logLevel";
+    public static final String SYSPROP_TESTS_TO_RUN = "heatTest";
+    public static final String SYSPROP_TESTS_NOT_TO_RUN = "heatTestNotRun";
+
     static {
-        new LoggingUtils().info(
-                "\n\n"
-                + "      ___           ___           ___                 \n"
-                + "     /__/\\         /  /\\         /  /\\          ___   \n"
-                + "     \\  \\:\\       /  /:/_       /  /::\\        /  /\\  \n"
-                + "      \\__\\:\\     /  /:/ /\\     /  /:/\\:\\      /  /:/  \n"
-                + "  ___ /  /::\\   /  /:/ /:/_   /  /:/~/::\\    /  /:/   \n"
-                + " /__/\\  /:/\\:\\ /__/:/ /:/ /\\ /__/:/ /:/\\:\\  /  /::\\   \n"
-                + " \\  \\:\\/:/__\\/ \\  \\:\\/:/ /:/ \\  \\:\\/:/__\\/ /__/:/\\:\\  \n"
-                + "  \\  \\::/       \\  \\::/ /:/   \\  \\::/      \\__\\/  \\:\\ \n"
-                + "   \\  \\:\\        \\  \\:\\/:/     \\  \\:\\           \\  \\:\\\n"
-                + "    \\  \\:\\        \\  \\::/       \\  \\:\\           \\__\\/\n"
-                + "     \\__\\/         \\__\\/         \\__\\/                \n"
+        (LoggerFactory.getLogger(TestBaseRunner.class)).info(
+                "\n" +
+                        "                                                   \n" +
+                        "                                                   \n" +
+                        "   .              __.....__                        \n" +
+                        " .'|          .-''         '.                      \n" +
+                        "<  |         /     .-''\"'-.  `.               .|   \n" +
+                        " | |        /     /________\\   \\    __      .' |_  \n" +
+                        " | | .'''-. |                  | .:--.'.  .'     | \n" +
+                        " | |/.'''. \\\\    .-------------'/ |   \\ |'--.  .-' \n" +
+                        " |  /    | | \\    '-.____...---.`\" __ | |   |  |   \n" +
+                        " | |     | |  `.             .'  .'.''| |   |  |   \n" +
+                        " | |     | |    `''-...... -'   / /   | |_  |  '.' \n" +
+                        " | '.    | '.                   \\ \\._,\\ '/  |   /  \n" +
+                        " '---'   '---'                   `--'  `\"   `'-'   \n"
         );
 
-        new LoggingUtils().info(
+        (LoggerFactory.getLogger(TestBaseRunner.class)).info(
                 "\n"
                 + "+-----------------------------------------------------------------------+\n"
                 + "| Environment under test : '{}'\n"
                 + "+-----------------------------------------------------------------------+\n"
                 + "| Requested Log Level: : '{}'\n"
-                + "| Specific test requested: '{}'\n"
+                + "+-----------------------------------------------------------------------+\n"
+                + "| Specific tests requested: '{}'\n"
+                + "| Specific tests NOT requested: '{}'\n"
                 + "+-----------------------------------------------------------------------+\n",
-                System.getProperty("environment", System.getProperty("defaultEnvironment")),
-                System.getProperty("logLevel", "INFO"),
-                System.getProperty("heatTest", "All Tests"));
+                System.getProperty(SYSPROP_ENVIRONMENT, System.getProperty("defaultEnvironment")),
+                System.getProperty(SYSPROP_LOG_LEVEL, "INFO"),
+                System.getProperty(SYSPROP_TESTS_TO_RUN, "All Tests"),
+                System.getProperty(SYSPROP_TESTS_NOT_TO_RUN, "None"));
 
     }
 
-    public static final String ATTR_TESTCASE_ID = "testId";
+
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
+
+
+    /*public static final String ATTR_TESTCASE_ID = "testId";
     public static final String ATTR_TESTCASE_NAME = "testName";
 
     public static final String STATUS_SKIPPED = "SKIPPED";
@@ -84,60 +94,171 @@ public class TestBaseRunner implements RunnerInterface {
     public static final String TC_DESCRIPTION_CTX_ATTR = "tcDescription";
 
     public static final String NO_INPUT_WEBAPP_NAME = "noInputWebappName";
-    public static final String WEBAPP_NAME = "webappName";
-    public static final String ENABLED_ENVIRONMENTS = "enabledEnvironments";
-    public static final String ENV_PROP_FILE_PATH = "envPropFilePath";
-    public static final String INPUT_JSON_PATH = "inputJsonPath";
 
     private ITestContext testContext;
 
     private PlaceholderHandler placeholderHandler;
+    private String inputJsonPath;*/
+
+    public static final String CTX_ENVIRONMENT_PATHS = "CTX_ENVIRONMENT_PATHS";
+    public static final String CTX_ENABLED_ENVIRONMENTS = "CTX_ENABLED_ENVIRONMENTS";
+
+    public static final String TESTNG_ENV_PROP_FILE_PATH = "envPropFilePath";
+    public static final String TESTNG_INPUT_JSON_PATH = "inputJsonPath";
+    public static final String TESTNG_ENABLED_ENVIRONMENTS = "enabledEnvironments";
+
+    public static final String ITERATOR_TEST_CASE = "TEST_CASE";
+    public static final String ITERATOR_GENERAL_SETTINGS = "GENERAL_SETTINGS";
+    public static final String ITERATOR_BEFORE_SUITE = "BEFORE_SUITE";
+    public static final String ITERATOR_JSON_SCHEMAS = "JSON_SCHEMAS";
+
+    public static final String ATTR_TESTCASE_ID = "testId";
+
     private String inputJsonPath;
+
+
 
     /**
      * Method that takes test suites parameters and sets some environment properties.
      * @param propFilePath path of the property file data
-     * @param inputWebappName name of the service to test (optional parameter)
      * @param context testNG context
      */
     @BeforeSuite
     @Override
-    @Parameters({ENV_PROP_FILE_PATH, WEBAPP_NAME})
+    @Parameters({TESTNG_ENV_PROP_FILE_PATH})
     public void beforeTestSuite(String propFilePath,
-                                @Optional(NO_INPUT_WEBAPP_NAME) String inputWebappName,
                                 ITestContext context) {
-        TestSuiteHandler testSuiteHandler = TestSuiteHandler.getInstance();
-        testSuiteHandler.setPropertyFilePath(propFilePath);
-        testSuiteHandler.populateEnvironmentHandler();
-        testSuiteHandler.populateTestCaseUtils();
+
+        Properties environments = getEnvironmentProperties(propFilePath);
+        context.setAttribute(CTX_ENVIRONMENT_PATHS, environments);
 
     }
 
     /**
      * Method that takes tests parameters and sets some environment properties.
-     * @param inputJsonParamPath path of the json input file with input data for tests
+     * @param inputJsonFilePath path of the json input file with input data for tests
      * @param enabledEnvironments environments enabled for the specific suite
      * @param context testNG context
      */
     @BeforeTest
     @Override
-    @Parameters({INPUT_JSON_PATH, ENABLED_ENVIRONMENTS})
-    public void beforeTestCase(String inputJsonParamPath,
+    @Parameters({TESTNG_INPUT_JSON_PATH, TESTNG_ENABLED_ENVIRONMENTS})
+    public void beforeTestCase(String inputJsonFilePath,
         String enabledEnvironments,
         ITestContext context) {
-        TestSuiteHandler testSuiteHandler = TestSuiteHandler.getInstance();
-        testSuiteHandler.getEnvironmentHandler().setEnabledEnvironments(enabledEnvironments);
-        inputJsonPath = inputJsonParamPath;
-        testSuiteHandler.getLogUtils().setTestContext(context);
-        testContext = context;
+
+        List<String> enabledEnvironmentList = new ArrayList<>(Arrays.asList(enabledEnvironments.split(",")));
+        context.setAttribute(CTX_ENABLED_ENVIRONMENTS, enabledEnvironmentList);
+        inputJsonPath = inputJsonFilePath;
     }
 
 
     @Override
     @DataProvider(name = "provider")
     public Iterator<Object[]> providerJson() {
-        return TestSuiteHandler.getInstance().getTestCaseUtils().jsonReader(inputJsonPath, testContext);
+        Iterator<Object[]> testCaseIterator = JsonInput.getInstance().jsonReader(inputJsonPath, getTestContext());
+        return testCaseIterator;
     }
+
+
+    /**
+     * Method that manages the execution of a single test case.
+     * @param testCaseParams Map containing test case parameters coming from the json inpu
+     *                       t file
+     */
+    @Test(dataProvider = "provider")
+    public void runningTest(Map<String, Object> testCaseData) {
+        Map testCase = (Map) testCaseData.get(ITERATOR_TEST_CASE);
+
+        String testSuiteName = getTestContext().getName();
+        String testCaseId = testCase.get(TestBaseRunner.ATTR_TESTCASE_ID).toString();
+
+        try {
+            String completeTestCaseId = testSuiteName + "." + testCaseId;
+
+            if (!isTheTestCaseSkippable(testSuiteName, testCaseId)) {
+                logger.debug("[{}] Test Case Not Skippable", completeTestCaseId);
+
+                // Request
+                try {
+                    logger.debug("[{}] >> START", completeTestCaseId);
+
+                    TestCaseManager testCaseManager = new TestCaseManager(testCaseData, completeTestCaseId, getTestContext());
+                    testCaseManager.execute();
+
+
+
+                    logger.debug("[{}] >> END", completeTestCaseId);
+                } catch (Exception oEx) {
+                    throw new HeatException(String.format("[%s] Test Case failed. Unknown reason.", completeTestCaseId));
+                }
+                // verifications
+
+
+
+            } else {
+                logger.info("[{}] Test Case Skippable", completeTestCaseId);
+                //TODO: SKIP TEST CASE
+            }
+
+
+        } catch (Exception oEx) {
+            throw new HeatException(this.getClass(), oEx);
+        }
+
+    }
+
+    private boolean isTheTestCaseSkippable(String testSuiteName, String testCaseId) {
+        boolean isSkippable = true; //by default the test cannot be run
+
+
+        // if it is among the tests NOT TO RUN / if it is NOT in the list of tests to run
+        String SysPropHeatTestNotRun = System.getProperty(SYSPROP_TESTS_NOT_TO_RUN, "");
+        boolean tcIsInTheBlackList = isElementContainedInTheList(testSuiteName, testCaseId, SysPropHeatTestNotRun);
+
+        String SysPropHeatTestToRun = System.getProperty(SYSPROP_TESTS_TO_RUN, "");
+        boolean tcIsInTheWhiteList = isElementContainedInTheList(testSuiteName, testCaseId, SysPropHeatTestToRun);
+        if ("".equals(SysPropHeatTestToRun)) { tcIsInTheWhiteList = true; }
+
+        if (tcIsInTheWhiteList || !tcIsInTheBlackList) {
+            isSkippable = false;
+        }
+
+        return isSkippable;
+    }
+
+    private boolean isElementContainedInTheList(String testSuiteName, String testCaseId, String sysPropList) {
+        boolean isContained = false;
+        List<String> testsNotToRun = new ArrayList<String>(Arrays.asList(sysPropList.split(",")));
+        for (String blackListElement : testsNotToRun) {
+            //testSuiteName is in the format TEST.001 because it's the running test
+
+            if (testSuiteName.equals(blackListElement.split(".")[0])) {
+                if (blackListElement.contains(".")) {
+                    // only a specific test case is disabled
+                    String completeTestCaseId = testSuiteName + "." + testCaseId;
+                    if (completeTestCaseId.equals(blackListElement)) {
+                        isContained = true;
+                    }
+                } else {
+                    // All the test suite is disabled
+                    isContained = true;
+                }
+            }
+        }
+        return isContained;
+    }
+
+
+
+
+
+
+
+
+
+
+
 
     /**
      * Elaboration of test case parameters before any request (method executed as first step in the runner).
@@ -279,5 +400,25 @@ public class TestBaseRunner implements RunnerInterface {
         return TestSuiteHandler.getInstance().getLogUtils();
     }
 
+
+    private Properties getEnvironmentProperties(String propFilePath) {
+        Properties environments = new Properties();
+        InputStream inputStream = null;
+        try {
+            logger.trace("loading '{}' file", propFilePath);
+            inputStream = new FileInputStream(propFilePath);
+            environments.load(inputStream);
+
+        } catch (Exception oEx) {
+            logger.error("Error! '{}'", oEx.getLocalizedMessage());
+        } finally {
+            try {
+                inputStream.close();
+            } catch (Exception oEx) {
+                logger.error("Error! '{}'", oEx.getLocalizedMessage());
+            }
+        }
+        return environments;
+    }
 
 }

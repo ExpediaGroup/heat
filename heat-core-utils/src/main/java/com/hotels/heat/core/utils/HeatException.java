@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.hotels.heat.core.specificexception;
+package com.hotels.heat.core.utils;
 
 /**
  * Specific exception for heat test framework.
@@ -25,5 +25,20 @@ public class HeatException extends Error {
     }
     public HeatException(String exceptionMessage, Throwable cause) {
         super(exceptionMessage, cause);
+    }
+
+    public HeatException(Class classObject, String exceptionMessage) {
+        super(String.format( "%s :: %s >> %s",
+                classObject.getCanonicalName(),
+                classObject.getEnclosingMethod(),
+                exceptionMessage));
+    }
+
+    public HeatException(Class classObject, Exception oEx) {
+        super(String.format( "%s :: %s >> Exception raised %n Exception class: %s %n with message '%s'",
+                classObject.getCanonicalName(),
+                classObject.getEnclosingMethod(),
+                oEx.getClass(),
+                oEx.getLocalizedMessage()));
     }
 }

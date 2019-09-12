@@ -15,13 +15,12 @@
  */
 package com.hotels.heat.core.utils;
 
+import io.restassured.response.Response;
+import org.testng.ITestContext;
+
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-
-import org.testng.ITestContext;
-
-import io.restassured.response.Response;
 
 
 /**
@@ -30,12 +29,11 @@ import io.restassured.response.Response;
 public interface RunnerInterface {
 
     void beforeTestSuite(String propFilePath,
-                                        String inputWebappName,
-                                        ITestContext context);
+                         ITestContext context);
 
     void beforeTestCase(String inputJsonParamPath,
-            String enabledEnvironments,
-            ITestContext context);
+                        String enabledEnvironments,
+                        ITestContext context);
 
     Iterator<Object[]> providerJson();
 
