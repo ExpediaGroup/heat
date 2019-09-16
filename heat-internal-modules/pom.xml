@@ -4,7 +4,7 @@
     <parent>
         <groupId>com.hotels</groupId>
         <artifactId>heat-core</artifactId>
-        <version>4.0.3-SNAPSHOT</version>
+        <version>4.0.5-SNAPSHOT</version>
     </parent>
 
     <artifactId>heat-internal-modules</artifactId>

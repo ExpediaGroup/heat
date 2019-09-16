@@ -31,7 +31,7 @@ Now that we have created the driver for our test suite in Compare Mode, let's wr
 
 <a name="jsonInputFile"></a>
 ### JSON input file
-This is the place in which you can write your test cases in the specified modality.
+This is the place in which you can write your test cases in the specified modality. Please note that you can also use yml file, read [yamlfile section](readme_yamlfile.md).
 The JSON schema for Compare Mode is quite similar to the other modalities, with some exceptions.
 Here we should be able to define two comparable HTTP requests, represented by two "objects" and then to compare them in the same **"expects"** block.
 For this reason the structure of **"testCases"** attribute changes, as the follow example:
@@ -81,7 +81,7 @@ For this reason the structure of **"testCases"** attribute changes, as the follo
 
 ### Manage two calls in the same test
 As we can see in the example above, the **"objectsToCompare"** must contain two blocks identified by the **"objectName"**, so that it can be simple to understand which block we are referring to, through the checks in the test case. Each block generates a different HTTP request to a specified services, identified by a **"webappName"** (that, in the [environment.properties](readme_firstConf.md) file is mapped to a given base path for all the supported environments).
-Like the other running modalities, also in this case there is a "url" field that represents the specific endpoint to hit for that request (for further details, have a look at the first [configuration guide](readme_singleMode.md)) 
+Like the other running modalities, also in this case there is a "url" field that represents the specific endpoint to hit for that request (for further details, have a look at the first [configuration guide](readme_singleMode.md))
 
 After the two requests, we have a single expectations block called **"expects"** that contains one or more expectation blocks.
 
@@ -110,8 +110,8 @@ What is changed is that the 'actualValue' and the 'expectedValue' have a differe
 
 In the example above, the actual value will be the `${path[origin_addresses[0]]}` from the response coming from the object whose 'referringObjectName' is 'gmaps distance response', and the expected value will be the `${path[results[0].formatted_address]}` from the response coming from the object whose 'referringObjectName' is 'geo code response'.
 
- 
+
  [![Back to the Top Of Page][upArrow]](#compare-mode)
- 
+
 [upArrow]: img/UpArrow.png
 [leftArrow]: img/LeftArrow.png
